@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:backgroundTint="@color/white"
+        android:background="@color/white"
+        android:layout_height="wrap_content">
+    <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:background="@color/white"
+            android:backgroundTint="@color/white"
+            android:padding="@dimen/_14sdp"
+            android:layout_height="wrap_content">
+        <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+            <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvWithdrawalId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_15sdp"
+                        android:fontFamily="@font/sf_pro_text_semibold"
+                        android:textColor="@color/text_rv_main"
+                        android:text="#8934777uihk/747bjjgjy"/>
+                <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvWithdrawalStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_13sdp"
+                        android:gravity="right"
+                        android:fontFamily="@font/sf_pro_text_semibold"
+                        android:textColor="#00CE22"
+                        android:text="Success"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_height="wrap_content">
+            <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvWithdrawalDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_13sdp"
+                        android:fontFamily="@font/sf_pro_text_semibold"
+                        android:textColor="#B7B7B7"
+                        android:text="10/01/2022, "/>
+                <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvWithdrawalTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_13sdp"
+                        android:fontFamily="@font/sf_pro_text_semibold"
+                        android:textColor="#B7B7B7"
+                        android:text="10:00"/>
+                <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvWithdrawalAmmount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_13sdp"
+                        android:gravity="right"
+                        android:fontFamily="@font/sf_pro_text_semibold"
+                        android:textColor="@color/blue"
+                        android:text="$250"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.cardview.widget.CardView>

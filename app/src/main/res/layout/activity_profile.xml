@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_3"
+    tools:context=".ui.activity.ProfileActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:elevation="@dimen/_10sdp"
+                android:theme="@style/navigationTheme"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/menu_icon"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:src="@drawable/ic_baseline_arrow_back_24_white" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_tabNames"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:text="Profile"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_16sdp"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:text="Save"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_16sdp"
+                    android:textStyle="bold" />
+            </Toolbar>
+
+            <LinearLayout
+                android:id="@+id/llProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/ivProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_250sdp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_launcher_background" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llcam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_120sdp"
+                android:layout_marginRight="@dimen/_20sdp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="@dimen/_60sdp"
+                    android:layout_height="@dimen/_60sdp"
+                    android:layout_marginLeft="@dimen/_90sdp"
+                    android:layout_marginTop="@dimen/_55sdp"
+                    android:background="@drawable/ring_img_back"
+                    app:cardBackgroundColor="@color/blue"
+                    app:cardCornerRadius="@dimen/_30sdp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iv_cam"
+                        android:layout_width="@dimen/_40sdp"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/camera_2x"
+                        android:padding="@dimen/_5sdp" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_50sdp"
+                android:layout_marginRight="@dimen/_12sdp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/llProfile">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/edtUserName"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:background="@drawable/edittext_background"
+                    android:fontFamily="@font/sf_pro_text_bold"
+                    android:hint="username"
+                    android:inputType="text"
+                    android:padding="@dimen/_10sdp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray"
+                    android:textSize="@dimen/_10sdp" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/edtEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/edittext_background"
+                    android:fontFamily="@font/sf_pro_text_bold"
+                    android:hint="Email"
+                    android:inputType="text"
+                    android:padding="@dimen/_10sdp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray"
+                    android:textSize="@dimen/_10sdp" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/edtMobileNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/edittext_background"
+                    android:fontFamily="@font/sf_pro_text_bold"
+                    android:hint="Mobile Number"
+                    android:inputType="text"
+                    android:padding="@dimen/_10sdp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/gray"
+                    android:textSize="@dimen/_10sdp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="left"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:fontFamily="@font/sf_pro_text_regular"
+                        android:text="Gender"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black_2"
+                        android:textSize="@dimen/_16sdp"
+                        android:textStyle="normal" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGrp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radioM"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:layout_weight="1"
+                            android:buttonTint="@color/blue"
+                            android:checked="true"
+                            android:fontFamily="@font/sf_pro_text_regular"
+                            android:text="Male"
+                            android:textColor="@color/black_3"
+                            android:textSize="@dimen/_15sdp" />
+
+                        <RadioButton
+                            android:id="@+id/radioF"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_weight="1"
+                            android:buttonTint="@color/blue"
+                            android:checked="false"
+                            android:fontFamily="@font/sf_pro_text_regular"
+                            android:text="Female"
+                            android:textColor="@color/black_3"
+                            android:textSize="@dimen/_15sdp" />
+
+                        <RadioButton
+                            android:id="@+id/radioO"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_weight="1"
+                            android:buttonTint="@color/blue"
+                            android:checked="false"
+                            android:fontFamily="@font/sf_pro_text_regular"
+                            android:text="Other"
+                            android:textColor="@color/black_3"
+                            android:textSize="@dimen/_15sdp" />
+                    </RadioGroup>
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/edtDateBirth"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:background="@drawable/edittext_background"
+                        android:fontFamily="@font/sf_pro_text_bold"
+                        android:hint="Date of birth"
+                        android:inputType="text"
+                        android:padding="@dimen/_10sdp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/gray"
+                        android:textSize="@dimen/_10sdp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="left"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:fontFamily="@font/sf_pro_text_regular"
+                        android:text="Driver Details"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black_2"
+                        android:textSize="@dimen/_16sdp"
+                        android:textStyle="normal" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/edtDriverName"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:background="@drawable/edittext_background"
+                        android:fontFamily="@font/sf_pro_text_bold"
+                        android:hint="Driver Name"
+                        android:inputType="text"
+                        android:padding="@dimen/_10sdp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/gray"
+                        android:textSize="@dimen/_10sdp" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/edtDriverExperience"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:background="@drawable/edittext_background"
+                        android:fontFamily="@font/sf_pro_text_bold"
+                        android:hint="Driver Experience"
+                        android:inputType="text"
+                        android:padding="@dimen/_10sdp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/gray"
+                        android:textSize="@dimen/_10sdp" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/edtLicenceNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:background="@drawable/edittext_background"
+                        android:fontFamily="@font/sf_pro_text_bold"
+                        android:hint="Driver licence Number"
+                        android:inputType="text"
+                        android:padding="@dimen/_10sdp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/gray"
+                        android:textSize="@dimen/_10sdp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="left"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:fontFamily="@font/sf_pro_text_regular"
+                        android:text="Ambulance Details"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black_2"
+                        android:textSize="@dimen/_16sdp"
+                        android:textStyle="normal" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/edtAmbulanceVehicleNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:background="@drawable/edittext_background"
+                        android:fontFamily="@font/sf_pro_text_bold"
+                        android:hint="Ambulance vehicle number"
+                        android:inputType="text"
+                        android:padding="@dimen/_10sdp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/gray"
+                        android:textSize="@dimen/_10sdp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="left"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:fontFamily="@font/sf_pro_text_regular"
+                        android:text="Attached with hospital"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black_2"
+                        android:textSize="@dimen/_16sdp"
+                        android:textStyle="normal" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGrpd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radioYes"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:layout_weight="1"
+                            android:buttonTint="@color/blue"
+                            android:checked="true"
+                            android:fontFamily="@font/sf_pro_text_regular"
+                            android:text="Yes"
+                            android:textColor="@color/black_3"
+                            android:textSize="@dimen/_15sdp" />
+
+                        <RadioButton
+                            android:id="@+id/radioNo"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_weight="1"
+                            android:buttonTint="@color/blue"
+                            android:checked="false"
+                            android:fontFamily="@font/sf_pro_text_regular"
+                            android:text="No"
+                            android:textColor="@color/black_3"
+                            android:textSize="@dimen/_15sdp" />
+                    </RadioGroup>
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/edtHospitalAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:background="@drawable/edittext_background"
+                        android:fontFamily="@font/sf_pro_text_bold"
+                        android:hint="Hospital Address"
+                        android:inputType="text"
+                        android:padding="@dimen/_10sdp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/gray"
+                        android:textSize="@dimen/_10sdp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/edtState"
+                            android:layout_width="@dimen/_140sdp"
+                            android:layout_height="@dimen/_40sdp"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:background="@drawable/edittext_background"
+                            android:fontFamily="@font/sf_pro_text_bold"
+                            android:hint="State"
+                            android:inputType="text"
+                            android:padding="@dimen/_10sdp"
+                            android:textAllCaps="false"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/_10sdp" />
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/edtCity"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_40sdp"
+                            android:layout_marginLeft="@dimen/_15sdp"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:background="@drawable/edittext_background"
+                            android:fontFamily="@font/sf_pro_text_bold"
+                            android:hint="City"
+                            android:inputType="text"
+                            android:padding="@dimen/_10sdp"
+                            android:textAllCaps="false"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/gray"
+                            android:textSize="@dimen/_10sdp" />
+
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/edtCountry"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:background="@drawable/edittext_background"
+                        android:fontFamily="@font/sf_pro_text_bold"
+                        android:hint="Country"
+                        android:inputType="text"
+                        android:padding="@dimen/_10sdp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/gray"
+                        android:textSize="@dimen/_10sdp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="left"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:fontFamily="@font/sf_pro_text_regular"
+                        android:text="Upload Document"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black_2"
+                        android:textSize="@dimen/_16sdp"
+                        android:textStyle="normal" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            app:cardBackgroundColor="@color/lite_blue"
+                            app:cardCornerRadius="@dimen/_2sdp">
+
+                            <ImageView
+                                android:id="@+id/ivAddDocument"
+                                android:layout_width="@dimen/_50sdp"
+                                android:layout_height="@dimen/_50sdp"
+                                android:padding="@dimen/_15sdp"
+                                android:src="@drawable/plus_3x" />
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvDocument"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:orientation="horizontal"
+                            tools:itemCount="5"
+                            tools:listitem="@layout/item_all_document" />
+
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnSubmit"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:layout_marginBottom="@dimen/_15sdp"
+                        android:background="@drawable/button_background"
+                        android:fontFamily="@font/sf_pro_text_regular"
+                        android:padding="@dimen/_10sdp"
+                        android:text="Update Profile"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_12sdp" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
