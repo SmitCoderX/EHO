@@ -72,8 +72,6 @@ abstract class BaseActivity : AppCompatActivity() {
     open fun getCallLogout() {
         val i = Intent(getActivity(), WelcomeActivity::class.java)
         i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        sp.set_Email("")
-        sp.set_Id("")
         startActivity(i)
         finish()
     }

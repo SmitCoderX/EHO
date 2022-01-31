@@ -1,21 +1,30 @@
 package com.driver.eho.ui.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.fragment.app.Fragment
 import com.driver.eho.R
+import com.driver.eho.databinding.FragmentTermsConditionBinding
 
 
-class TermsConditionFragment : Fragment() {
+class TermsConditionFragment : Fragment(R.layout.fragment_terms_condition) {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_terms_condition, container, false)
+    private lateinit var binding: FragmentTermsConditionBinding
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentTermsConditionBinding.bind(view)
+
+        binding.webview.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                view?.loadUrl(url.toString())
+                return true
+            }
+        }
+        binding.webview.loadUrl("https://www.google.co.in/")
     }
+
 
 }

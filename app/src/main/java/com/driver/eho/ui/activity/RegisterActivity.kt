@@ -21,18 +21,17 @@ import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.driver.eho.R
 import com.driver.eho.adapter.HorizontalRecyclerView
 import com.driver.eho.databinding.ActivityRegisterBinding
-import com.driver.eho.ui.viewModel.DriverSignUpViewModel
 import com.driver.eho.ui.viewModel.viewModelFactory.DriverSignUpViewModelProviderFactory
 import com.driver.eho.utils.Constants.TAG
+import com.driver.eho.utils.Constants.snackbarError
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
 import com.driver.eho.utils.UploadRequestBody
 import com.driver.eho.utils.getFileName
+import com.driver.eho.ui.viewModels.DriverSignUpViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -97,7 +96,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                         edtEmail.text.toString().trim(),
                         edtDriverName.text.toString().trim(),
                         edtDriverExperience.text.toString().trim().toInt(),
-                        edtDriverExperience.text.toString().trim().toInt(),
+                        edtLicenceNumber.text.toString().trim().toInt(),
                         edtAmbulanceVehicleNumber.text.toString().trim(),
                         edtHospitalAddress.text.toString().trim(),
                         edtState.text.toString().trim(),
@@ -106,8 +105,6 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                         edtPassword.text.toString().trim()
                     )
                 }
-            } else {
-                Snackbar.make(binding.root, "Fields Cannot be Empty", Snackbar.LENGTH_SHORT).show()
             }
         }
 
@@ -219,6 +216,8 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
     private fun validate(): Boolean {
         var valid = true
 
+        val userName = binding.edtUserName.text.toString().trim()
+        val password = binding.edtPassword.text.toString().trim()
         val fullName = binding.edtHospitalName.text.toString().trim()
         val mobileNumber = binding.edtMobileNumber.text.toString().trim()
         val email = binding.edtEmail.text.toString().trim()
@@ -231,9 +230,26 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         val country = binding.edtCountry.text.toString().trim()
         val hospitalAddress = binding.edtHospitalAddress.text.toString().trim()
 
+        // UserName
+        if (TextUtils.isEmpty(userName)) {
+            binding.edtUserName.error = "Enter your Username"
+            valid = false
+        } else {
+            binding.edtUserName.error = null
+        }
+
+        // Password
+        if (TextUtils.isEmpty(password)) {
+            binding.edtPassword.error = "Enter your Password"
+            valid = false
+        } else {
+            binding.edtPassword.error = null
+        }
+
         // fullName
         if (TextUtils.isEmpty(fullName) || fullName < 3.toString()) {
             binding.edtHospitalName.error = "Enter your Hospital Name"
+            snackbarError(binding.root, "Enter your Hospital Name")
             valid = false
         } else {
             binding.edtHospitalName.error = null
@@ -241,6 +257,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         // mobileNumber
         if (TextUtils.isEmpty(mobileNumber) && !Patterns.PHONE.matcher(mobileNumber).matches()) {
             binding.edtMobileNumber.error = "Enter your correct mobile Number"
+            snackbarError(binding.root, "Enter your correct mobile Number")
             valid = false
         } else {
             binding.edtMobileNumber.error = null
@@ -248,6 +265,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         // driver name
         if (TextUtils.isEmpty(driverName)) {
             binding.edtDriverName.error = "Enter driver name"
+            snackbarError(binding.root, "Enter driver name")
             valid = false
         } else {
             binding.edtDriverName.error = null
@@ -255,6 +273,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         // email
         if (TextUtils.isEmpty(email) && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.edtEmail.error = "Enter your correct email"
+            snackbarError(binding.root, "Enter your correct email")
             valid = false
         } else {
             binding.edtEmail.error = null
@@ -262,6 +281,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         // driverExperience
         if (TextUtils.isEmpty(driverExperience)) {
             binding.edtDriverExperience.error = "Enter your driver experience"
+            snackbarError(binding.root, "Enter your driver Experience")
             valid = false
         } else {
             binding.edtDriverExperience.error = null
@@ -269,6 +289,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         // licenceNumber
         if (TextUtils.isEmpty(licenceNumber)) {
             binding.edtLicenceNumber.error = "Enter your licence number"
+            snackbarError(binding.root, "Enter your Licence Number")
             valid = false
         } else {
             binding.edtLicenceNumber.error = null
@@ -276,6 +297,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         // anbVehicleNumber
         if (TextUtils.isEmpty(anbVehicleNumber)) {
             binding.edtAmbulanceVehicleNumber.error = "Enter your ambulance vehicle number"
+            snackbarError(binding.root, "Enter your ambulance vehicle number")
             valid = false
         } else {
             binding.edtAmbulanceVehicleNumber.error = null
@@ -283,6 +305,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         // state
         if (TextUtils.isEmpty(state)) {
             binding.edtState.error = "Enter your state"
+            snackbarError(binding.root, "Enter your state")
             valid = false
         } else {
             binding.edtState.error = null
@@ -290,6 +313,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         // city
         if (TextUtils.isEmpty(city)) {
             binding.edtCity.error = "Enter your city"
+            snackbarError(binding.root, "Enter your city")
             valid = false
         } else {
             binding.edtCity.error = null
@@ -297,6 +321,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         // country
         if (TextUtils.isEmpty(country)) {
             binding.edtCountry.error = "Enter your Country"
+            snackbarError(binding.root, "Enter your country")
             valid = false
         } else {
             binding.edtCountry.error = null
@@ -304,6 +329,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         // address
         if (TextUtils.isEmpty(hospitalAddress)) {
             binding.edtHospitalAddress.error = "Enter hospital address"
+            snackbarError(binding.root, "Enter Hospital Address")
             valid = false
         } else {
             binding.edtHospitalAddress.error = null
@@ -341,7 +367,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
 
     private fun addDocumentFromgelley() {
         val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
+        intent.type = "image/* "
         startActivityForResult(intent, 2)
     }
 
@@ -372,27 +398,31 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            0 -> if (resultCode == RESULT_OK) {
-                Glide.with(this).load(currentPhotoPath).into(binding.ivProfile)
-            }
-            1 -> if (resultCode == RESULT_OK) {
-                selectedImage = data!!.data
-                binding.ivProfile.setImageURI(selectedImage)
-            }
-            2 -> {
-                if (resultCode == RESULT_OK) {
-                    if (data!!.clipData != null) {
-                        val count: Int = data.clipData!!.itemCount
-                        for (i in 0 until count) {
-                            uri.add(data.clipData!!.getItemAt(i).uri)
+        try {
+            when (requestCode) {
+                0 -> if (resultCode == RESULT_OK) {
+                    Glide.with(this).load(currentPhotoPath).into(binding.ivProfile)
+                }
+                1 -> if (resultCode == RESULT_OK) {
+                    selectedImage = data!!.data
+                    binding.ivProfile.setImageURI(selectedImage)
+                }
+                2 -> {
+                    if (resultCode == RESULT_OK) {
+                        if (data!!.clipData != null) {
+                            val count: Int = data.clipData!!.itemCount
+                            for (i in 0 until count) {
+                                uri.add(data.clipData!!.getItemAt(i).uri)
+                            }
+                            adapter!!.notifyDataSetChanged()
                         }
-                        adapter!!.notifyDataSetChanged()
+                    } else if (data!!.data != null) {
+                        pictureDoc = data.data
                     }
-                } else if (data!!.data != null) {
-                    pictureDoc = data.data
                 }
             }
+        } catch (e: Exception) {
+            Log.d(TAG, "onActivityResult: $e")
         }
     }
 
@@ -456,12 +486,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
 
                 is Resources.Error -> {
                     hideLoadingView()
-                    Snackbar.make(
-                        binding.root,
-                        resources.message.toString(),
-                        Snackbar.LENGTH_SHORT
-                    )
-                        .show()
+                    snackbarError(binding.root, resources.message.toString())
 
                     Log.d(TAG, "getRegisterData: ${resources.message}")
                 }

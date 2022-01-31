@@ -1,204 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:background="@color/white_2"
-             tools:context=".ui.fragment.SupportFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_2"
+    tools:context=".ui.fragment.SupportFragment">
+
     <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:background="@color/white_2"
-            android:layout_height="match_parent">
-        <LinearLayout
+            android:layout_height="match_parent"
+            android:background="@color/white_2">
+
+            <LinearLayout
                 android:id="@+id/ll1"
                 android:layout_width="match_parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_12sdp"
-                android:background="@color/white_2"
                 android:layout_marginRight="@dimen/_12sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:background="@color/white_2"
                 android:orientation="vertical"
-                android:layout_height="wrap_content">
-            <TextView
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white_2"
-                    android:textSize="@dimen/_13sdp"
                     android:fontFamily="@font/sf_pro_text_regular"
+                    android:text="@string/support_text"
                     android:textAlignment="textStart"
                     android:textColor="@color/black_2"
-                    android:text="Sed a magna semper, porta purus eu, ullamcorper ligula. Nam sit amet consectetur sapien. Etiam dui ipsum, viverra vel turpis ut, dignissim elementum mauris. Sed dapibus auctor scelerisque."/>
-        </LinearLayout>
+                    android:textSize="@dimen/_13sdp" />
+            </LinearLayout>
 
-        <FrameLayout
+            <FrameLayout
                 android:id="@+id/fl"
                 android:layout_width="match_parent"
-                android:layout_marginRight="@dimen/_12sdp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginRight="@dimen/_12sdp"
                 android:background="@color/white"
                 android:elevation="@dimen/_5sdp"
                 android:padding="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@id/ll1"
-                android:layout_height="wrap_content">
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content">
+                app:layout_constraintTop_toBottomOf="@id/ll1">
+
                 <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_height="wrap_content">
-                    <TextView
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
                             android:layout_width="wrap_content"
-                            android:text="Call:"
+                            android:layout_height="wrap_content"
                             android:fontFamily="@font/sf_pro_text_bold"
-                            android:textSize="@dimen/_13sdp"
+                            android:text="Call:"
                             android:textColor="@color/blue"
-                            android:layout_height="wrap_content"/>
-                    <TextView
+                            android:textSize="@dimen/_13sdp" />
+
+                        <TextView
                             android:id="@+id/tvMobileNumber"
                             android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/_5sdp"
+                            android:fontFamily="@font/sf_pro_text_bold"
                             android:text="8758723738779 | 98745987495"
-                            android:fontFamily="@font/sf_pro_text_bold"
-                            android:textSize="@dimen/_13sdp"
                             android:textColor="@color/black_2"
-                            android:layout_height="wrap_content"/>
-                </LinearLayout>
-                <LinearLayout
+                            android:textSize="@dimen/_13sdp" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp"
-                        android:layout_height="wrap_content">
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:text="Corporate office:"
-                            android:fontFamily="@font/sf_pro_text_bold"
-                            android:textSize="@dimen/_13sdp"
-                            android:textColor="@color/blue"
-                            android:layout_height="wrap_content"/>
-                    <TextView
+                        android:orientation="horizontal">
+
+                        <TextView
                             android:id="@+id/tvOfficeAddress"
                             android:layout_width="match_parent"
-                            android:layout_marginLeft="@dimen/_5sdp"
-                            android:text="morbi tristique"
+                            android:layout_height="wrap_content"
                             android:fontFamily="@font/sf_pro_text_bold"
-                            android:textSize="@dimen/_13sdp"
+                            android:text="@string/corporate_office"
                             android:textColor="@color/black_2"
-                            android:layout_height="wrap_content"/>
+                            android:textSize="@dimen/_13sdp" />
+                    </LinearLayout>
                 </LinearLayout>
-                <TextView
-                        android:layout_width="match_parent"
-                        android:text="morbi tristique morbi morbi tristique"
-                        android:layout_marginTop="@dimen/_2sdp"
-                        android:fontFamily="@font/sf_pro_text_bold"
-                        android:textSize="@dimen/_13sdp"
-                        android:textColor="@color/black_2"
-                        android:layout_height="wrap_content"/>
-            </LinearLayout>
-        </FrameLayout>
+            </FrameLayout>
 
-        <androidx.appcompat.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edtFullName"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                android:padding="@dimen/_10sdp"
-                android:hint="Fullname"
-                android:textColorHint="@color/gray"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:textAllCaps="false"
-                android:layout_marginRight="@dimen/_12sdp"
                 android:layout_marginLeft="@dimen/_12sdp"
-                android:textSize="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@id/fl"
-                android:inputType="textEmailAddress"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginRight="@dimen/_12sdp"
+                android:background="@drawable/edittext_background"
                 android:fontFamily="@font/sf_pro_text_bold"
+                android:hint="Fullname"
+                android:inputType="textEmailAddress"
+                android:padding="@dimen/_10sdp"
+                android:textAllCaps="false"
                 android:textColor="@color/black"
-                android:background="@drawable/edittext_background"/>
+                android:textColorHint="@color/gray"
+                android:textSize="@dimen/_10sdp"
+                app:layout_constraintTop_toBottomOf="@id/fl" />
 
-        <androidx.appcompat.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edtMobileNumber"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                android:padding="@dimen/_10sdp"
-                android:hint="Mobile Number"
-                android:textColorHint="@color/gray"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:textAllCaps="false"
-                android:layout_marginRight="@dimen/_12sdp"
                 android:layout_marginLeft="@dimen/_12sdp"
-                android:textSize="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@id/edtFullName"
-                android:inputType="textEmailAddress"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginRight="@dimen/_12sdp"
+                android:background="@drawable/edittext_background"
                 android:fontFamily="@font/sf_pro_text_bold"
+                android:hint="Mobile Number"
+                android:inputType="textEmailAddress"
+                android:padding="@dimen/_10sdp"
+                android:textAllCaps="false"
                 android:textColor="@color/black"
-                android:background="@drawable/edittext_background"/>
-        <androidx.appcompat.widget.AppCompatEditText
+                android:textColorHint="@color/gray"
+                android:textSize="@dimen/_10sdp"
+                app:layout_constraintTop_toBottomOf="@id/edtFullName" />
+
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edtEmail"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                android:padding="@dimen/_10sdp"
-                android:hint="Email"
-                android:textColorHint="@color/gray"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:textAllCaps="false"
-                android:layout_marginRight="@dimen/_12sdp"
                 android:layout_marginLeft="@dimen/_12sdp"
-                android:textSize="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@id/edtMobileNumber"
-                android:inputType="textEmailAddress"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginRight="@dimen/_12sdp"
+                android:background="@drawable/edittext_background"
                 android:fontFamily="@font/sf_pro_text_bold"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:padding="@dimen/_10sdp"
+                android:textAllCaps="false"
                 android:textColor="@color/black"
-                android:background="@drawable/edittext_background"/>
-        <androidx.appcompat.widget.AppCompatEditText
+                android:textColorHint="@color/gray"
+                android:textSize="@dimen/_10sdp"
+                app:layout_constraintTop_toBottomOf="@id/edtMobileNumber" />
+
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edtMessage"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_100sdp"
-                android:padding="@dimen/_10sdp"
-                android:hint="Message"
-                android:textColorHint="@color/gray"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:textAllCaps="false"
-                android:layout_marginRight="@dimen/_12sdp"
                 android:layout_marginLeft="@dimen/_12sdp"
-                android:textSize="@dimen/_10sdp"
-                android:lines="10"
-                android:gravity="top|start"
-                app:layout_constraintTop_toBottomOf="@id/edtEmail"
-                android:inputType="textMultiLine"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginRight="@dimen/_12sdp"
+                android:background="@drawable/edittext_background"
                 android:fontFamily="@font/sf_pro_text_bold"
+                android:gravity="top|start"
+                android:hint="Message"
+                android:inputType="textMultiLine"
+                android:lines="10"
+                android:padding="@dimen/_10sdp"
+                android:textAllCaps="false"
                 android:textColor="@color/black"
-                android:background="@drawable/edittext_background"/>
-        <LinearLayout
+                android:textColorHint="@color/gray"
+                android:textSize="@dimen/_10sdp"
+                app:layout_constraintTop_toBottomOf="@id/edtEmail" />
+
+            <LinearLayout
                 android:id="@+id/ll3"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_50sdp"
-                app:layout_constraintTop_toBottomOf="@id/edtMessage"
-                android:layout_height="wrap_content">
-            <androidx.appcompat.widget.AppCompatButton
+                app:layout_constraintTop_toBottomOf="@id/edtMessage">
+
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnSubmit"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
-                    android:layout_marginTop="@dimen/_50sdp"
-                    android:padding="@dimen/_10sdp"
-                    android:text="Submit"
-                    android:textSize="@dimen/_12sdp"
                     android:layout_marginLeft="@dimen/_12sdp"
+                    android:layout_marginTop="@dimen/_50sdp"
                     android:layout_marginRight="@dimen/_12sdp"
                     android:layout_marginBottom="@dimen/_20sdp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:background="@drawable/button_background"
                     android:fontFamily="@font/sf_pro_text_regular"
+                    android:padding="@dimen/_10sdp"
+                    android:text="Submit"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:background="@drawable/button_background"/>
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:textSize="@dimen/_12sdp"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/viewLoader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#66000000"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/spin_kit"
+            style="@style/SpinKitView.Large.FadingCircle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:SpinKit_Color="@color/colorAccent" />
+    </LinearLayout>
 </FrameLayout>

@@ -1,4 +1,4 @@
-package com.driver.eho.ui.viewModel
+package com.driver.eho.ui.viewModels
 
 import android.app.Application
 import android.content.Context
@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.driver.eho.model.DriverSignInResponse
+import com.driver.eho.model.DriverSignUpResponse
 import com.driver.eho.repository.EHORepository
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.EHOApplication
@@ -20,46 +20,52 @@ import org.json.JSONObject
 import retrofit2.Response
 import java.io.IOException
 
-class DriverSignInViewModel(
+class SupportViewModel(
     application: Application,
     private val repository: EHORepository
 ) : AndroidViewModel(application) {
 
-    val loginLiveData = MutableLiveData<Resources<DriverSignInResponse>>()
+    val supportLiveData = MutableLiveData<Resources<DriverSignUpResponse>>()
 
-    fun getLoginCredentials(email: String, password: String) = viewModelScope.launch {
-        safeLoginCall(email, password)
-    }
+    fun createSupport(token: String, name: String, email: String, mobile: String, message: String) =
+        viewModelScope.launch {
+            safeHandleHistoryList(token, name, email, mobile, message)
+        }
 
-    private fun handleLogin(response: Response<DriverSignInResponse>): Resources<DriverSignInResponse> {
+    private fun handleHistoryList(response: Response<DriverSignUpResponse>): Resources<DriverSignUpResponse> {
         if (response.isSuccessful) {
-            response.body()?.let { resultResponse ->
+            response.body().let { resultResponse ->
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.message())
+        return Resources.Error(response.message().toString())
     }
 
-    private suspend fun safeLoginCall(email: String, password: String) {
-        loginLiveData.postValue(Resources.Loading())
+    private suspend fun safeHandleHistoryList(
+        token: String,
+        name: String, email: String, mobile: String, message: String
+    ) {
+        supportLiveData.postValue(Resources.Loading())
         try {
             if (hasInternetConnection()) {
                 val params = JSONObject()
+                params.put("name", name)
                 params.put("email", email)
-                params.put("password", password)
+                params.put("mobile", mobile)
+                params.put("message", message)
                 val jsonParser = JsonParser()
                 val parameter = jsonParser.parse(params.toString()) as JsonObject
-                val response = repository.loginDriver(parameter)
-                loginLiveData.postValue(handleLogin(response))
+                val response = repository.createSupport(token, parameter)
+                supportLiveData.postValue(handleHistoryList(response))
             } else {
-                loginLiveData.postValue(Resources.Error("No Internet Connection"))
+                supportLiveData.postValue(Resources.Error("No Internet Connection"))
             }
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> loginLiveData.postValue(Resources.Error("Network Failure"))
+                is IOException -> supportLiveData.postValue(Resources.Error("Network Failure"))
                 else -> {
-                    loginLiveData.postValue(Resources.Error(t.message.toString()))
-                    Log.d(TAG, "safeLoginCall: ${t.message}")
+                    supportLiveData.postValue(Resources.Error(t.message.toString()))
+                    Log.d(TAG, "safeHandleHistoryList: ${t.message}")
                 }
             }
         }

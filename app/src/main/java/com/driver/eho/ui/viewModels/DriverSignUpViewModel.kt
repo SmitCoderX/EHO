@@ -1,4 +1,4 @@
-package com.driver.eho.ui.viewModel
+package com.driver.eho.ui.viewModels
 
 import android.app.Application
 import android.content.Context

@@ -1,9 +1,15 @@
 package com.driver.eho.network
 
+import com.driver.eho.model.BankAccountList
+import com.driver.eho.model.Booking.BookingHistoryListModel
 import com.driver.eho.model.DriverSignInResponse
 import com.driver.eho.model.DriverSignUpResponse
+import com.driver.eho.model.ReceiptModel
+import com.driver.eho.model.Withdraw.WithdrawModel
+import com.driver.eho.network.ApiConstant.DRIVERPROFILEUPDATE
 import com.driver.eho.network.ApiConstant.DRIVERSIGNIN
 import com.driver.eho.network.ApiConstant.DRIVERSIGNUP
+import com.driver.eho.network.ApiConstant.GETBOOKINGLIST
 import com.google.gson.JsonObject
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -39,12 +45,62 @@ interface ApiInterface {
         @Part("longitude ") longitude: RequestBody,
     ): Response<DriverSignUpResponse>
 
-    /*@Headers("Accept-Encoding: identity")
     @Multipart
-    @POST(DRIVERSIGNUP)
-    fun getDataFromDriverRegister(@Part("userName") parameter: JsonObject,
-                                  @Part("email") parameter: JsonObject,
-                                  @Part("password")
-                                  @Part BodyImg1: MultipartBody.Part): Response<DriverSignUpResponse>*/
+    @POST(DRIVERPROFILEUPDATE)
+    suspend fun updateProfile(
+        @Header("x-access-token") token: String,
+        @Part("userName") userName: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part profileImage: MultipartBody.Part,
+        @Part documents: Array<MultipartBody.Part?>,
+        @Part("mobile") mobile: RequestBody,
+        @Part("name") name: RequestBody,
+        @Part("hospitalAddress") hospitalAddress: RequestBody,
+        @Part("state") state: RequestBody,
+        @Part("city") city: RequestBody,
+        @Part("country") country: RequestBody,
+        @Part("driverExperience") driverExperience: RequestBody,
+        @Part("driverLicenseNumber") driverLicenseNumber: RequestBody,
+        @Part("ambulanceVehicleNumber") ambulanceVehicleNumber: RequestBody,
+        @Part("latitude ") latitude: RequestBody,
+        @Part("longitude ") longitude: RequestBody,
+    ): Response<DriverSignInResponse>
+
+    @GET(GETBOOKINGLIST)
+    suspend fun getBookingHistoryList(
+        @Header("x-access-token") token: String,
+        @Query("start") start: Int,
+        @Query("items") items: Int
+    ): Response<BookingHistoryListModel>
+
+    @POST("user/createSupport")
+    suspend fun createSupport(
+        @Header("x-access-token") token: String,
+        @Body parameter: JsonObject
+    ): Response<DriverSignUpResponse>
+
+    @POST("user/addDriverBankAccount")
+    suspend fun addBankAccount(
+        @Header("x-access-token") token: String,
+        @Body parameter: JsonObject
+    ): Response<DriverSignUpResponse>
+
+    @GET("user/getDriverBankAccount")
+    suspend fun getBankAccountList(
+        @Header("x-access-token") token: String,
+    ): Response<BankAccountList>
+
+    @GET("user/getWithdrawal")
+    suspend fun getWithdrawList(
+        @Header("x-access-token") token: String,
+        @Query("start") start: Int,
+        @Query("items") items: Int
+    ): Response<WithdrawModel>
+
+    @GET("user/getReceipt")
+    suspend fun getReceiptData(
+        @Header("x-access-token") token: String,
+        @Query("bookingId") bookingId: String,
+    ): Response<ReceiptModel>
 
 }

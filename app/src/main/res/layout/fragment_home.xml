@@ -5,7 +5,7 @@
     android:id="@+id/home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.HomeFragment">
+    tools:context=".ui.Home.HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:on="true"
+            app:on="false"
             app:textOff="Offline"
             app:textOn="Online" />
 

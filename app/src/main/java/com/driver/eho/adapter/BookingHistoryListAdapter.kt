@@ -1,124 +1,112 @@
 package com.driver.eho.adapter
 
-import android.annotation.SuppressLint
+import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.driver.eho.R
-import com.driver.eho.model.BookingHistoryListModel
+import com.driver.eho.databinding.ItemAllBookingHistoryBinding
+import com.driver.eho.model.Booking.Data
+import com.driver.eho.utils.Constants.TAG
 
-class BookingHistoryListAdapter(var item: Array<BookingHistoryListModel>):
-    RecyclerView.Adapter<BookingHistoryListAdapter.MyViewHolder>() {
+class BookingHistoryListAdapter(private val listener: OnBookingClick) :
+    RecyclerView.Adapter<BookingHistoryListAdapter.BookingViewHolder>() {
 
-/*
-    var item = ArrayList<BookingHistoryListModel>()
-*/
+    inner class BookingViewHolder(val binding: ItemAllBookingHistoryBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(data: Data) {
 
-    /*fun setTaskListData(bookingHistoryList: ArrayList<BookingHistoryListModel>){
-        this.item = bookingHistoryList
-    }*/
+            /*  val time = data.dropTime ?: ""
 
+              val jsParser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+              val date = jsParser.parse(time) ?: ""
 
-    class MyViewHolder(view: View): RecyclerView.ViewHolder(view){
+              val calendar = Calendar.getInstance()
+              calendar.time = date as Date
+              calendar.add(Calendar.HOUR_OF_DAY, 5)
+              calendar.add(Calendar.MINUTE, 30)
 
-        val tvTitleHere = view.findViewById<TextView>(R.id.tvTitleHere)
-        val tvDate = view.findViewById<TextView>(R.id.tvDate)
-        val tvTime = view.findViewById<TextView>(R.id.tvTime)
-        val tvAmount = view.findViewById<TextView>(R.id.tvAmount)
-        val tvPickUpLocation = view.findViewById<TextView>(R.id.tvPickUpLocation)
-        val tvDestinationLocation = view.findViewById<TextView>(R.id.tvDestinationLocation)
-        @SuppressLint("SetTextI18n")
-        fun bind(bookingHistoryList: BookingHistoryListModel){
-
-            tvTitleHere.text = bookingHistoryList.title
-            tvDate.text = bookingHistoryList.date
-            tvTime.text = bookingHistoryList.time
-            tvAmount.text = bookingHistoryList.ammount
-            tvPickUpLocation.text = bookingHistoryList.pickLocation
-            tvDestinationLocation.text = bookingHistoryList.destinationLocation
+              val javaParser = SimpleDateFormat("hh:mm a", Locale.getDefault())*/
 
 
-         /*
-            tasktxtTime.text = taskList.dueFormate
-            //    tasktxtCountMessage.text = taskList.taskRepeatStatus*/
+            binding.apply {
+                tvTitleHere.text = data.userName
+                tvDate.text = data.date
+                tvTime.text = ""
+                tvAmount.text = data.price.toString()
+                tvPickUpLocation.text = data.pickupAddress
+                tvDestinationLocation.text = data.dropAddress
 
+                Glide.with(itemView)
+                    .load(data.userImage)
+                    .error(R.drawable.profile)
+                    .placeholder(R.drawable.profile)
+                    .into(ivLogoBH)
 
-          /*  // task progressbar without progress bar
-            val childParam1 = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT)
-            childParam1.weight = taskList.percentageOfPending!!.toFloat()
-            tasktxtPending.layoutParams = childParam1
+                if (data.paymentStatusString.equals("Success")) {
+                    tvStatus.text = "Receipt"
+                    tvStatus.background.setTint(Color.BLUE)
+                } else if (data.paymentStatusString.isNullOrEmpty()) {
+                    tvStatus.visibility = View.INVISIBLE
+                } else {
+                    tvStatus.text = data.paymentStatusString
+                    tvStatus.background.setTint(Color.parseColor("#ffadb8"))
+                }
 
-            val childParam2 = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT)
-            childParam2.weight = taskList.percentageOfSkip!!.toFloat()
-            tasktxtSkipped.layoutParams = childParam2
-
-            val childParam3 = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT)
-            childParam3.weight = taskList.persentageOfAccept!!.toFloat()
-            tasktxtAccept.layoutParams = childParam3
-
-            val childParam4 = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT)
-            childParam4.weight = taskList.persentageOfPerformed!!.toFloat()
-            tasktxtPerform.layoutParams = childParam4
-            val isFrom: String? = null
-
-            // task progressbar text
-            if (Math.round(taskList.percentageOfPending.toFloat()) == 100) {
-                tasktxtStatus.text = "Pending"
-            }
-            if (Math.round(taskList.percentageOfSkip.toFloat()) == 100) {
-                tasktxtStatus.text = "Skipped"
-            }
-            if (Math.round(taskList.persentageOfAccept.toFloat()) == 100) {
-                tasktxtStatus.text = "Accepted"
-            }
-            if (Math.round(taskList.persentageOfPerformed.toFloat()) == 100) {
-                tasktxtStatus.text = "Perform"
-            }
-
-            // CompletedTaskFilter and change color
-            tasktxtDocCount.text = taskList.daysLeft.toString()
-            if (isFrom == "CompletedTaskFilter") {
-                if (taskList.createdByUserId!! == sharedPreferences.getString(ApiConstant.USER_ID, "")!!.length
-                ) {
-                    if (taskList.creatorPerformDate != null) {
-                        tasktxtTime.text = taskList.creatorPerformDate as CharSequence?
+                if (data.paymentStatusString.equals("Success")) {
+                    root.setOnClickListener {
+                        val position = bindingAdapterPosition
+                        if (position != RecyclerView.NO_POSITION) {
+                            val item = differ.currentList[position]
+                            if (item != null) {
+                                listener.onClick(data)
+                            }
+                        }
                     }
                 } else {
-                    if (taskList.userPerformedDate != null) {
-                        tasktxtTime.text = taskList.userPerformedDate
-                    }
+                    Log.d(TAG, "bind: Not Successful")
                 }
-            } else {
-                tasktxtTime.text = taskList.dueFormate
             }
-            tasktxtDocCount.setTextColor(Color.parseColor(taskList.daysColorCode))
-
-
-            val url = taskList.userImage
-
-            Glide.with(tasklistivUser).load(url).placeholder(R.drawable.ic_profile)
-                .error(R.drawable.default_thumb).fallback(R.drawable.ic_profile)
-                .into(tasklistivUser)
-         */
         }
-
-
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val  v = LayoutInflater.from(parent.context).inflate(R.layout.item_all_booking_history, parent, false)
-        return MyViewHolder(v)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookingViewHolder {
+        val binding =
+            ItemAllBookingHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return BookingViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(item[position])
+    override fun onBindViewHolder(holder: BookingViewHolder, position: Int) {
+        val currentItem = differ.currentList[position]
 
+        if (currentItem != null) {
+            holder.bind(currentItem)
+        }
     }
 
     override fun getItemCount(): Int {
-        return item.size
+        return differ.currentList.size
+    }
+
+    private val differCallback = object : DiffUtil.ItemCallback<Data>() {
+        override fun areItemsTheSame(oldItem: Data, newItem: Data): Boolean {
+            return true
+        }
+
+        override fun areContentsTheSame(oldItem: Data, newItem: Data): Boolean {
+            return true
+        }
+    }
+
+    val differ = AsyncListDiffer(this, differCallback)
+
+    interface OnBookingClick {
+        fun onClick(data: Data)
     }
 
 }

@@ -36,6 +36,5 @@ class WelcomeActivity : AppCompatActivity() {
         binding.btnPharmacy.setOnClickListener {
             Toast.makeText(this, "Pharmacy Comping soon", Toast.LENGTH_SHORT).show()
         }
-
     }
 }

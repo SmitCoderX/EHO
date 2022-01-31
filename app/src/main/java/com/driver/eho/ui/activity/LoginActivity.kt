@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import androidx.activity.viewModels
+import com.driver.eho.SharedPreferenceManager
 import com.driver.eho.databinding.ActivityLoginBinding
-import com.driver.eho.ui.viewModel.DriverSignInViewModel
 import com.driver.eho.ui.viewModel.viewModelFactory.DriverSignInViewModelProviderFactory
+import com.driver.eho.utils.Constants.DRIVERSDATA
+import com.driver.eho.utils.Constants.snackbarError
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
-import com.google.android.material.snackbar.Snackbar
+import com.driver.eho.ui.viewModels.DriverSignInViewModel
 
 class LoginActivity : BaseActivity() {
 
@@ -46,8 +48,6 @@ class LoginActivity : BaseActivity() {
                     email = binding.edtEmailOrNumber.text.toString(),
                     password = binding.edtPassword.text.toString()
                 )
-            } else {
-                Snackbar.make(binding.root, "Fields Cannot be Empty", Snackbar.LENGTH_SHORT).show()
             }
         }
 
@@ -55,27 +55,23 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun getLoginData() {
+        val prefs = SharedPreferenceManager(this)
         driverSignInViewModel.loginLiveData.observe(this) { resources ->
             when (resources) {
                 is Resources.Success -> {
                     hideLoadingView()
-                    Snackbar.make(
-                        binding.root,
-                        resources.message.toString(),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                    startActivity(Intent(this, MainActivity::class.java))
-
+                    prefs.setToken(resources.data?.data?.token.toString())
+                    prefs.setData(resources.data!!)
+                    prefs.setLoggedIn(true)
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra(DRIVERSDATA, resources.data)
+                    startActivity(intent)
+                    finish()
                 }
 
                 is Resources.Error -> {
                     hideLoadingView()
-                    Snackbar.make(
-                        binding.root,
-                        resources.message.toString(),
-                        Snackbar.LENGTH_SHORT
-                    )
-                        .show()
+                    snackbarError(binding.root, resources.message.toString())
                 }
                 is Resources.Loading -> {
                     showLoadingView()
@@ -91,6 +87,7 @@ class LoginActivity : BaseActivity() {
         // emailOrNumber
         if (TextUtils.isEmpty(emailOrNumber)) {
             binding.edtEmailOrNumber.error = "Enter your Email"
+            snackbarError(binding.root, "Enter Your Email or Phone Number")
             valid = false
         } else {
             binding.edtEmailOrNumber.error = null
@@ -98,6 +95,7 @@ class LoginActivity : BaseActivity() {
         // password
         if (TextUtils.isEmpty(password)) {
             binding.edtPassword.error = "Enter your password"
+            snackbarError(binding.root, "Enter Your Password")
             valid = false
         } else {
             binding.edtPassword.error = null

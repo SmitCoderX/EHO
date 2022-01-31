@@ -14,7 +14,6 @@ import org.json.JSONObject
 
 class TopupWalletActivity : AppCompatActivity(), PaymentResultListener {
     private lateinit var binding: ActivityTopupWalletBinding
-    val TAG:String = TopupWalletActivity::class.toString()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

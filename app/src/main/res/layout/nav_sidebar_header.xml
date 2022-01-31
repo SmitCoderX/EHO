@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/_16sdp"
-        android:layout_marginTop="@dimen/_40sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginRight="@dimen/_16sdp"
         android:backgroundTint="@color/white"
         app:cardElevation="@dimen/_5sdp">
@@ -28,8 +28,8 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_profile"
-                android:layout_width="@dimen/_60sdp"
-                android:layout_height="@dimen/_60sdp"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
                 android:background="@drawable/profile"
                 android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/circleImageView" />
@@ -47,7 +47,7 @@
                     android:fontFamily="@font/sf_pro_ext_medium"
                     android:text="Username"
                     android:textColor="@color/black_2"
-                    android:textSize="@dimen/_14sdp" />
+                    android:textSize="@dimen/_12sdp" />
 
                 <TextView
                     android:id="@+id/tvMobileNumber"

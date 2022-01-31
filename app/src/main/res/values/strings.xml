@@ -4,5 +4,19 @@
         <u>Forgot Password?</u>
     </string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="Rs">\u20B9</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_drawer">Nav Drawer</string>
+    <string name="home">Home</string>
+    <string name="history">History</string>
+    <string name="support">Support</string>
+    <string name="terms_amp_condition"><![CDATA[Terms & Condition]]></string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="logout">Logout</string>
+    <string name="share_with_friends_via_sms_and_socialmedia_app">Share with friends via sms and socialmedia app</string>
+    <string name="edit">Edit</string>
+    <string name="share_with_friends">Share with friends</string>
+    <string name="support_text">You can call us at mobile number email us or can also fill in this form and submit, we will take your call and message at the priority back to you.</string>
+    <string name="corporate_office"><font fgcolor="#414efc">Corporate Office: </font></string>
+    <string name="support_address">Shop–no 712–716, 7th Floor, Babylon, Capital Behind Oswal Petrol Pump, Raipur, Chhattisgarh- 492001</string>
 </resources>

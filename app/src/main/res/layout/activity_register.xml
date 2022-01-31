@@ -6,7 +6,7 @@
 
         <variable
             name="DriverSignUpViewModel"
-            type="com.driver.eho.ui.viewModel.DriverSignUpViewModel" />
+            type="com.driver.eho.ui.viewModels.DriverSignUpViewModel" />
     </data>
 -->
 
@@ -400,7 +400,7 @@
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/spin_kit"
-            style="@style/SpinKitView.Large.CubeGrid"
+            style="@style/SpinKitView.Large.FadingCircle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

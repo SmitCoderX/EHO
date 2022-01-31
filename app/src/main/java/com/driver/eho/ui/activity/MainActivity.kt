@@ -4,20 +4,35 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.driver.eho.R
+import com.driver.eho.SharedPreferenceManager
 import com.driver.eho.databinding.ActivityMainBinding
-import com.driver.eho.ui.fragment.*
+import com.driver.eho.model.DriverSignInResponse
+import com.driver.eho.ui.Home.HomeFragment
+import com.driver.eho.ui.fragment.PrivacyPolicyFragment
+import com.driver.eho.ui.fragment.SupportFragment
+import com.driver.eho.ui.fragment.TermsConditionFragment
+import com.driver.eho.utils.Constants.DRIVERSDATA
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.navigation.NavigationView
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var actionBarToggle: ActionBarDrawerToggle
+
+    //    private lateinit var navHostFragment: NavHostFragment
+//    private lateinit var navController: NavController
+//    private lateinit var appBarConfiguration: AppBarConfiguration
+    private var driverData: DriverSignInResponse? = DriverSignInResponse()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,22 +45,63 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         binding.sideDrawer.addDrawerListener(actionBarToggle)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         /*loadingHeaderData()*/
-        ProfileActivity()
+
+        val prefs = SharedPreferenceManager(this)
+
+        driverData = if (driverData != null) {
+            intent.getParcelableExtra(DRIVERSDATA)
+        } else {
+            prefs.getData()
+        }
+
+
+        /*  navHostFragment =
+              supportFragmentManager.findFragmentById(R.id.fragment_container_view_tag) as NavHostFragment
+          navController = navHostFragment.navController
+          appBarConfiguration = AppBarConfiguration(navController.graph)*/
+
+//        setUpDrawerLayout()
+        profileData()
         actionBarToggle.syncState()
 
-        // side Drawer
         naviSideDrawer()
-        setCurrentFragment(HomeFragment())
 
+        // side Drawer
+        setCurrentFragment(HomeFragment())
     }
 
-    private fun ProfileActivity() {
+    /* override fun onSupportNavigateUp(): Boolean {
+         return NavigationUI.navigateUp(navController, binding.sideDrawer)
+     }*/
+
+    /* private fun setUpDrawerLayout() {
+         binding.toolbar.setupWithNavController(navController)
+         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
+     }*/
+
+    private fun profileData() {
         val header = binding.navigationView.getHeaderView(0)
         val edtProfile = header.findViewById<CardView>(R.id.cv1)
         val ehoMoneyActivity = header.findViewById<CardView>(R.id.cv2)
 
+        val profileImage = header.findViewById<ShapeableImageView>(R.id.iv_profile)
+        val userName = header.findViewById<TextView>(R.id.tvUsername)
+        val mobileNo = header.findViewById<TextView>(R.id.tvMobileNumber)
+        val amount = header.findViewById<TextView>(R.id.tvAmount)
+
+        Glide.with(this)
+            .load(driverData?.data?.image)
+            .placeholder(R.drawable.profile)
+            .error(R.drawable.profile)
+            .into(profileImage)
+
+        userName.text = driverData?.data?.userName
+        mobileNo.text = driverData?.data?.mobile.toString()
+
         edtProfile.setOnClickListener {
-            startActivity(Intent(this, ProfileActivity::class.java))
+            val intent = Intent(this, ProfileActivity::class.java)
+            intent.putExtra(DRIVERSDATA, driverData)
+            startActivity(intent)
             finish()
         }
 
@@ -55,74 +111,33 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
-    private fun naviSideDrawer() {
-        binding.navigationView.setNavigationItemSelectedListener(this)
-        binding.navigationView.setCheckedItem(R.id.home)
-
-        binding.menuIcon.setOnClickListener {
-            if (binding.sideDrawer.isDrawerVisible(GravityCompat.START)) {
-                binding.sideDrawer.closeDrawer(GravityCompat.START)
-                supportActionBar?.show()
-            } else {
-                binding.sideDrawer.openDrawer(GravityCompat.START)
-                supportActionBar?.hide()
-            }
-
-        }
-    }
-
-    // on menu
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (actionBarToggle.onOptionsItemSelected(item)) {
-            /* supportActionBar!!.hide() */// hide the toolbar
-            true
-        } else
-            super.onOptionsItemSelected(item)
-    }
-
-    // on back
-    override fun onBackPressed() {
-        if (binding.sideDrawer.isDrawerOpen(GravityCompat.START)) {
-            binding.sideDrawer.closeDrawer(GravityCompat.START)
-            supportActionBar!!.show() // show toolbar
-        } else {
-            super.onBackPressed()
-        }
-    }
-
     // set Fragment
     private fun setCurrentFragment(fragment: Fragment) {
         val frag = supportFragmentManager.beginTransaction()
-        frag.replace(R.id.flFragment, fragment)
+        frag.replace(R.id.fragment_container_view_tag, fragment)
         frag.commit()
-    }
-
-    // Load Fragment
-    private fun loadFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.flFragment, fragment).commit()
     }
 
     @SuppressLint("ResourceAsColor", "SetTextI18n")
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.navHome -> {
+            R.id.homeFragment -> {
                 binding.tvTabNames.text = "Home"
                 setCurrentFragment(HomeFragment())
             }
-            R.id.navHistory -> {
+            R.id.historyFragment -> {
                 binding.tvTabNames.text = "Booking History"
-                setCurrentFragment(HistoryFragment())
+                startActivity(Intent(this, BookingHistoryActivity::class.java))
             }
-            R.id.navSupport -> {
+            R.id.supportFragment -> {
                 binding.tvTabNames.text = "EHO Support"
                 setCurrentFragment(SupportFragment())
             }
-            R.id.navTerms -> {
+            R.id.termsConditionFragment -> {
                 binding.tvTabNames.text = "Terms & Condition"
                 setCurrentFragment(TermsConditionFragment())
             }
-            R.id.navPrivacyPolicy -> {
+            R.id.privacyPolicyFragment -> {
                 binding.tvTabNames.text = "Privacy Policy"
                 setCurrentFragment(PrivacyPolicyFragment())
             }
@@ -134,6 +149,39 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         return true
     }
 
+    private fun naviSideDrawer() {
+        binding.navigationView.setNavigationItemSelectedListener(this)
+        binding.navigationView.setCheckedItem(R.id.home)
+
+        binding.menuIcon.setOnClickListener {
+            if (binding.sideDrawer.isDrawerVisible(GravityCompat.START)) {
+                binding.sideDrawer.closeDrawer(GravityCompat.START)
+            } else {
+                binding.sideDrawer.openDrawer(GravityCompat.START)
+            }
+
+        }
+    }
+
+    // on menu
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (actionBarToggle.onOptionsItemSelected(item)) {
+            true
+        } else
+            super.onOptionsItemSelected(item)
+    }
+
+    // on back
+    override fun onBackPressed() {
+        if (binding.sideDrawer.isDrawerOpen(GravityCompat.START)) {
+            binding.sideDrawer.closeDrawer(GravityCompat.START)
+            supportActionBar!!.show() // show toolbar
+        } else {
+            binding.sideDrawer.isDrawerOpen(GravityCompat.START)
+            super.onBackPressed()
+        }
+    }
+
     // AlertDialog For Logout
     private fun getLogoutAlertDialog() {
         val builder1 = AlertDialog.Builder(this)
@@ -142,7 +190,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         builder1.setPositiveButton(
             "Yes"
         ) { dialog, _ ->
-//            callLogoutAPI()
+            callLogoutAPI()
             dialog.cancel()
         }
         builder1.setNegativeButton(
@@ -155,39 +203,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         alert11.show()
     }
 
-    /* private fun callLogoutAPI() {
-         val params = JSONObject()
-         try {
-             params.put("email", sp.get_Email().toString())
-             params.put("_id", sp.get_Id().toString())
-
-             Log.e("event request --->", params.toString())
-
-             val jsonParser = JsonParser()
-             val parameter = jsonParser.parse(params.toString()) as JsonObject
-
-             val call: Call<DriverSignInResponse> = ApiClient.getInstance().getDataFromDriverSignIn(parameter)
-
-             call.enqueue(object : Callback<DriverSignInResponse>{
-                 override fun onResponse(call: Call<DriverSignInResponse>, response: Response<DriverSignInResponse>) {
-                     val generalResponse : DriverSignInResponse?
-                     if (response.isSuccessful){
-                         generalResponse = response.body()
-                         if (generalResponse?.code == 200){
-                             Toast.makeText(this@MainActivity, generalResponse.message, Toast.LENGTH_SHORT).show()
-                             getCallLogout()
-                         }
-                     }
-                 }
-                 override fun onFailure(call: Call<DriverSignInResponse>, t: Throwable) {
-                     Toast.makeText(this@MainActivity, "Failed", Toast.LENGTH_SHORT).show()
-
-                 }
-             })
-         }catch (e: JSONException){
-             e.printStackTrace()
-             Toast.makeText(this@MainActivity, "sever error", Toast.LENGTH_SHORT).show()
-         }
-     }*/
+    private fun callLogoutAPI() {
+        val prefs = SharedPreferenceManager(this)
+        prefs.logoutUser()
+        startActivity(Intent(this, WelcomeActivity::class.java))
+        finish()
+    }
 
 }

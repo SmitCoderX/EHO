@@ -1,4 +1,4 @@
-package com.driver.eho.ui.fragment
+package com.driver.eho.ui.Home
 
 import android.Manifest
 import android.content.Context
@@ -10,12 +10,12 @@ import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.driver.eho.R
 import com.driver.eho.databinding.FragmentHomeBinding
+import com.driver.eho.ui.fragment.AmbulancRequestBottomFragment
 import com.driver.eho.utils.Constants.TAG
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -23,11 +23,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.android.material.snackbar.Snackbar
-
 
 class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
-    GoogleMap.OnMarkerClickListener {
+    GoogleMap.OnMarkerClickListener, AmbulancRequestBottomFragment.OnBottomListener {
+
     private lateinit var binding: FragmentHomeBinding
     private lateinit var client: FusedLocationProviderClient
     private var lasttLocation: Location? = null
@@ -51,9 +50,13 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
 
         binding.toggle.setOnToggledListener { _, isOn ->
             if (isOn) {
-                Toast.makeText(requireContext(), "Online", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), "Offline", Toast.LENGTH_SHORT).show()
+                val ambulancRequestBottomFragment = AmbulancRequestBottomFragment()
+                ambulancRequestBottomFragment.setTargetFragment(this, 1)
+                ambulancRequestBottomFragment.show(
+                    parentFragmentManager,
+                    ambulancRequestBottomFragment.tag
+                )
+
             }
         }
     }
@@ -160,6 +163,10 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
         super.onPause()
 
         client.removeLocationUpdates(mLocationCallback)
+    }
+
+    override fun onClosed() {
+        binding.toggle.isOn = false
     }
 }
 

@@ -13,11 +13,7 @@ import com.driver.eho.R
 class HorizontalRecyclerView(uri: ArrayList<Uri>) :
     RecyclerView.Adapter<HorizontalRecyclerView.HorizontalViewHolder>() {
     private val limit = 5
-    private val uri: ArrayList<Uri>
-
-    init {
-        this.uri = uri
-    }
+    private val uri: ArrayList<Uri> = uri
 
     override fun onCreateViewHolder(parent: ViewGroup, i: Int): HorizontalViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_all_document,parent,false)
@@ -33,14 +29,14 @@ class HorizontalRecyclerView(uri: ArrayList<Uri>) :
     }
 
     override fun getItemCount(): Int {
-        if(uri.size > limit){ return limit }
-        else { return uri.size }
+        return if(uri.size > limit){
+            limit
+        } else {
+            uri.size
+        }
     }
 
     inner class HorizontalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var mImageRecyclerView: ImageView
-        init {
-            mImageRecyclerView = itemView.findViewById(R.id.ivDocument)
-        }
+        var mImageRecyclerView: ImageView = itemView.findViewById(R.id.ivDocument)
     }
 }

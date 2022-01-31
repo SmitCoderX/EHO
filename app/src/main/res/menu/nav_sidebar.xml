@@ -1,44 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:showIn="navigation_view">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
 
-    <group android:id="@+id/nav"
-           android:checkableBehavior="single">
-        <item android:id="@+id/navHome"
-              android:icon="@drawable/home_4x"
-              android:title="Home" />
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/home_4x"
+        android:title="@string/home" />
 
-        <item android:id="@+id/navHistory"
-              android:icon="@drawable/ic_history_3x"
-              android:title="History" />
-        <item
-                android:id="@+id/navSupport"
-                android:icon="@drawable/support_3x"
-                android:title="Support" />
-        <item
-                android:id="@+id/navTerms"
-                android:title="Terms &amp; Condition"
-                android:icon="@drawable/ic_term_co"/>
+    <item
+        android:id="@+id/historyFragment"
+        android:icon="@drawable/ic_history_3x"
+        android:title="@string/history" />
+    <item
+        android:id="@+id/supportFragment"
+        android:icon="@drawable/support_3x"
+        android:title="@string/support" />
+    <item
+        android:id="@+id/termsConditionFragment"
+        android:icon="@drawable/ic_term_co"
+        android:title="@string/terms_amp_condition" />
 
-        <item android:id="@+id/navPrivacyPolicy"
-              android:title="Privacy Policy"
-              android:icon="@drawable/ic_privacy_3x"/>
+    <item
+        android:id="@+id/privacyPolicyFragment"
+        android:icon="@drawable/ic_privacy_3x"
+        android:title="@string/privacy_policy" />
 
-        <item android:id="@+id/navLogout"
-              android:title="Logout"
-              android:icon="@drawable/ic_logout_black_24dp"/>
-        <item android:id="@+id/navLogout1"
-              android:title=""/>
-        <item android:id="@+id/navLogout2"
-              android:title=""/>
-        <item android:id="@+id/navLogout6"
-              android:title=""/>
-        <item android:id="@+id/navLogout8"
-              android:title=""/>
-    </group>
+    <item
+        android:id="@+id/navLogout"
+        android:icon="@drawable/ic_logout_black_24dp"
+        android:title="@string/logout" />
 
-
-
+    <item
+        android:id="@+id/navLogout1"
+        android:title="" />
+    <item
+        android:id="@+id/navLogout2"
+        android:title="" />
+    <item
+        android:id="@+id/navLogout6"
+        android:title="" />
+    <item
+        android:id="@+id/navLogout8"
+        android:title="" />
 
 </menu>

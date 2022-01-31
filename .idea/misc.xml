@@ -3,6 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/add_money_background.xml" value="0.161" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/background_booking_status_cancelled.xml" value="0.216" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/background_booking_status_pending.xml" value="0.161" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/baseline_camera_enhance_black_24dp.xml" value="0.161" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/bottom_tab_blue.xml" value="0.161" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/bottom_tab_white.xml" value="0.161" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/button_2_background.xml" value="0.161" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/button_states.xml" value="0.161" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/doteed_back.xml" value="0.161" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/edittext_background.xml" value="0.161" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/fl_backgound.xml" value="0.161" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.161" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/ic_delete.xml" value="0.1475" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/activity_account_details_list.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/activity_add_account_details.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/activity_booking_history.xml" value="0.34479166666666666" />
@@ -10,19 +23,27 @@
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/activity_login.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/activity_main.xml" value="0.18478260869565216" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/activity_profile.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/activity_receipt.xml" value="0.23229166666666667" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/activity_register.xml" value="0.21" />
-        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/activity_topup_wallet.xml" value="0.1" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/activity_splash.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/activity_topup_wallet.xml" value="0.18" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/activity_welcome.xml" value="0.1" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/custom_progress_dialog.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/fragment_ambulanc_request_bottom.xml" value="0.1" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/fragment_history.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/fragment_home.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/fragment_login.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/fragment_privacy_policy.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/fragment_register.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/fragment_support.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/fragment_terms_condition.xml" value="0.22826086956521738" />
-        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/item_all_booking_history.xml" value="0.34479166666666666" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/fragment_welcome.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/item_all_booking_history.xml" value="0.2" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/item_all_document.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/item_all_eho_money_liat.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/layout_account_list.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/layout/nav_sidebar_header.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/menu/nav_sidebar.xml" value="0.23229166666666667" />
         <entry key="..\:/Users/Pintoo Prajapati/IntelliJIDEAProjects/EHO/app/src/main/res/drawable/add_money_background.xml" value="0.2203125" />
         <entry key="..\:/Users/Pintoo Prajapati/IntelliJIDEAProjects/EHO/app/src/main/res/drawable/background_booking_status.xml" value="0.2203125" />
         <entry key="..\:/Users/Pintoo Prajapati/IntelliJIDEAProjects/EHO/app/src/main/res/drawable/background_booking_status_pending.xml" value="0.21927083333333333" />
