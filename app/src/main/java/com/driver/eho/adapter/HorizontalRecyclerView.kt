@@ -10,13 +10,13 @@ import com.bumptech.glide.Glide
 import com.driver.eho.R
 
 
-class HorizontalRecyclerView(uri: ArrayList<Uri>) :
+class HorizontalRecyclerView(private var uri: List<Uri>) :
     RecyclerView.Adapter<HorizontalRecyclerView.HorizontalViewHolder>() {
     private val limit = 5
-    private val uri: ArrayList<Uri> = uri
 
     override fun onCreateViewHolder(parent: ViewGroup, i: Int): HorizontalViewHolder {
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_all_document,parent,false)
+        val view: View =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_all_document, parent, false)
         return HorizontalViewHolder(view)
     }
 
@@ -29,7 +29,7 @@ class HorizontalRecyclerView(uri: ArrayList<Uri>) :
     }
 
     override fun getItemCount(): Int {
-        return if(uri.size > limit){
+        return if (uri.size > limit) {
             limit
         } else {
             uri.size
@@ -38,5 +38,10 @@ class HorizontalRecyclerView(uri: ArrayList<Uri>) :
 
     inner class HorizontalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var mImageRecyclerView: ImageView = itemView.findViewById(R.id.ivDocument)
+    }
+
+    fun updateData(list: List<Uri>) {
+        uri = list
+        notifyDataSetChanged()
     }
 }

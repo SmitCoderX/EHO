@@ -9,82 +9,74 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.driver.eho.SharedPreferenceManager
-import com.driver.eho.adapter.WithdrawlHistoryListAdapter
-import com.driver.eho.databinding.ActivityEhoMoneyBinding
+import com.driver.eho.adapter.NotificationAdapter
+import com.driver.eho.databinding.ActivityNotificationBinding
 import com.driver.eho.model.Login.DriverSignInResponse
-import com.driver.eho.ui.viewModel.viewModelFactory.WithdrawlHistoryViewModelProviderFactory
-import com.driver.eho.ui.viewModels.WithdrawalHistoryViewModel
+import com.driver.eho.ui.viewModel.viewModelFactory.NotificationViewModelProviderFactory
+import com.driver.eho.ui.viewModels.NotificationViewModel
 import com.driver.eho.utils.Constants
-import com.driver.eho.utils.Constants.TAG
-import com.driver.eho.utils.Constants.snackbarError
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
 import com.driver.eho.utils.pagination.EndlessRecyclerOnScrollListener
 
-class EhoMoneyActivity : AppCompatActivity() {
+class NotificationActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityEhoMoneyBinding
-    private val withdrawHistoryViewModel: WithdrawalHistoryViewModel by viewModels {
-        WithdrawlHistoryViewModelProviderFactory(
+    private lateinit var binding: ActivityNotificationBinding
+    private lateinit var notificationAdapter: NotificationAdapter
+    private lateinit var prefs: SharedPreferenceManager
+    private val notificationViewModel by viewModels<NotificationViewModel> {
+        NotificationViewModelProviderFactory(
             application,
             (application as EHOApplication).repository
         )
     }
-    private lateinit var prefs: SharedPreferenceManager
     val start = 0
     val itemCount = 10
     var item = 10
     var allDone = false
-    private lateinit var withdrawAdapter: WithdrawlHistoryListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityEhoMoneyBinding.inflate(layoutInflater)
+        binding = ActivityNotificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         prefs = SharedPreferenceManager(this)
+        notificationAdapter = NotificationAdapter(listOf())
 
-        withdrawAdapter = WithdrawlHistoryListAdapter(listOf())
-        getWithdrawlHistoryList()
-
-        binding.menuIcon.setOnClickListener {
+        binding.ivBack.setOnClickListener {
             sendToMainActivity(prefs.getData())
         }
 
-        binding.ivAdd.setOnClickListener {
-            startActivity(Intent(this, AccountDetailsListActivity::class.java))
-            finish()
-        }
-    }
-
-    private fun getWithdrawlHistoryList() {
-        binding.rvEhoMoney.apply {
+        binding.rvNotification.apply {
             setHasFixedSize(true)
             itemAnimator = DefaultItemAnimator()
-            adapter = withdrawAdapter
+            adapter = notificationAdapter
             val linearLayout = layoutManager as LinearLayoutManager
             val endlessRecyclerOnScrollListener =
                 object : EndlessRecyclerOnScrollListener(linearLayout) {
                     override fun onLoadMore(current_page: Int) {
                         if (!allDone) {
                             item += itemCount
-                            withdrawHistoryViewModel.getwithdrawlHistoryList(
+                            notificationViewModel.getNotifcationList(
                                 prefs.getToken().toString(),
-                                start,
-                                item
+                                item,
+                                start
                             )
                         }
                     }
                 }
             addOnScrollListener(endlessRecyclerOnScrollListener as EndlessRecyclerOnScrollListener)
         }
-        withdrawHistoryViewModel.withdrawlHistoryLiveData.observe(this) { resources ->
+        notificationViewModel.notificationMutableLiveData.observe(this) { resources ->
             when (resources) {
                 is Resources.Success -> {
                     hideLoadingView()
-                    if (resources.data?.data?.size!! < itemCount) allDone = true
-                    withdrawAdapter.updateData(resources.data.data)
-                    Log.d(TAG, "getWithdrawlHistoryList: ${resources.data.data}")
+                    if (resources.data?.notificationData?.size!! < itemCount) allDone = true
+                    notificationAdapter.updateList(resources.data.notificationData)
+                    Log.d(
+                        Constants.TAG,
+                        "getNotificationList: ${resources.data.notificationData}"
+                    )
                 }
 
                 is Resources.Loading -> {
@@ -93,14 +85,22 @@ class EhoMoneyActivity : AppCompatActivity() {
 
                 is Resources.Error -> {
                     hideLoadingView()
-                    snackbarError(binding.root, resources.message.toString())
+                    Constants.snackbarError(binding.root, resources.message.toString())
                 }
             }
         }
-        withdrawHistoryViewModel.getwithdrawlHistoryList(
+        notificationViewModel.getNotifcationList(
             prefs.getToken().toString(),
-            start, item
+            item,
+            start
         )
+
+
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        sendToMainActivity(prefs.getData())
     }
 
     private fun showLoadingView() {
@@ -111,16 +111,10 @@ class EhoMoneyActivity : AppCompatActivity() {
         binding.viewLoader.visibility = View.GONE
     }
 
-
     private fun sendToMainActivity(data: DriverSignInResponse?) {
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra(Constants.DRIVERSDATA, data)
         startActivity(intent)
         finish()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        sendToMainActivity(prefs.getData())
     }
 }

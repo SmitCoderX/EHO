@@ -26,6 +26,7 @@
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
                 android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
                 android:contentDescription="@string/nav_drawer"
                 android:src="@drawable/group" />
 
@@ -42,6 +43,16 @@
                 android:textSize="@dimen/_14sdp"
                 android:textStyle="bold" />
 
+            <ImageView
+                android:id="@+id/iv_notification"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:contentDescription="@string/notification"
+                android:src="@drawable/notification_3x"
+                app:tint="@color/black" />
         </RelativeLayout>
     </com.google.android.material.appbar.MaterialToolbar>
 

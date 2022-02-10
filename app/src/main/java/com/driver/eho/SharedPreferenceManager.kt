@@ -2,16 +2,13 @@ package com.driver.eho
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.driver.eho.model.DriverSignInResponse
+import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.utils.Constants.DATA
 import com.driver.eho.utils.Constants.LOGGEDIN
 import com.driver.eho.utils.Constants.SP_NAME
 import com.driver.eho.utils.Constants.TOKEN
 import com.google.gson.Gson
 
-/**
- * Created by Pintoo  on 07/01/2022.
- */
 class SharedPreferenceManager(val context: Context) {
 
     private val sharedPreferences: SharedPreferences =

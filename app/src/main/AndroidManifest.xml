@@ -17,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EHO">
         <activity
+            android:name=".ui.activity.NotificationActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.ReceiptActivity"
             android:exported="false" />
         <activity
@@ -30,39 +33,31 @@
         </activity>
         <activity
             android:name=".ui.activity.AddAccountDetailsActivity"
-            android:exported="true"
-            android:screenOrientation="portrait" />
+            android:exported="true" />
         <activity
             android:name=".ui.activity.AccountDetailsListActivity"
-            android:exported="true"
-            android:screenOrientation="portrait" />
+            android:exported="true" />
         <activity
             android:name=".ui.activity.EhoMoneyActivity"
-            android:exported="true"
-            android:screenOrientation="portrait" />
+            android:exported="true" />
         <activity
             android:name=".ui.activity.ProfileActivity"
             android:exported="true" />
         <activity
             android:name=".ui.activity.BaseActivity"
-            android:exported="true"
-            android:screenOrientation="portrait" />
+            android:exported="true" />
         <activity
             android:name=".ui.activity.LoginActivity"
-            android:exported="true"
-            android:screenOrientation="portrait" />
+            android:exported="true" />
         <activity
             android:name=".ui.activity.TopupWalletActivity"
-            android:exported="true"
-            android:screenOrientation="portrait" />
+            android:exported="true" />
         <activity
             android:name=".ui.activity.BookingHistoryActivity"
-            android:exported="true"
-            android:screenOrientation="portrait" />
+            android:exported="true" />
         <activity
             android:name=".ui.activity.RegisterActivity"
-            android:exported="true"
-            android:screenOrientation="portrait" />
+            android:exported="true" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

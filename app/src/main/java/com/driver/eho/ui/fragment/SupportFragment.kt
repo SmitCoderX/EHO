@@ -11,8 +11,8 @@ import androidx.fragment.app.viewModels
 import com.driver.eho.R
 import com.driver.eho.SharedPreferenceManager
 import com.driver.eho.databinding.FragmentSupportBinding
-import com.driver.eho.model.DriverSignInResponse
-import com.driver.eho.model.LoginData
+import com.driver.eho.model.Login.Data
+import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.ui.activity.MainActivity
 import com.driver.eho.ui.viewModel.viewModelFactory.SupportViewModelProviderFactory
 import com.driver.eho.ui.viewModels.SupportViewModel
@@ -38,7 +38,7 @@ class SupportFragment : Fragment(R.layout.fragment_support) {
         binding = FragmentSupportBinding.bind(view)
 
         val prefs = SharedPreferenceManager(requireContext())
-        val data: LoginData? = prefs.getData()?.data
+        val data: Data? = prefs.getData()?.data
 
         if (data != null) {
             binding.edtFullName.setText(data.name)

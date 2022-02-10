@@ -115,4 +115,17 @@ class EHORepository {
 
     suspend fun getReceiptData(token: String, bookingID: String) =
         ApiClient.getInstance().getReceiptData(token, bookingID)
+
+    suspend fun logoutUser(token: String) = ApiClient.getInstance().logoutUser(token)
+
+    suspend fun getNotification(
+        token: String,
+        start: Int,
+        items: Int
+    ) = ApiClient.getInstance().getNotificationList(token, start, items)
+
+    suspend fun deactivateAccount(
+        token: String,
+        parameter: JsonObject
+    ) = ApiClient.getInstance().deactivateAccount(token, parameter)
 }

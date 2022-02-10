@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.driver.eho.model.DriverSignUpResponse
 import com.driver.eho.repository.EHORepository
-import com.driver.eho.utils.Constants
+import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
 import kotlinx.coroutines.launch
@@ -18,6 +18,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import java.io.IOException
+
 
 class DriverSignUpViewModel(
     app: Application,
@@ -116,7 +117,7 @@ class DriverSignUpViewModel(
                 is IOException -> registerMutableLiveData.postValue(Resources.Error("Network Failure"))
                 else -> {
                     registerMutableLiveData.postValue(Resources.Error(t.message.toString()))
-                    Log.d(Constants.TAG, "safeLoginCall: ${t.message}")
+                    Log.d(TAG, "safeLoginCall: ${t.message}")
                 }
             }
         }
@@ -128,54 +129,11 @@ class DriverSignUpViewModel(
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.message())
+        val message = response.errorBody()?.string().toString()
+        val messageNew = response.errorBody()?.string().toString()
+        Log.d(TAG, "handleRegister: $messageNew")
+        return Resources.Error(message)
     }
-
-
-    /*   var UserName = MutableLiveData<String>()
-       var HospitalName = MutableLiveData<String>()
-       var MobileNumber = MutableLiveData<String>()
-       var Email = MutableLiveData<String>()
-       var DriverName = MutableLiveData<String>()
-       var DriverExperience = MutableLiveData<String>()
-       var LicenceNumber = MutableLiveData<String>()
-       var AmbulanceVehicleNumber = MutableLiveData<String>()
-       var HospitalAddress = MutableLiveData<String>()
-       var State = MutableLiveData<String>()
-       var City = MutableLiveData<String>()
-       var Country = MutableLiveData<String>()
-       val Password = MutableLiveData<String>()
-
-       var userMutableLiveData: MutableLiveData<DriverSignUpUser>? = null
-
-       val user: MutableLiveData<DriverSignUpUser>
-           get() {
-               if (userMutableLiveData == null) {
-                   userMutableLiveData = MutableLiveData()
-               }
-               return userMutableLiveData!!
-           }
-
-       fun onclick(view: View?) {
-           val driverSignUpUser = DriverExperience.value?.let {
-               DriverSignUpUser(
-                   UserName.value.toString(),
-                   HospitalName.value.toString(),
-                   MobileNumber.value.toString(),
-                   Email.value.toString(),
-                   DriverName.value.toString(),
-                   it.toInt(),
-                   LicenceNumber.value!!.toInt(),
-                   AmbulanceVehicleNumber.value.toString(),
-                   HospitalAddress.value.toString(),
-                   State.value.toString(),
-                   City.value.toString(),
-                   Country.value.toString(),
-                   Password.value.toString()
-               )
-           }
-           userMutableLiveData!!.value = driverSignUpUser!!
-       }*/
 
     private fun hasInternetConnection(): Boolean {
         val connectivityManager = getApplication<EHOApplication>().getSystemService(

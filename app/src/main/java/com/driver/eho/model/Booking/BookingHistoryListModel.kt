@@ -7,7 +7,7 @@ data class BookingHistoryListModel(
     @SerializedName("code")
     val code: Int?,
     @SerializedName("data")
-    val data: List<Data>,
+    val data: List<BookingData>,
     @SerializedName("message")
     val message: String?
 )

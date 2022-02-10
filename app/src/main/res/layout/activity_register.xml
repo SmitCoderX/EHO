@@ -2,12 +2,12 @@
 
 <!--
 
-    <data>
+    <bookingData>
 
         <variable
             name="DriverSignUpViewModel"
             type="com.driver.eho.ui.viewModels.DriverSignUpViewModel" />
-    </data>
+    </bookingData>
 -->
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -155,6 +155,7 @@
                     android:background="@drawable/edittext_background"
                     android:fontFamily="@font/sf_pro_text_bold"
                     android:hint="Mobile Number"
+                    android:maxLength="10"
                     android:inputType="phone"
                     android:padding="@dimen/_10sdp"
                     android:textAllCaps="false"

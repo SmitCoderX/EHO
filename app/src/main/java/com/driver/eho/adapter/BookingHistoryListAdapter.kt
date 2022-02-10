@@ -5,23 +5,24 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.driver.eho.R
 import com.driver.eho.databinding.ItemAllBookingHistoryBinding
-import com.driver.eho.model.Booking.Data
+import com.driver.eho.model.Booking.BookingData
 import com.driver.eho.utils.Constants.TAG
 
-class BookingHistoryListAdapter(private val listener: OnBookingClick) :
+class BookingHistoryListAdapter(
+    private var historyList: List<BookingData>?,
+    private val listener: OnBookingClick
+) :
     RecyclerView.Adapter<BookingHistoryListAdapter.BookingViewHolder>() {
 
     inner class BookingViewHolder(val binding: ItemAllBookingHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: Data) {
+        fun bind(bookingData: BookingData) {
 
-            /*  val time = data.dropTime ?: ""
+            /*  val time = bookingData.dropTime ?: ""
 
               val jsParser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
               val date = jsParser.parse(time) ?: ""
@@ -35,36 +36,41 @@ class BookingHistoryListAdapter(private val listener: OnBookingClick) :
 
 
             binding.apply {
-                tvTitleHere.text = data.userName
-                tvDate.text = data.date
+                tvTitleHere.text = bookingData.userName
+                tvDate.text = bookingData.date
                 tvTime.text = ""
-                tvAmount.text = data.price.toString()
-                tvPickUpLocation.text = data.pickupAddress
-                tvDestinationLocation.text = data.dropAddress
+                tvAmount.text = bookingData.price.toString()
+                tvPickUpLocation.text = bookingData.pickupAddress
+                tvDestinationLocation.text = bookingData.dropAddress
 
                 Glide.with(itemView)
-                    .load(data.userImage)
+                    .load(bookingData.userImage)
                     .error(R.drawable.profile)
                     .placeholder(R.drawable.profile)
                     .into(ivLogoBH)
 
-                if (data.paymentStatusString.equals("Success")) {
-                    tvStatus.text = "Receipt"
-                    tvStatus.background.setTint(Color.BLUE)
-                } else if (data.paymentStatusString.isNullOrEmpty()) {
-                    tvStatus.visibility = View.INVISIBLE
-                } else {
-                    tvStatus.text = data.paymentStatusString
-                    tvStatus.background.setTint(Color.parseColor("#ffadb8"))
+
+                when {
+                    bookingData.paymentStatusString.equals("Success") -> {
+                        tvStatus.text = "Receipt"
+                        tvStatus.background.setTint(Color.BLUE)
+                    }
+                    bookingData.paymentStatusString.isNullOrEmpty() -> {
+                        tvStatus.visibility = View.INVISIBLE
+                    }
+                    else -> {
+                        tvStatus.text = bookingData.paymentStatusString
+                        tvStatus.background.setTint(Color.parseColor("#ffadb8"))
+                    }
                 }
 
-                if (data.paymentStatusString.equals("Success")) {
+                if (bookingData.paymentStatusString.equals("Success")) {
                     root.setOnClickListener {
                         val position = bindingAdapterPosition
                         if (position != RecyclerView.NO_POSITION) {
-                            val item = differ.currentList[position]
+                            val item = historyList?.get(position)
                             if (item != null) {
-                                listener.onClick(data)
+                                listener.onClick(bookingData)
                             }
                         }
                     }
@@ -82,7 +88,7 @@ class BookingHistoryListAdapter(private val listener: OnBookingClick) :
     }
 
     override fun onBindViewHolder(holder: BookingViewHolder, position: Int) {
-        val currentItem = differ.currentList[position]
+        val currentItem = historyList?.get(position)
 
         if (currentItem != null) {
             holder.bind(currentItem)
@@ -90,23 +96,28 @@ class BookingHistoryListAdapter(private val listener: OnBookingClick) :
     }
 
     override fun getItemCount(): Int {
-        return differ.currentList.size
+        return historyList!!.size
     }
 
-    private val differCallback = object : DiffUtil.ItemCallback<Data>() {
-        override fun areItemsTheSame(oldItem: Data, newItem: Data): Boolean {
-            return true
-        }
-
-        override fun areContentsTheSame(oldItem: Data, newItem: Data): Boolean {
-            return true
-        }
+    fun updateData(payload: List<BookingData>) {
+        historyList = payload
+        notifyDataSetChanged()
     }
 
-    val differ = AsyncListDiffer(this, differCallback)
+    /* private val differCallback = object : DiffUtil.ItemCallback<BookingData>() {
+         override fun areItemsTheSame(oldItem: BookingData, newItem: BookingData): Boolean {
+             return true
+         }
+
+         override fun areContentsTheSame(oldItem: BookingData, newItem: BookingData): Boolean {
+             return true
+         }
+     }
+
+     val differ = AsyncListDiffer(this, differCallback)*/
 
     interface OnBookingClick {
-        fun onClick(data: Data)
+        fun onClick(bookingData: BookingData)
     }
 
 }

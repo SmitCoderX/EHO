@@ -26,8 +26,8 @@ import com.driver.eho.R
 import com.driver.eho.SharedPreferenceManager
 import com.driver.eho.adapter.HorizontalRecyclerView
 import com.driver.eho.databinding.ActivityProfileBinding
-import com.driver.eho.model.DriverSignInResponse
-import com.driver.eho.model.LoginData
+import com.driver.eho.model.Login.Data
+import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.ui.viewModel.viewModelFactory.UpdateProfileViewModelProviderFactory
 import com.driver.eho.ui.viewModels.UpdateProfileViewModel
 import com.driver.eho.utils.Constants.DRIVERSDATA
@@ -93,7 +93,7 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
 
         // adapter fot upload document
         recyclerView = binding.rvDocument
-        adapter = HorizontalRecyclerView(uri)
+        adapter = HorizontalRecyclerView(listOf())
         recyclerView!!.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerView!!.adapter = adapter
@@ -103,26 +103,12 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
             addDocumentFromgelley()
         }
 
+        binding.tvSave.setOnClickListener {
+            submit()
+        }
+
         binding.btnSubmit.setOnClickListener {
-            if (validate()) {
-                binding.apply {
-                    driverUpdateProfile(
-                        prefs.getToken().toString(),
-                        edtUserName.text.toString().trim(),
-                        edtMobileNumber.text.toString().trim(),
-                        edtEmail.text.toString().trim(),
-                        edtDriverName.text.toString().trim(),
-                        edtDriverExperience.text.toString().trim().toInt(),
-                        edtLicenceNumber.text.toString().trim().toInt(),
-                        edtAmbulanceVehicleNumber.text.toString().trim(),
-                        edtHospitalAddress.text.toString().trim(),
-                        edtState.text.toString().trim(),
-                        edtCity.text.toString().trim(),
-                        edtCountry.text.toString().trim(),
-//                        edtPassword.text.toString().trim()
-                    )
-                }
-            }
+            submit()
         }
         getUpdatedResult()
     }
@@ -149,6 +135,28 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
         }
     }
 
+    private fun submit() {
+        if (validate()) {
+            binding.apply {
+                driverUpdateProfile(
+                    prefs.getToken().toString(),
+                    edtUserName.text.toString().trim(),
+                    edtMobileNumber.text.toString().trim(),
+                    edtEmail.text.toString().trim(),
+                    edtDriverName.text.toString().trim(),
+                    edtDriverExperience.text.toString().trim().toInt(),
+                    edtLicenceNumber.text.toString().trim(),
+                    edtAmbulanceVehicleNumber.text.toString().trim(),
+                    edtHospitalAddress.text.toString().trim(),
+                    edtState.text.toString().trim(),
+                    edtCity.text.toString().trim(),
+                    edtCountry.text.toString().trim(),
+//                        edtPassword.text.toString().trim()
+                )
+            }
+        }
+    }
+
 
     // api call for driver SignUp
     private fun driverUpdateProfile(
@@ -158,7 +166,7 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
         Email: String,
         DriverName: String,
         DriverExperience: Int,
-        LicenceNumber: Int,
+        LicenceNumber: String,
         AmbulanceVehicleNumber: String,
         HospitalAddress: String,
         State: String,
@@ -221,7 +229,7 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                     DriverExperience.toString()
                         .toRequestBody("multipart/form-data".toMediaTypeOrNull())
                 val driverLicenseNumber: RequestBody =
-                    LicenceNumber.toString()
+                    LicenceNumber
                         .toRequestBody("multipart/form-data".toMediaTypeOrNull())
                 val ambulanceVehicleNumber: RequestBody =
                     AmbulanceVehicleNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())
@@ -254,7 +262,8 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
         }
     }
 
-    private fun setData(data: LoginData?) {
+    private fun setData(data: Data?) {
+        val newUri = ArrayList<Uri>()
         binding.apply {
             Glide.with(this@ProfileActivity)
                 .load(data?.image)
@@ -265,20 +274,22 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
             edtUserName.setText(data?.userName)
             edtEmail.setText(data?.email)
             edtMobileNumber.setText(data?.mobile.toString())
-            /*
-            *  Have to Set Gender and other stuff like lat, long, uuid, phoneOS, version and other stuff in the api
-            */
             edtDriverName.setText(data?.name)
             edtDriverExperience.setText(data?.driverExperience.toString())
             edtLicenceNumber.setText(data?.driverLicenseNumber)
-//            edtAmbulanceVehicleNumber.setText(data?.am)
+            edtAmbulanceVehicleNumber.setText(data?.ambulenceVehicleNumber)
             edtHospitalAddress.setText(data?.hospitalAddress)
             edtState.setText(data?.state)
             edtCity.setText(data?.city)
-//            edtCountry.setText(data?.)        To be Implemented
-            /*data?.documents?.forEach {
-                uri.add(Uri.parse(it))
-            }*/
+            edtCountry.setText(data?.country)
+            /* data?.documents?.forEach {
+                 uri.add(Uri.parse(it))
+             }*/
+            data?.documents?.forEach {
+                val myUri = Uri.parse(it)
+                newUri.add(myUri)
+            }
+            adapter?.updateData(newUri)
         }
     }
 
@@ -313,6 +324,7 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
     private fun addDocumentFromgelley() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         startActivityForResult(intent, 2)
     }
 
@@ -350,7 +362,7 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                 }
                 1 -> if (resultCode == RESULT_OK) {
                     selectedImage = data!!.data
-                    Glide.with(this).load(currentPhotoPath).into(binding.ivProfile)
+                    Glide.with(this).load(selectedImage).into(binding.ivProfile)
                 }
                 2 -> {
                     if (resultCode == RESULT_OK) {
@@ -358,8 +370,13 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                             val count: Int = data.clipData!!.itemCount
                             for (i in 0 until count) {
                                 uri.add(data.clipData!!.getItemAt(i).uri)
+                                adapter?.updateData(uri)
                             }
                             adapter!!.notifyDataSetChanged()
+                        } else {
+                            val imageUri = data.data
+                            uri.add(imageUri!!)
+                            adapter?.updateData(uri)
                         }
                     } else if (data!!.data != null) {
                         pictureDoc = data.data
@@ -397,8 +414,6 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
 
     // all type validations
     private fun validate(): Boolean {
-        var valid = true
-
         val userName = binding.edtUserName.text.toString().trim()
 /*        val password = binding.edtPassword.text.toString().trim()
         val fullName = binding.edtHospitalName.text.toString().trim()*/
@@ -416,100 +431,75 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
         // UserName
         if (TextUtils.isEmpty(userName)) {
             binding.edtUserName.error = "Enter your Username"
-            valid = false
-        } else {
-            binding.edtUserName.error = null
+            return false
         }
-
-        /*// fullName
-        if (TextUtils.isEmpty(fullName) || fullName < 3.toString()) {
-            binding.edtHospitalName.error = "Enter your Hospital Name"
-            Constants.snackbarError(binding.root, "Enter your Hospital Name")
-            valid = false
-        } else {
-            binding.edtHospitalName.error = null
-        }*/
         // mobileNumber
         if (TextUtils.isEmpty(mobileNumber) && !Patterns.PHONE.matcher(mobileNumber).matches()) {
             binding.edtMobileNumber.error = "Enter your correct mobile Number"
             snackbarError(binding.root, "Enter your correct mobile Number")
-            valid = false
-        } else {
-            binding.edtMobileNumber.error = null
+            return false
+        }
+
+        if (mobileNumber.length < 10) {
+            binding.edtMobileNumber.error = "Please Check your Mobile Number Again"
+            snackbarError(binding.root, "Please Check your Mobile Number Again")
+            return false
         }
         // driver name
         if (TextUtils.isEmpty(driverName)) {
             binding.edtDriverName.error = "Enter driver name"
             snackbarError(binding.root, "Enter driver name")
-            valid = false
-        } else {
-            binding.edtDriverName.error = null
+            return false
         }
         // email
         if (TextUtils.isEmpty(email) && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.edtEmail.error = "Enter your correct email"
             snackbarError(binding.root, "Enter your correct email")
-            valid = false
-        } else {
-            binding.edtEmail.error = null
+            return false
         }
         // driverExperience
         if (TextUtils.isEmpty(driverExperience)) {
             binding.edtDriverExperience.error = "Enter your driver experience"
             snackbarError(binding.root, "Enter your driver Experience")
-            valid = false
-        } else {
-            binding.edtDriverExperience.error = null
+            return false
         }
         // licenceNumber
         if (TextUtils.isEmpty(licenceNumber)) {
             binding.edtLicenceNumber.error = "Enter your licence number"
             snackbarError(binding.root, "Enter your Licence Number")
-            valid = false
-        } else {
-            binding.edtLicenceNumber.error = null
+            return false
         }
         // anbVehicleNumber
         if (TextUtils.isEmpty(anbVehicleNumber)) {
             binding.edtAmbulanceVehicleNumber.error = "Enter your ambulance vehicle number"
             snackbarError(binding.root, "Enter your ambulance vehicle number")
-            valid = false
-        } else {
-            binding.edtAmbulanceVehicleNumber.error = null
+            return false
         }
         // state
         if (TextUtils.isEmpty(state)) {
             binding.edtState.error = "Enter your state"
             snackbarError(binding.root, "Enter your state")
-            valid = false
-        } else {
-            binding.edtState.error = null
+            return false
         }
         // city
         if (TextUtils.isEmpty(city)) {
             binding.edtCity.error = "Enter your city"
             snackbarError(binding.root, "Enter your city")
-            valid = false
-        } else {
-            binding.edtCity.error = null
+            return false
         }
         // country
         if (TextUtils.isEmpty(country)) {
             binding.edtCountry.error = "Enter your Country"
             snackbarError(binding.root, "Enter your country")
-            valid = false
-        } else {
-            binding.edtCountry.error = null
+            return false
         }
         // address
         if (TextUtils.isEmpty(hospitalAddress)) {
             binding.edtHospitalAddress.error = "Enter hospital address"
             snackbarError(binding.root, "Enter Hospital Address")
-            valid = false
-        } else {
-            binding.edtHospitalAddress.error = null
+            return false
         }
-        return valid
+        return true
     }
 
     // camera image path

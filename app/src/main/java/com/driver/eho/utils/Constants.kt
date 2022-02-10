@@ -10,7 +10,7 @@ object Constants {
     const val SP_NAME = "EHO_DRIVER"
     const val LOGGEDIN = "LoggedIn"
     const val TOKEN = "tokenValue"
-    const val DATA = "Data"
+    const val DATA = "BookingData"
     const val SPLASH_DELAY = 3000L
     const val BOOKING_ID = ""
 

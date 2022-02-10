@@ -2,8 +2,9 @@ package com.driver.eho.network
 
 import com.driver.eho.model.BankAccountList
 import com.driver.eho.model.Booking.BookingHistoryListModel
-import com.driver.eho.model.DriverSignInResponse
 import com.driver.eho.model.DriverSignUpResponse
+import com.driver.eho.model.Login.DriverSignInResponse
+import com.driver.eho.model.Notification.Notification
 import com.driver.eho.model.ReceiptModel
 import com.driver.eho.model.Withdraw.WithdrawModel
 import com.driver.eho.network.ApiConstant.DRIVERPROFILEUPDATE
@@ -102,5 +103,23 @@ interface ApiInterface {
         @Header("x-access-token") token: String,
         @Query("bookingId") bookingId: String,
     ): Response<ReceiptModel>
+
+    @POST("auth/driverLogOut")
+    suspend fun logoutUser(
+        @Header("x-access-token") token: String
+    ): Response<DriverSignUpResponse>
+
+    @GET("user/getNotification")
+    suspend fun getNotificationList(
+        @Header("x-access-token") token: String,
+        @Query("start") start: Int,
+        @Query("items") items: Int
+    ): Response<Notification>
+
+    @POST("user/deactivateDriverAccount")
+    suspend fun deactivateAccount(
+        @Header("x-access-token") token: String,
+        @Body parameter: JsonObject
+    ): Response<DriverSignUpResponse>
 
 }

@@ -3,7 +3,7 @@ package com.driver.eho.model.Booking
 
 import com.google.gson.annotations.SerializedName
 
-data class Data(
+data class BookingData(
     @SerializedName("bookingDate")
     val bookingDate: String?,
     @SerializedName("createdAt")

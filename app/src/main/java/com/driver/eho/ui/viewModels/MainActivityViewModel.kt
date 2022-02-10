@@ -8,54 +8,50 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.driver.eho.model.Withdraw.WithdrawModel
+import com.driver.eho.model.DriverSignUpResponse
 import com.driver.eho.repository.EHORepository
-import com.driver.eho.utils.Constants.TAG
+import com.driver.eho.utils.Constants
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
 
-class WithdrawalHistoryViewModel(
-    application: Application,
-    private val repository: EHORepository
-) : AndroidViewModel(application) {
+class MainActivityViewModel(
+    app: Application,
+    val repository: EHORepository
+) : AndroidViewModel(app) {
 
-    val withdrawlHistoryLiveData = MutableLiveData<Resources<WithdrawModel>>()
-    var start = 0
+    val logoutMutableLiveData = MutableLiveData<Resources<DriverSignUpResponse>>()
 
-    fun getwithdrawlHistoryList(token: String, start: Int, items: Int) = viewModelScope.launch {
-        safeHandleHistoryList(token, start, items)
+    fun logoutUser(token: String) = viewModelScope.launch {
+        safeHandleLogout(token)
     }
 
-    private fun handleHistoryList(response: Response<WithdrawModel>): Resources<WithdrawModel> {
+    private fun handleLogout(response: Response<DriverSignUpResponse>): Resources<DriverSignUpResponse> {
         if (response.isSuccessful) {
             response.body().let { resultResponse ->
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.message().toString())
+        return Resources.Error(response.errorBody()?.string().toString())
     }
 
-    private suspend fun safeHandleHistoryList(
-        token: String,
-        start: Int, items: Int
-    ) {
-        withdrawlHistoryLiveData.postValue(Resources.Loading())
+    private suspend fun safeHandleLogout(token: String) {
+        logoutMutableLiveData.postValue(Resources.Loading())
         try {
             if (hasInternetConnection()) {
-                val response = repository.getWithdrawlList(token, start, items)
-                withdrawlHistoryLiveData.postValue(handleHistoryList(response))
+                val response = repository.logoutUser(token)
+                logoutMutableLiveData.postValue(handleLogout(response))
             } else {
-                withdrawlHistoryLiveData.postValue(Resources.Error("No Internet Connection"))
+                logoutMutableLiveData.postValue(Resources.Error("No Internet Connection"))
             }
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> withdrawlHistoryLiveData.postValue(Resources.Error("Network Failure"))
+                is IOException -> logoutMutableLiveData.postValue(Resources.Error("Network Failure"))
                 else -> {
-                    withdrawlHistoryLiveData.postValue(Resources.Error(t.message.toString()))
-                    Log.d(TAG, "safeHandleHistoryList: ${t.message}")
+                    logoutMutableLiveData.postValue(Resources.Error(t.message.toString()))
+                    Log.d(Constants.TAG, "safeLoginCall: ${t.message}")
                 }
             }
         }

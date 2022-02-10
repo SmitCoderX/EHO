@@ -81,26 +81,21 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun validate(): Boolean {
-        var valid = true
         val emailOrNumber = binding.edtEmailOrNumber.text.toString()
         val password = binding.edtPassword.text.toString()
         // emailOrNumber
         if (TextUtils.isEmpty(emailOrNumber)) {
             binding.edtEmailOrNumber.error = "Enter your Email"
             snackbarError(binding.root, "Enter Your Email or Phone Number")
-            valid = false
-        } else {
-            binding.edtEmailOrNumber.error = null
+            return false
         }
         // password
         if (TextUtils.isEmpty(password)) {
             binding.edtPassword.error = "Enter your password"
             snackbarError(binding.root, "Enter Your Password")
-            valid = false
-        } else {
-            binding.edtPassword.error = null
+            return false
         }
-        return valid
+        return true
     }
 
     override fun onBackPressed() {

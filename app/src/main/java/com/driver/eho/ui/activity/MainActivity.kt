@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -16,23 +17,31 @@ import com.bumptech.glide.Glide
 import com.driver.eho.R
 import com.driver.eho.SharedPreferenceManager
 import com.driver.eho.databinding.ActivityMainBinding
-import com.driver.eho.model.DriverSignInResponse
+import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.ui.Home.HomeFragment
 import com.driver.eho.ui.fragment.PrivacyPolicyFragment
 import com.driver.eho.ui.fragment.SupportFragment
 import com.driver.eho.ui.fragment.TermsConditionFragment
+import com.driver.eho.ui.viewModel.viewModelFactory.MainActivityViewModelProviderFactory
+import com.driver.eho.ui.viewModels.MainActivityViewModel
 import com.driver.eho.utils.Constants.DRIVERSDATA
+import com.driver.eho.utils.Constants.snackbarError
+import com.driver.eho.utils.EHOApplication
+import com.driver.eho.utils.Resources
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var actionBarToggle: ActionBarDrawerToggle
-
-    //    private lateinit var navHostFragment: NavHostFragment
-//    private lateinit var navController: NavController
-//    private lateinit var appBarConfiguration: AppBarConfiguration
     private var driverData: DriverSignInResponse? = DriverSignInResponse()
+    private val mainViewModel by viewModels<MainActivityViewModel> {
+        MainActivityViewModelProviderFactory(
+            application,
+            (application as EHOApplication).repository
+        )
+    }
+    private lateinit var prefs: SharedPreferenceManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +55,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         supportActionBar?.setDisplayShowTitleEnabled(false)
         /*loadingHeaderData()*/
 
-        val prefs = SharedPreferenceManager(this)
+        prefs = SharedPreferenceManager(this)
 
         driverData = if (driverData != null) {
             intent.getParcelableExtra(DRIVERSDATA)
@@ -54,13 +63,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             prefs.getData()
         }
 
-
-        /*  navHostFragment =
-              supportFragmentManager.findFragmentById(R.id.fragment_container_view_tag) as NavHostFragment
-          navController = navHostFragment.navController
-          appBarConfiguration = AppBarConfiguration(navController.graph)*/
-
-//        setUpDrawerLayout()
         profileData()
         actionBarToggle.syncState()
 
@@ -70,15 +72,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setCurrentFragment(HomeFragment())
     }
 
-    /* override fun onSupportNavigateUp(): Boolean {
-         return NavigationUI.navigateUp(navController, binding.sideDrawer)
-     }*/
-
-    /* private fun setUpDrawerLayout() {
-         binding.toolbar.setupWithNavController(navController)
-         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
-     }*/
-
+    @SuppressLint("SetTextI18n")
     private fun profileData() {
         val header = binding.navigationView.getHeaderView(0)
         val edtProfile = header.findViewById<CardView>(R.id.cv1)
@@ -97,7 +91,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         userName.text = driverData?.data?.userName
         mobileNo.text = driverData?.data?.mobile.toString()
-
+        amount.text = getString(R.string.Rs) + driverData?.data?.amount.toString()
         edtProfile.setOnClickListener {
             val intent = Intent(this, ProfileActivity::class.java)
             intent.putExtra(DRIVERSDATA, driverData)
@@ -128,6 +122,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.historyFragment -> {
                 binding.tvTabNames.text = "Booking History"
                 startActivity(Intent(this, BookingHistoryActivity::class.java))
+                finish()
             }
             R.id.supportFragment -> {
                 binding.tvTabNames.text = "EHO Support"
@@ -159,7 +154,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             } else {
                 binding.sideDrawer.openDrawer(GravityCompat.START)
             }
+        }
 
+        binding.ivNotification.setOnClickListener {
+            startActivity(Intent(this, NotificationActivity::class.java))
+            finish()
         }
     }
 
@@ -204,10 +203,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun callLogoutAPI() {
-        val prefs = SharedPreferenceManager(this)
-        prefs.logoutUser()
-        startActivity(Intent(this, WelcomeActivity::class.java))
-        finish()
+        mainViewModel.logoutUser(prefs.getToken().toString())
+        mainViewModel.logoutMutableLiveData.observe(this) { resources ->
+            when (resources) {
+                is Resources.Success -> {
+                    prefs.logoutUser()
+                    startActivity(Intent(this, WelcomeActivity::class.java))
+                    finish()
+                }
+
+                is Resources.Error -> {
+                    snackbarError(binding.root, resources.message.toString())
+                }
+
+                is Resources.Loading -> {
+
+                }
+            }
+
+        }
     }
 
 }

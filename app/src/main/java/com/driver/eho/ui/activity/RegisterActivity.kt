@@ -24,13 +24,13 @@ import com.bumptech.glide.Glide
 import com.driver.eho.adapter.HorizontalRecyclerView
 import com.driver.eho.databinding.ActivityRegisterBinding
 import com.driver.eho.ui.viewModel.viewModelFactory.DriverSignUpViewModelProviderFactory
+import com.driver.eho.ui.viewModels.DriverSignUpViewModel
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.Constants.snackbarError
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
 import com.driver.eho.utils.UploadRequestBody
 import com.driver.eho.utils.getFileName
-import com.driver.eho.ui.viewModels.DriverSignUpViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -65,6 +65,13 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        adapter = HorizontalRecyclerView(listOf())
+        // adapter fot upload document
+        recyclerView = binding.rvDocument
+        recyclerView!!.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView!!.adapter = adapter
+
         binding.ivBack.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
@@ -74,9 +81,9 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             checkPermissionForProfileImage()
         }
 
+        adapter = HorizontalRecyclerView(listOf())
         // adapter fot upload document
         recyclerView = binding.rvDocument
-        adapter = HorizontalRecyclerView(uri)
         recyclerView!!.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerView!!.adapter = adapter
@@ -96,7 +103,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                         edtEmail.text.toString().trim(),
                         edtDriverName.text.toString().trim(),
                         edtDriverExperience.text.toString().trim().toInt(),
-                        edtLicenceNumber.text.toString().trim().toInt(),
+                        edtLicenceNumber.text.toString().trim(),
                         edtAmbulanceVehicleNumber.text.toString().trim(),
                         edtHospitalAddress.text.toString().trim(),
                         edtState.text.toString().trim(),
@@ -119,7 +126,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         Email: String,
         DriverName: String,
         DriverExperience: Int,
-        LicenceNumber: Int,
+        LicenceNumber: String,
         AmbulanceVehicleNumber: String,
         HospitalAddress: String,
         State: String,
@@ -183,7 +190,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         val driverExperience: RequestBody =
             DriverExperience.toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
         val driverLicenseNumber: RequestBody =
-            LicenceNumber.toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            LicenceNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())
         val ambulanceVehicleNumber: RequestBody =
             AmbulanceVehicleNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())
         val latitude: RequestBody =
@@ -214,7 +221,6 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
 
     // all type validations
     private fun validate(): Boolean {
-        var valid = true
 
         val userName = binding.edtUserName.text.toString().trim()
         val password = binding.edtPassword.text.toString().trim()
@@ -233,108 +239,97 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         // UserName
         if (TextUtils.isEmpty(userName)) {
             binding.edtUserName.error = "Enter your Username"
-            valid = false
-        } else {
-            binding.edtUserName.error = null
+            snackbarError(binding.root, "Enter your User Name")
+            return false
         }
 
         // Password
         if (TextUtils.isEmpty(password)) {
             binding.edtPassword.error = "Enter your Password"
-            valid = false
-        } else {
-            binding.edtPassword.error = null
+            snackbarError(binding.root, "Enter your Password")
+            return false
+        }
+
+        if (password.length < 6) {
+            binding.edtPassword.error = "Password should be more than 6 digits"
+            snackbarError(binding.root, "Password should be more than 6 digits")
+            return false
         }
 
         // fullName
         if (TextUtils.isEmpty(fullName) || fullName < 3.toString()) {
             binding.edtHospitalName.error = "Enter your Hospital Name"
             snackbarError(binding.root, "Enter your Hospital Name")
-            valid = false
-        } else {
-            binding.edtHospitalName.error = null
+            return false
         }
         // mobileNumber
         if (TextUtils.isEmpty(mobileNumber) && !Patterns.PHONE.matcher(mobileNumber).matches()) {
             binding.edtMobileNumber.error = "Enter your correct mobile Number"
             snackbarError(binding.root, "Enter your correct mobile Number")
-            valid = false
-        } else {
-            binding.edtMobileNumber.error = null
+            return false
         }
+
+        if (mobileNumber.length < 10) {
+            binding.edtMobileNumber.error = "Please Check your Mobile Number Again"
+            snackbarError(binding.root, "Please Check your Mobile Number Again")
+            return false
+        }
+
         // driver name
         if (TextUtils.isEmpty(driverName)) {
             binding.edtDriverName.error = "Enter driver name"
             snackbarError(binding.root, "Enter driver name")
-            valid = false
-        } else {
-            binding.edtDriverName.error = null
+            return false
         }
         // email
         if (TextUtils.isEmpty(email) && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.edtEmail.error = "Enter your correct email"
             snackbarError(binding.root, "Enter your correct email")
-            valid = false
-        } else {
-            binding.edtEmail.error = null
+            return false
         }
         // driverExperience
         if (TextUtils.isEmpty(driverExperience)) {
             binding.edtDriverExperience.error = "Enter your driver experience"
             snackbarError(binding.root, "Enter your driver Experience")
-            valid = false
-        } else {
-            binding.edtDriverExperience.error = null
+            return false
         }
         // licenceNumber
         if (TextUtils.isEmpty(licenceNumber)) {
             binding.edtLicenceNumber.error = "Enter your licence number"
             snackbarError(binding.root, "Enter your Licence Number")
-            valid = false
-        } else {
-            binding.edtLicenceNumber.error = null
+            return false
         }
         // anbVehicleNumber
         if (TextUtils.isEmpty(anbVehicleNumber)) {
             binding.edtAmbulanceVehicleNumber.error = "Enter your ambulance vehicle number"
             snackbarError(binding.root, "Enter your ambulance vehicle number")
-            valid = false
-        } else {
-            binding.edtAmbulanceVehicleNumber.error = null
+            return false
         }
         // state
         if (TextUtils.isEmpty(state)) {
             binding.edtState.error = "Enter your state"
             snackbarError(binding.root, "Enter your state")
-            valid = false
-        } else {
-            binding.edtState.error = null
+            return false
         }
         // city
         if (TextUtils.isEmpty(city)) {
             binding.edtCity.error = "Enter your city"
             snackbarError(binding.root, "Enter your city")
-            valid = false
-        } else {
-            binding.edtCity.error = null
+            return false
         }
         // country
         if (TextUtils.isEmpty(country)) {
             binding.edtCountry.error = "Enter your Country"
             snackbarError(binding.root, "Enter your country")
-            valid = false
-        } else {
-            binding.edtCountry.error = null
+            return false
         }
         // address
         if (TextUtils.isEmpty(hospitalAddress)) {
             binding.edtHospitalAddress.error = "Enter hospital address"
             snackbarError(binding.root, "Enter Hospital Address")
-            valid = false
-        } else {
-            binding.edtHospitalAddress.error = null
+            return false
         }
-        return valid
+        return true
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -367,8 +362,15 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
 
     private fun addDocumentFromgelley() {
         val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/* "
+        intent.type = "image/*"
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         startActivityForResult(intent, 2)
+//        Intent(Intent.ACTION_GET_CONTENT).also { intent ->
+//            intent.type = "image/*"
+//            intent.resolveActivity(packageManager)?.also {
+//                startActivityForResult(intent, 1)
+//            }
+//        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -411,12 +413,19 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                     if (resultCode == RESULT_OK) {
                         if (data!!.clipData != null) {
                             val count: Int = data.clipData!!.itemCount
+                            Log.d(TAG, "onActivityResult URI: ${data.clipData}")
                             for (i in 0 until count) {
                                 uri.add(data.clipData!!.getItemAt(i).uri)
+                                adapter?.updateData(uri)
                             }
                             adapter!!.notifyDataSetChanged()
+                        } else {
+                            val imageUri = data.data
+                            uri.add(imageUri!!)
+                            adapter?.updateData(uri)
                         }
                     } else if (data!!.data != null) {
+
                         pictureDoc = data.data
                     }
                 }
@@ -480,14 +489,18 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         driverSignUpViewModel.registerMutableLiveData.observe(this) { resources ->
             when (resources) {
                 is Resources.Success -> {
-                    hideLoadingView()
-                    startActivity(Intent(this, LoginActivity::class.java))
+                    if (resources.data?.code == 400) {
+                        snackbarError(binding.root, resources.message.toString())
+                    } else {
+                        hideLoadingView()
+//                        snackbarSuccess(binding.root, "Registred Successfully")
+                        startActivity(Intent(this, WelcomeActivity::class.java))
+                    }
                 }
 
                 is Resources.Error -> {
                     hideLoadingView()
                     snackbarError(binding.root, resources.message.toString())
-
                     Log.d(TAG, "getRegisterData: ${resources.message}")
                 }
                 is Resources.Loading -> {

@@ -1,6 +1,7 @@
 package com.driver.eho.ui.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
@@ -8,10 +9,9 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import com.driver.eho.R
 import com.driver.eho.databinding.FragmentAmbulancRequestBottomBinding
-import com.driver.eho.ui.History.HistoryFragment
+import com.driver.eho.ui.activity.BookingHistoryActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 
@@ -44,10 +44,10 @@ class AmbulancRequestBottomFragment : BottomSheetDialogFragment() {
         }
 
         binding.btnDropOff.setOnClickListener {
-            val fM: FragmentManager = requireActivity().supportFragmentManager
-            val fragment = HistoryFragment()
-            fM.beginTransaction().replace(R.id.fragment_container_view_tag, fragment).commit()
-//            startActivity(Intent(activity, BookingHistoryActivity::class.java))
+            /*     val fM: FragmentManager = requireActivity().supportFragmentManager
+                 val fragment = HistoryFragment()
+                 fM.beginTransaction().replace(R.id.fragment_container_view_tag, fragment).commit()*/
+            startActivity(Intent(activity, BookingHistoryActivity::class.java))
             mediaPlayer.stop()
             dismiss()
             listener.onClosed()

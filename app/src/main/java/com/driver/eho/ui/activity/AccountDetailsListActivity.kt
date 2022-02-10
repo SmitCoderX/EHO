@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DefaultItemAnimator
 import com.driver.eho.SharedPreferenceManager
 import com.driver.eho.adapter.BankDetailsListAdapter
 import com.driver.eho.databinding.ActivityAccountDetailsListBinding
@@ -41,6 +42,12 @@ class AccountDetailsListActivity : AppCompatActivity(),
                 is Resources.Success -> {
                     hideLoadingView()
                     detailsListAdapter.differ.submitList(resources.data?.data)
+                    binding.rvAccountDetails.apply {
+                        setHasFixedSize(true)
+                        itemAnimator = DefaultItemAnimator()
+                        adapter = detailsListAdapter
+                    }
+
                 }
                 is Resources.Error -> {
                     hideLoadingView()
@@ -51,12 +58,6 @@ class AccountDetailsListActivity : AppCompatActivity(),
                 }
             }
         }
-
-        binding.rvAccountDetails.apply {
-            setHasFixedSize(true)
-            adapter = detailsListAdapter
-        }
-
         binding.tvAddAccountDetails.setOnClickListener {
             startActivity(Intent(this, AddAccountDetailsActivity::class.java))
             finish()
@@ -79,4 +80,6 @@ class AccountDetailsListActivity : AppCompatActivity(),
     override fun onDeleteClick(data: AccountList) {
 
     }
+
+
 }

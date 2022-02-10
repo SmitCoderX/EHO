@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.driver.eho.model.DriverSignInResponse
+import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.repository.EHORepository
 import com.driver.eho.utils.Constants
 import com.driver.eho.utils.EHOApplication

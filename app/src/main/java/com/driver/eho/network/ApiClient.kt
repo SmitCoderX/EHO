@@ -15,7 +15,7 @@ object ApiClient {
 
     private var HttpClient: OkHttpClient? = null
 
-    private fun getHttpClient(): OkHttpClient? {
+    private fun getHttpClient(): OkHttpClient {
 
         val networkMange = HttpLoggingInterceptor()
         networkMange.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -31,7 +31,7 @@ object ApiClient {
                 Log.d("Response", bodyString)
                 response.newBuilder().body(bodyString.toResponseBody(contentType)).build()
             }).build()
-        return HttpClient
+        return HttpClient as OkHttpClient
     }
 
     private val retrofit = Retrofit.Builder()

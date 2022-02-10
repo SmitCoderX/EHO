@@ -63,7 +63,7 @@
                 android:layout_width="@dimen/_22sdp"
                 android:layout_height="@dimen/_22sdp"
                 android:background="@color/white"
-                android:src="@drawable/ic_delete"
+                android:src="@drawable/ic_cancel"
                 android:tint="@color/black" />
 
         </LinearLayout>

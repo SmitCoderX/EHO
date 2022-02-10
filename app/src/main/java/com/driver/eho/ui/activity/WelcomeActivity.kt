@@ -30,11 +30,11 @@ class WelcomeActivity : AppCompatActivity() {
         }
 
         binding.btnHospital.setOnClickListener {
-            Toast.makeText(this, "Hospital Comping soon", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Hospital Coming soon", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnPharmacy.setOnClickListener {
-            Toast.makeText(this, "Pharmacy Comping soon", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Pharmacy Coming soon", Toast.LENGTH_SHORT).show()
         }
     }
 }
