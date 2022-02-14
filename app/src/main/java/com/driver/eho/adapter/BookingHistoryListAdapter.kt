@@ -100,8 +100,8 @@ class BookingHistoryListAdapter(
     }
 
     fun updateData(payload: List<BookingData>) {
-        historyList = payload
-        notifyDataSetChanged()
+            historyList = payload
+            notifyDataSetChanged()
     }
 
     /* private val differCallback = object : DiffUtil.ItemCallback<BookingData>() {

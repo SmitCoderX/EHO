@@ -52,8 +52,8 @@ class EHORepository {
         token: String,
         userName: RequestBody,
         email: RequestBody,
-        profileImage: MultipartBody.Part,
-        documents: Array<MultipartBody.Part?>,
+        profileImage: MultipartBody.Part?,
+        documents: Array<MultipartBody.Part?>?,
         mobile: RequestBody,
         name: RequestBody,
         hospitalAddress: RequestBody,
@@ -64,7 +64,8 @@ class EHORepository {
         driverLicenseNumber: RequestBody,
         ambulanceVehicleNumber: RequestBody,
         latitude: RequestBody,
-        longitude: RequestBody
+        longitude: RequestBody,
+        isAttached: RequestBody
     ) = ApiClient.getInstance().updateProfile(
         token = token,
         userName = userName,
@@ -81,7 +82,8 @@ class EHORepository {
         driverLicenseNumber = driverLicenseNumber,
         ambulanceVehicleNumber = ambulanceVehicleNumber,
         latitude = latitude,
-        longitude = longitude
+        longitude = longitude,
+        isAttached = isAttached
     )
 
     suspend fun getBookingHistoryList(
@@ -128,4 +130,8 @@ class EHORepository {
         token: String,
         parameter: JsonObject
     ) = ApiClient.getInstance().deactivateAccount(token, parameter)
+
+    suspend fun getDriverDetails(
+        token: String
+    ) = ApiClient.getInstance().getDriverDetails(token)
 }

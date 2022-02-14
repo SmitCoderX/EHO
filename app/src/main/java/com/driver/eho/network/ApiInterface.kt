@@ -52,8 +52,8 @@ interface ApiInterface {
         @Header("x-access-token") token: String,
         @Part("userName") userName: RequestBody,
         @Part("email") email: RequestBody,
-        @Part profileImage: MultipartBody.Part,
-        @Part documents: Array<MultipartBody.Part?>,
+        @Part profileImage: MultipartBody.Part? = null,
+        @Part documents: Array<MultipartBody.Part?>? = null,
         @Part("mobile") mobile: RequestBody,
         @Part("name") name: RequestBody,
         @Part("hospitalAddress") hospitalAddress: RequestBody,
@@ -62,9 +62,10 @@ interface ApiInterface {
         @Part("country") country: RequestBody,
         @Part("driverExperience") driverExperience: RequestBody,
         @Part("driverLicenseNumber") driverLicenseNumber: RequestBody,
-        @Part("ambulanceVehicleNumber") ambulanceVehicleNumber: RequestBody,
+        @Part("ambulenceVehicleNumber") ambulanceVehicleNumber: RequestBody,
         @Part("latitude ") latitude: RequestBody,
-        @Part("longitude ") longitude: RequestBody,
+        @Part("longitude") longitude: RequestBody,
+        @Part("attachedWithHospital") isAttached: RequestBody
     ): Response<DriverSignInResponse>
 
     @GET(GETBOOKINGLIST)
@@ -121,5 +122,10 @@ interface ApiInterface {
         @Header("x-access-token") token: String,
         @Body parameter: JsonObject
     ): Response<DriverSignUpResponse>
+
+    @GET("user/getDriverDetails")
+    suspend fun getDriverDetails(
+        @Header("x-access-token") token: String
+    ): Response<DriverSignInResponse>
 
 }

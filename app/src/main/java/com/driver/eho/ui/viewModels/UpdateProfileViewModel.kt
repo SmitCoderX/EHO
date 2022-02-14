@@ -25,13 +25,47 @@ class UpdateProfileViewModel(
 ) : AndroidViewModel(app) {
 
     val updateProfileLiveData = MutableLiveData<Resources<DriverSignInResponse>>()
+    val driverMutableLiveData = MutableLiveData<Resources<DriverSignInResponse>>()
+
+    fun getDriverDetails(token: String) = viewModelScope.launch {
+        safeHandleDriverDetails(token)
+    }
+
+    private fun handleDriverDetails(response: Response<DriverSignInResponse>): Resources<DriverSignInResponse> {
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+                return Resources.Success(resultResponse)
+            }
+        }
+        return Resources.Error(response.errorBody()?.string().toString())
+    }
+
+    private suspend fun safeHandleDriverDetails(token: String) {
+        driverMutableLiveData.postValue(Resources.Loading())
+        try {
+            if (hasInternetConnection()) {
+                val response = repositroy.getDriverDetails(token)
+                driverMutableLiveData.postValue(handleDriverDetails(response))
+            } else {
+                driverMutableLiveData.postValue(Resources.Error("No Internet Connection"))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> driverMutableLiveData.postValue(Resources.Error("Network Failure"))
+                else -> {
+                    driverMutableLiveData.postValue(Resources.Error(t.message.toString()))
+                    Log.d(Constants.TAG, "safeDriverDetails: ${t.message}")
+                }
+            }
+        }
+    }
 
     fun updateProfile(
         token: String,
         userName: RequestBody,
         email: RequestBody,
-        profileImage: MultipartBody.Part,
-        documents: Array<MultipartBody.Part?>,
+        profileImage: MultipartBody.Part? = null,
+        documents: Array<MultipartBody.Part?>? = null,
         mobile: RequestBody,
         name: RequestBody,
         hospitalAddress: RequestBody,
@@ -42,7 +76,8 @@ class UpdateProfileViewModel(
         driverLicenseNumber: RequestBody,
         ambulanceVehicleNumber: RequestBody,
         latitude: RequestBody,
-        longitude: RequestBody
+        longitude: RequestBody,
+        isAttached: RequestBody
     ) = viewModelScope.launch {
         safeHandleResponse(
             token,
@@ -60,7 +95,8 @@ class UpdateProfileViewModel(
             driverLicenseNumber,
             ambulanceVehicleNumber,
             latitude,
-            longitude
+            longitude,
+            isAttached
         )
     }
 
@@ -77,8 +113,8 @@ class UpdateProfileViewModel(
         token: String,
         userName: RequestBody,
         email: RequestBody,
-        profileImage: MultipartBody.Part,
-        documents: Array<MultipartBody.Part?>,
+        profileImage: MultipartBody.Part?,
+        documents: Array<MultipartBody.Part?>?,
         mobile: RequestBody,
         name: RequestBody,
         hospitalAddress: RequestBody,
@@ -89,7 +125,8 @@ class UpdateProfileViewModel(
         driverLicenseNumber: RequestBody,
         ambulanceVehicleNumber: RequestBody,
         latitude: RequestBody,
-        longitude: RequestBody
+        longitude: RequestBody,
+        isAttached: RequestBody
     ) {
         updateProfileLiveData.postValue(Resources.Loading())
         try {
@@ -110,7 +147,8 @@ class UpdateProfileViewModel(
                     driverLicenseNumber,
                     ambulanceVehicleNumber,
                     latitude,
-                    longitude
+                    longitude,
+                    isAttached
                 )
                 updateProfileLiveData.postValue(handleResponse(response))
             } else {

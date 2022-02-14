@@ -26,9 +26,8 @@ class SplashActivity : AppCompatActivity() {
         val prefs = SharedPreferenceManager(this)
 
         Handler(Looper.myLooper()!!).postDelayed({
-            if (prefs.getLoggedIn()) {
+            if (prefs.getLoggedIn() && prefs.getToken().toString().isNotEmpty()) {
                 val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra(Constants.DRIVERSDATA, prefs.getData())
                 startActivity(intent)
                 finish()
             } else {

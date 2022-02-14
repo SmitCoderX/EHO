@@ -38,7 +38,7 @@ class BankViewModel(
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.message().toString())
+        return Resources.Error(response.errorBody()?.string().toString())
     }
 
     private suspend fun safeHandleAccount(

@@ -31,6 +31,7 @@ import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.ui.viewModel.viewModelFactory.UpdateProfileViewModelProviderFactory
 import com.driver.eho.ui.viewModels.UpdateProfileViewModel
 import com.driver.eho.utils.Constants.DRIVERSDATA
+import com.driver.eho.utils.Constants.IMAGE_URL
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.Constants.snackbarError
 import com.driver.eho.utils.Constants.snackbarSuccess
@@ -48,11 +49,11 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
 
     private lateinit var binding: ActivityProfileBinding
-    private var driverData: DriverSignInResponse? = DriverSignInResponse()
     private var uri: ArrayList<Uri> = ArrayList()
     var recyclerView: RecyclerView? = null
     private var adapter: HorizontalRecyclerView? = null
@@ -75,16 +76,12 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
 
         prefs = SharedPreferenceManager(this)
 
-        driverData = if (driverData != null) {
-            intent.getParcelableExtra(DRIVERSDATA)
-        } else {
-            prefs.getData()
-        }
-        setData(driverData?.data)
+        Log.d(TAG, "onCreate LAT LONG: ${prefs.getLat() + prefs.getLong()}")
+        profileData()
 
 
         binding.menuIcon.setOnClickListener {
-            sendToMainActivity(prefs.getData())
+            sendToMainActivity()
         }
 
         binding.ivCam.setOnClickListener {
@@ -119,7 +116,7 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                 is Resources.Success -> {
                     hideLoading()
                     snackbarSuccess(binding.root, resources.message.toString())
-                    sendToMainActivity(prefs.getData())
+                    sendToMainActivity()
                 }
 
                 is Resources.Error -> {
@@ -174,39 +171,17 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
         Country: String,
     ) {
 
-        if (selectedImage == null) {
-            Toast.makeText(this, "Select An Image First", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (uri.isNullOrEmpty()) {
-            Toast.makeText(this, "Select An document First", Toast.LENGTH_SHORT).show()
-            return
-        }
+        /*    if (selectedImage == null) {
+                Toast.makeText(this, "Select An Image First", Toast.LENGTH_SHORT).show()
+                return
+            }
+            if (uri.isNullOrEmpty()) {
+                Toast.makeText(this, "Select An document First", Toast.LENGTH_SHORT).show()
+                return
+            }*/
 
-        val parcelFileDescriptor =
-            contentResolver.openFileDescriptor(selectedImage!!, "r", null) ?: return
-        val inputStream = FileInputStream(parcelFileDescriptor.fileDescriptor)
-        val file = File(cacheDir, contentResolver.getFileName(selectedImage!!))
-        val outputStream = FileOutputStream(file)
-        inputStream.copyTo(outputStream)
-
-        try {
-            val listofImage: Array<MultipartBody.Part?> = arrayOfNulls(5)
-            for (i in uri.indices) {
-                val parcelFileDescriptor1 =
-                    contentResolver.openFileDescriptor(uri[i], "r", null) ?: return
-                val inputStream1 = FileInputStream(parcelFileDescriptor1.fileDescriptor)
-                val file1 = File(cacheDir, contentResolver.getFileName(uri[i]))
-                val outputStream1 = FileOutputStream(file1)
-                inputStream1.copyTo(outputStream1)
-                val documentBody = UploadRequestBody(file1, "file", this)
-                val document_Body =
-                    MultipartBody.Part.createFormData("documents", file1.name, documentBody)
-                listofImage[i] = document_Body
-
-                val imageBody = UploadRequestBody(file, "file", this)
-                val image_body =
-                    MultipartBody.Part.createFormData("profileImage", file.name, imageBody)
+        if (selectedImage == null && uri.isNullOrEmpty()) {
+            try {
                 val userName: RequestBody =
                     UserName.toRequestBody("multipart/form-data".toMediaTypeOrNull())
                 val email: RequestBody =
@@ -215,8 +190,8 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                     MobileNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())
                 val name: RequestBody =
                     DriverName.toRequestBody("multipart/form-data".toMediaTypeOrNull())
-                /*val hospitalName: RequestBody =
-                    HospitalName.toRequestBody("multipart/form-data".toMediaTypeOrNull())*/
+                /*  val hospitalName: RequestBody =
+                      HospitalName.toRequestBody("multipart/form-data".toMediaTypeOrNull())*/
                 val hospitalAddress: RequestBody =
                     HospitalAddress.toRequestBody("multipart/form-data".toMediaTypeOrNull())
                 val state: RequestBody =
@@ -234,16 +209,20 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                 val ambulanceVehicleNumber: RequestBody =
                     AmbulanceVehicleNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())
                 val latitude: RequestBody =
-                    "latitude".toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    prefs.getLat().toString()
+                        .toRequestBody("multipart/form-data".toMediaTypeOrNull())
                 val longitude: RequestBody =
-                    "longitude".toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    prefs.getLong().toString()
+                        .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val isAttached = setIsAttached().toString()
+                    .toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
                 updateProfileViewModel.updateProfile(
                     token,
                     userName,
                     email,
-                    image_body,
-                    listofImage,
+                    null,
+                    null,
                     mobile,
                     name,
                     hospitalAddress,
@@ -254,11 +233,254 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                     driverLicenseNumber,
                     ambulanceVehicleNumber,
                     latitude,
-                    longitude
+                    longitude,
+                    isAttached
                 )
+            } catch (e: Exception) {
+                Log.d(TAG, "driverUpdateProfile: $e")
             }
-        } catch (e: Exception) {
-            Log.d(TAG, "driverUpdateProfile: $e")
+        } else if (selectedImage == null) {
+            try {
+                val listofImage: Array<MultipartBody.Part?> = arrayOfNulls(5)
+                for (i in uri.indices) {
+                    val parcelFileDescriptor1 =
+                        contentResolver.openFileDescriptor(uri[i], "r", null) ?: return
+                    val inputStream1 = FileInputStream(parcelFileDescriptor1.fileDescriptor)
+                    val file1 = File(cacheDir, contentResolver.getFileName(uri[i]))
+                    val outputStream1 = FileOutputStream(file1)
+                    inputStream1.copyTo(outputStream1)
+                    val documentBody = UploadRequestBody(file1, "file", this)
+                    val document_Body =
+                        MultipartBody.Part.createFormData("documents", file1.name, documentBody)
+                    listofImage[i] = document_Body
+                    val userName: RequestBody =
+                        UserName.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val email: RequestBody =
+                        Email.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val mobile: RequestBody =
+                        MobileNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val name: RequestBody =
+                        DriverName.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val hospitalAddress: RequestBody =
+                        HospitalAddress.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val state: RequestBody =
+                        State.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val city: RequestBody =
+                        City.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val country: RequestBody =
+                        Country.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val driverExperience: RequestBody =
+                        DriverExperience.toString()
+                            .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val driverLicenseNumber: RequestBody =
+                        LicenceNumber
+                            .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val ambulanceVehicleNumber: RequestBody =
+                        AmbulanceVehicleNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val latitude: RequestBody =
+                        prefs.getLat().toString()
+                            .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val longitude: RequestBody =
+                        prefs.getLong().toString()
+                            .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val isAttached = setIsAttached().toString()
+                        .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+
+                    updateProfileViewModel.updateProfile(
+                        token,
+                        userName,
+                        email,
+                        null,
+                        listofImage,
+                        mobile,
+                        name,
+                        hospitalAddress,
+                        state,
+                        city,
+                        country,
+                        driverExperience,
+                        driverLicenseNumber,
+                        ambulanceVehicleNumber,
+                        latitude,
+                        longitude,
+                        isAttached
+                    )
+                }
+            } catch (e: Exception) {
+                Log.d(TAG, "driverUpdateProfile: $e")
+            }
+        } else if (uri.isNullOrEmpty()) {
+            val parcelFileDescriptor =
+                contentResolver.openFileDescriptor(selectedImage!!, "r", null) ?: return
+            val inputStream = FileInputStream(parcelFileDescriptor.fileDescriptor)
+            val file = File(cacheDir, contentResolver.getFileName(selectedImage!!))
+            val outputStream = FileOutputStream(file)
+            inputStream.copyTo(outputStream)
+
+            try {
+                val imageBody = UploadRequestBody(file, "file", this)
+                val image_body =
+                    MultipartBody.Part.createFormData("profileImage", file.name, imageBody)
+                val userName: RequestBody =
+                    UserName.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val email: RequestBody =
+                    Email.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val mobile: RequestBody =
+                    MobileNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val name: RequestBody =
+                    DriverName.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                /*  val hospitalName: RequestBody =
+                      HospitalName.toRequestBody("multipart/form-data".toMediaTypeOrNull())*/
+                val hospitalAddress: RequestBody =
+                    HospitalAddress.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val state: RequestBody =
+                    State.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val city: RequestBody =
+                    City.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val country: RequestBody =
+                    Country.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val driverExperience: RequestBody =
+                    DriverExperience.toString()
+                        .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val driverLicenseNumber: RequestBody =
+                    LicenceNumber
+                        .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val ambulanceVehicleNumber: RequestBody =
+                    AmbulanceVehicleNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val latitude: RequestBody =
+                    prefs.getLat().toString()
+                        .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val longitude: RequestBody =
+                    prefs.getLong().toString()
+                        .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val isAttached = setIsAttached().toString()
+                    .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                updateProfileViewModel.updateProfile(
+                    token,
+                    userName,
+                    email,
+                    image_body,
+                    null,
+                    mobile,
+                    name,
+                    hospitalAddress,
+                    state,
+                    city,
+                    country,
+                    driverExperience,
+                    driverLicenseNumber,
+                    ambulanceVehicleNumber,
+                    latitude,
+                    longitude,
+                    isAttached
+                )
+            } catch (e: Exception) {
+                Log.d(TAG, "driverUpdateProfile: $e")
+            }
+        } else {
+            val parcelFileDescriptor =
+                contentResolver.openFileDescriptor(selectedImage!!, "r", null) ?: return
+            val inputStream = FileInputStream(parcelFileDescriptor.fileDescriptor)
+            val file = File(cacheDir, contentResolver.getFileName(selectedImage!!))
+            val outputStream = FileOutputStream(file)
+            inputStream.copyTo(outputStream)
+
+            try {
+                val listofImage: Array<MultipartBody.Part?> = arrayOfNulls(5)
+                for (i in uri.indices) {
+                    val parcelFileDescriptor1 =
+                        contentResolver.openFileDescriptor(uri[i], "r", null) ?: return
+                    val inputStream1 = FileInputStream(parcelFileDescriptor1.fileDescriptor)
+                    val file1 = File(cacheDir, contentResolver.getFileName(uri[i]))
+                    val outputStream1 = FileOutputStream(file1)
+                    inputStream1.copyTo(outputStream1)
+                    val documentBody = UploadRequestBody(file1, "file", this)
+                    val document_Body =
+                        MultipartBody.Part.createFormData("documents", file1.name, documentBody)
+                    listofImage[i] = document_Body
+
+                    val imageBody = UploadRequestBody(file, "file", this)
+                    val image_body =
+                        MultipartBody.Part.createFormData("profileImage", file.name, imageBody)
+                    val userName: RequestBody =
+                        UserName.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val email: RequestBody =
+                        Email.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val mobile: RequestBody =
+                        MobileNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val name: RequestBody =
+                        DriverName.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    /*  val hospitalName: RequestBody =
+                          HospitalName.toRequestBody("multipart/form-data".toMediaTypeOrNull())*/
+                    val hospitalAddress: RequestBody =
+                        HospitalAddress.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val state: RequestBody =
+                        State.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val city: RequestBody =
+                        City.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val country: RequestBody =
+                        Country.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val driverExperience: RequestBody =
+                        DriverExperience.toString()
+                            .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val driverLicenseNumber: RequestBody =
+                        LicenceNumber
+                            .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val ambulanceVehicleNumber: RequestBody =
+                        AmbulanceVehicleNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val latitude: RequestBody =
+                        prefs.getLat().toString()
+                            .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val longitude =
+                        prefs.getLong().toString()
+                            .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val isAttached = setIsAttached().toString()
+                        .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+
+                    updateProfileViewModel.updateProfile(
+                        token,
+                        userName,
+                        email,
+                        image_body,
+                        listofImage,
+                        mobile,
+                        name,
+                        hospitalAddress,
+                        state,
+                        city,
+                        country,
+                        driverExperience,
+                        driverLicenseNumber,
+                        ambulanceVehicleNumber,
+                        latitude,
+                        longitude,
+                        isAttached
+                    )
+                }
+            } catch (e: Exception) {
+                Log.d(TAG, "driverUpdateProfile: $e")
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun profileData() {
+        updateProfileViewModel.getDriverDetails(prefs.getToken().toString())
+        updateProfileViewModel.driverMutableLiveData.observe(this) { resources ->
+            when (resources) {
+                is Resources.Success -> {
+                    hideLoading()
+                    setData(resources.data!!.data)
+                }
+
+                is Resources.Error -> {
+                    snackbarError(binding.root, resources.message.toString())
+                }
+
+                is Resources.Loading -> {
+                    showLoading()
+                }
+            }
         }
     }
 
@@ -266,10 +488,16 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
         val newUri = ArrayList<Uri>()
         binding.apply {
             Glide.with(this@ProfileActivity)
-                .load(data?.image)
+                .load(IMAGE_URL + data?.image)
                 .placeholder(R.drawable.profile)
                 .error(R.drawable.profile)
                 .into(ivProfile)
+
+            if (data?.attachedWithHospital == true) {
+                radioYes.isChecked = true
+            } else {
+                radioNo.isChecked = true
+            }
 
             edtUserName.setText(data?.userName)
             edtEmail.setText(data?.email)
@@ -282,11 +510,8 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
             edtState.setText(data?.state)
             edtCity.setText(data?.city)
             edtCountry.setText(data?.country)
-            /* data?.documents?.forEach {
-                 uri.add(Uri.parse(it))
-             }*/
             data?.documents?.forEach {
-                val myUri = Uri.parse(it)
+                val myUri = Uri.parse(IMAGE_URL + it)
                 newUri.add(myUri)
             }
             adapter?.updateData(newUri)
@@ -356,6 +581,7 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         try {
+            uri.clear()
             when (requestCode) {
                 0 -> if (resultCode == RESULT_OK) {
                     Glide.with(this).load(currentPhotoPath).into(binding.ivProfile)
@@ -372,7 +598,6 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                                 uri.add(data.clipData!!.getItemAt(i).uri)
                                 adapter?.updateData(uri)
                             }
-                            adapter!!.notifyDataSetChanged()
                         } else {
                             val imageUri = data.data
                             uri.add(imageUri!!)
@@ -520,16 +745,15 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        sendToMainActivity(prefs.getData())
+        sendToMainActivity()
     }
 
     override fun onProgressUpdate(percentage: Int) {
         Log.d("TAG", "Upload Image $percentage")
     }
 
-    private fun sendToMainActivity(data: DriverSignInResponse?) {
+    private fun sendToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra(DRIVERSDATA, data)
         startActivity(intent)
         finish()
     }
@@ -542,4 +766,7 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
         binding.viewLoader.visibility = View.GONE
     }
 
+    private fun setIsAttached(): Boolean {
+        return binding.radioYes.isChecked
+    }
 }

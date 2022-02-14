@@ -48,13 +48,13 @@ class BookingHistoryActivity : AppCompatActivity(), BookingHistoryListAdapter.On
 
 
         binding.ivBack.setOnClickListener {
-            sendToMainActivity(prefs.getData())
+            sendToMainActivity()
         }
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        sendToMainActivity(prefs.getData())
+        sendToMainActivity()
     }
 
     private fun bookingHistoryData() {
@@ -119,9 +119,8 @@ class BookingHistoryActivity : AppCompatActivity(), BookingHistoryListAdapter.On
         startActivity(intent)
     }
 
-    private fun sendToMainActivity(data: DriverSignInResponse?) {
+    private fun sendToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra(Constants.DRIVERSDATA, data)
         startActivity(intent)
         finish()
     }

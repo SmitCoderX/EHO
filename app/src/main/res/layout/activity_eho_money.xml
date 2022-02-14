@@ -106,11 +106,12 @@
                                 android:textSize="@dimen/_18sdp" />
 
                             <TextView
+                                android:id="@+id/tv_eho_amount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/_3sdp"
                                 android:fontFamily="@font/sf_pro_text_bold"
-                                android:text="2000.32"
+                                android:text="0"
                                 android:textAllCaps="false"
                                 android:textColor="@color/text_main"
                                 android:textSize="@dimen/_24sdp" />
@@ -173,9 +174,9 @@
                     style="?attr/progressBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:background="@android:color/transparent"
-                    android:visibility="invisible"
-                    android:layout_gravity="center"/>
+                    android:visibility="invisible" />
 
             </LinearLayout>
 
@@ -186,10 +187,10 @@
         android:id="@+id/viewLoader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:background="#66000000"
         android:gravity="center"
         android:visibility="gone"
-        android:layout_marginTop="?attr/actionBarSize"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

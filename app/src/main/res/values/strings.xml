@@ -20,4 +20,10 @@
     <string name="corporate_office"><font fgcolor="#414efc">Corporate Office: </font></string>
     <string name="support_address">Shop–no 712–716, 7th Floor, Babylon, Capital Behind Oswal Petrol Pump, Raipur, Chhattisgarh- 492001</string>
     <string name="notification">Notifications</string>
+    <string name="ambulance_request">Ambulance Request</string>
+    <string name="pickup">Pickup:</string>
+    <string name="drop">Drop:</string>
+    <string name="cancel">Cancel</string>
+    <string name="call">Call</string>
+    <string name="drop_off">Drop Off</string>
 </resources>

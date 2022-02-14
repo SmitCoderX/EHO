@@ -156,6 +156,7 @@
                     android:hint="Mobile Number"
                     android:inputType="text"
                     android:padding="@dimen/_10sdp"
+                    android:maxLength="10"
                     android:textAllCaps="false"
                     android:textColor="@color/black"
                     android:textColorHint="@color/gray"

@@ -4,9 +4,9 @@ import android.content.ContentResolver
 import android.net.Uri
 import android.provider.OpenableColumns
 
-fun ContentResolver.getFileName(fileUri: Uri): String {
+fun ContentResolver.getFileName(fileUri: Uri?): String {
     var name = ""
-    val returnCursor = this.query(fileUri, null, null, null, null)
+    val returnCursor = fileUri?.let { this.query(it, null, null, null, null) }
     if (returnCursor != null) {
         val nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
         returnCursor.moveToFirst()

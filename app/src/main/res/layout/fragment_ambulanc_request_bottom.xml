@@ -1,243 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:background="@color/white"
-             android:layout_height="match_parent"
-             tools:context=".ui.fragment.AmbulancRequestBottomFragment">
-    <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:backgroundTint="@color/white"
-            android:layout_height="wrap_content">
-     <LinearLayout
-             android:layout_width="match_parent"
-             android:orientation="horizontal"
-             android:padding="@dimen/_10sdp"
-             android:layout_height="match_parent">
-         <LinearLayout
-                 android:layout_width="match_parent"
-                 android:orientation="vertical"
-                 android:layout_height="wrap_content">
-             <LinearLayout
-                     android:layout_width="match_parent"
-                     android:orientation="horizontal"
-                     android:gravity="center"
-                     android:layout_height="wrap_content">
-                 <androidx.appcompat.widget.AppCompatTextView
-                         android:id="@+id/tvTitleHere"
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:textSize="@dimen/_17sdp"
-                         android:fontFamily="@font/sf_pro_text_bold"
-                         android:textColor="@color/black_2"
-                         android:text="Ambulance request"/>
-             </LinearLayout>
-             <LinearLayout
-                     android:layout_width="match_parent"
-                     android:orientation="horizontal"
-                     android:layout_marginTop="@dimen/_10sdp"
-                     android:layout_height="wrap_content">
-                 <com.google.android.material.imageview.ShapeableImageView
-                         android:id="@+id/iv_profile"
-                         android:layout_width="@dimen/_50sdp"
-                         android:layout_height="@dimen/_50sdp"
-                         android:scaleType="centerCrop"
-                         android:background="@drawable/profile"
-                         app:shapeAppearanceOverlay="@style/circleImageView"/>
-                 <LinearLayout
-                         android:layout_width="match_parent"
-                         android:orientation="vertical"
-                         android:layout_height="wrap_content">
-                     <LinearLayout
-                             android:orientation="horizontal"
-                             android:layout_width="match_parent"
-                             android:layout_height="wrap_content">
-                         <androidx.appcompat.widget.AppCompatTextView
-                                 android:id="@+id/tvPatientName"
-                                 android:layout_width="wrap_content"
-                                 android:layout_height="wrap_content"
-                                 android:textSize="@dimen/_15sdp"
-                                 android:layout_marginLeft="@dimen/_5sdp"
-                                 android:fontFamily="@font/sf_pro_text_bold"
-                                 android:textColor="#111111"
-                                 android:text="Patient Name"/>
-                         <androidx.appcompat.widget.AppCompatTextView
-                                 android:id="@+id/tvAmmount"
-                                 android:layout_width="match_parent"
-                                 android:layout_height="wrap_content"
-                                 android:textSize="@dimen/_15sdp"
-                                 android:gravity="right"
-                                 android:fontFamily="@font/sf_pro_text_semibold"
-                                 android:textColor="#003399"
-                                 android:text="$250"/>
-                     </LinearLayout>
-                     <LinearLayout
-                             android:orientation="horizontal"
-                             android:layout_width="match_parent"
-                             android:layout_marginTop="@dimen/_8sdp"
-                             android:layout_height="wrap_content">
-                         <androidx.appcompat.widget.AppCompatTextView
-                                 android:id="@+id/tvPaymentMode"
-                                 android:layout_width="wrap_content"
-                                 android:layout_height="wrap_content"
-                                 android:textSize="@dimen/_8sdp"
-                                 android:padding="@dimen/_5sdp"
-                                 android:background="@drawable/background_booking_status_pending"
-                                 android:layout_marginLeft="@dimen/_5sdp"
-                                 android:fontFamily="@font/sf_pro_text_bold"
-                                 android:textColor="#003399"
-                                 android:text="Paytm"/>
-                         <androidx.appcompat.widget.AppCompatTextView
-                                 android:id="@+id/tvKM"
-                                 android:layout_width="match_parent"
-                                 android:layout_height="wrap_content"
-                                 android:textSize="@dimen/_12sdp"
-                                 android:gravity="right"
-                                 android:fontFamily="@font/sf_pro_text_semibold"
-                                 android:textColor="#B7B7B7"
-                                 android:text="4.4km"/>
-                     </LinearLayout>
-                     <LinearLayout
-                             android:orientation="horizontal"
-                             android:layout_width="match_parent"
-                             android:layout_marginTop="@dimen/_10sdp"
-                             android:layout_height="wrap_content">
-                         <androidx.appcompat.widget.AppCompatTextView
-                                 android:id="@+id/tvPickup"
-                                 android:layout_width="wrap_content"
-                                 android:layout_height="wrap_content"
-                                 android:textSize="@dimen/_13sdp"
-                                 android:layout_marginLeft="@dimen/_5sdp"
-                                 android:fontFamily="@font/sf_pro_text_regular"
-                                 android:textColor="#303639"
-                                 android:text="Pickup:"/>
-                         <androidx.appcompat.widget.AppCompatTextView
-                                 android:id="@+id/tvPickupAddress"
-                                 android:layout_width="wrap_content"
-                                 android:layout_height="wrap_content"
-                                 android:textSize="@dimen/_13sdp"
-                                 android:textAlignment="textStart"
-                                 android:layout_marginLeft="@dimen/_2sdp"
-                                 android:fontFamily="@font/sf_pro_text_semibold"
-                                 android:textColor="#303639"
-                                 android:text="Wall Street 2, Ellis Bridge"/>
-                     </LinearLayout>
-                     <LinearLayout
-                             android:id="@+id/llDrop"
-                             android:visibility="gone"
-                             android:orientation="horizontal"
-                             android:layout_width="match_parent"
-                             android:layout_marginTop="@dimen/_10sdp"
-                             android:layout_height="wrap_content">
-                         <androidx.appcompat.widget.AppCompatTextView
-                                 android:id="@+id/tvDrop"
-                                 android:layout_width="wrap_content"
-                                 android:layout_height="wrap_content"
-                                 android:textSize="@dimen/_13sdp"
-                                 android:layout_marginLeft="@dimen/_5sdp"
-                                 android:fontFamily="@font/sf_pro_text_regular"
-                                 android:textColor="#303639"
-                                 android:text="Drop:"/>
-                         <androidx.appcompat.widget.AppCompatTextView
-                                 android:id="@+id/tvDropAddress"
-                                 android:layout_width="wrap_content"
-                                 android:layout_height="wrap_content"
-                                 android:textSize="@dimen/_13sdp"
-                                 android:textAlignment="textStart"
-                                 android:layout_marginLeft="@dimen/_15sdp"
-                                 android:fontFamily="@font/sf_pro_text_semibold"
-                                 android:textColor="#303639"
-                                 android:text="Shayona City, Iskon Mall"/>
-                     </LinearLayout>
-                 </LinearLayout>
-             </LinearLayout>
-             <LinearLayout
-                     android:id="@+id/call"
-                     android:layout_width="match_parent"
-                     android:visibility="gone"
-                     android:layout_height="wrap_content">
-                 <com.google.android.material.button.MaterialButton
-                         android:id="@+id/btnCall"
-                         android:layout_width="@dimen/_104sdp"
-                         android:layout_height="@dimen/_70sdp"
-                         android:layout_marginTop="@dimen/_20sdp"
-                         android:text="Call"
-                         android:paddingTop="@dimen/_5sdp"
-                         android:paddingBottom="@dimen/_10sdp"
-                         android:textSize="@dimen/_12sdp"
-                         android:gravity="center"
-                         app:iconSize="@dimen/_24sdp"
-                         app:iconGravity="top"
-                         app:iconTint="@color/white"
-                         app:cornerRadius="@dimen/_10sdp"
-                         app:icon="@drawable/ic_call"
-                         android:fontFamily="@font/sf_pro_text_regular"
-                         android:textAllCaps="false"
-                         android:textColor="@color/white"
-                         android:backgroundTint="#03F142"/>
-                 <com.google.android.material.button.MaterialButton
-                         android:id="@+id/btnCancel"
-                         android:layout_width="@dimen/_104sdp"
-                         android:layout_height="@dimen/_70sdp"
-                         android:layout_marginTop="@dimen/_20sdp"
-                         android:text="Cancel"
-                         app:iconTint="@color/white"
-                         android:paddingTop="@dimen/_5sdp"
-                         android:paddingBottom="@dimen/_10sdp"
-                         android:textSize="@dimen/_12sdp"
-                         android:gravity="center"
-                         android:layout_marginLeft="@dimen/_15sdp"
-                         app:iconSize="@dimen/_24sdp"
-                         app:iconGravity="top"
-                         app:cornerRadius="@dimen/_10sdp"
-                         app:icon="@drawable/ic_cancel"
-                         android:fontFamily="@font/sf_pro_text_regular"
-                         android:textAllCaps="false"
-                         android:textColor="@color/white"
-                         android:backgroundTint="#B7B7B7"/>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ui.fragment.AmbulancRequestBottomFragment">
 
-             </LinearLayout>
-             <androidx.appcompat.widget.AppCompatButton
-                     android:id="@+id/btnDropOff"
-                     android:layout_width="match_parent"
-                     android:layout_height="@dimen/_40sdp"
-                     android:layout_marginTop="@dimen/_15sdp"
-                     android:padding="@dimen/_10sdp"
-                     android:text="Drop Off"
-                     android:visibility="gone"
-                     android:textSize="@dimen/_12sdp"
-                     android:fontFamily="@font/sf_pro_text_regular"
-                     android:textAllCaps="true"
-                     android:textColor="@color/white"
-                     android:layout_marginBottom="@dimen/_15sdp"
-                     android:background="@drawable/button_background"/>
-             <androidx.appcompat.widget.AppCompatButton
-                     android:id="@+id/btnAccept"
-                     android:layout_width="match_parent"
-                     android:layout_height="@dimen/_40sdp"
-                     android:layout_marginTop="@dimen/_15sdp"
-                     android:padding="@dimen/_10sdp"
-                     android:text="ACCEPT"
-                     android:visibility="visible"
-                     android:textSize="@dimen/_12sdp"
-                     android:fontFamily="@font/sf_pro_text_regular"
-                     android:textAllCaps="true"
-                     android:textColor="@color/white"
-                     android:layout_marginBottom="@dimen/_15sdp"
-                     android:background="@drawable/button_background"/>
-             <TextView
-                     android:id="@+id/btnDecline"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:text="Decline"
-                     android:visibility="visible"
-                     android:layout_gravity="center"
-                     android:textSize="@dimen/_17sdp"
-                     android:fontFamily="@font/sf_pro_text_bold"
-                     android:textAllCaps="false"
-                     android:textColor="#8F9596"
-                     android:layout_marginBottom="@dimen/_15sdp"/>
-         </LinearLayout>
-     </LinearLayout>
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="@dimen/_10sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvTitleHere"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/sf_pro_text_bold"
+                        android:text="Ambulance request"
+                        android:textColor="@color/black_2"
+                        android:textSize="@dimen/_17sdp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/iv_profile"
+                        android:layout_width="@dimen/_50sdp"
+                        android:layout_height="@dimen/_50sdp"
+                        android:background="@drawable/profile"
+                        android:scaleType="centerCrop"
+                        app:shapeAppearanceOverlay="@style/circleImageView" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/tvPatientName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:fontFamily="@font/sf_pro_text_bold"
+                                android:text="Patient Name"
+                                android:textColor="#111111"
+                                android:textSize="@dimen/_15sdp" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/tvAmmount"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/sf_pro_text_semibold"
+                                android:gravity="right"
+                                android:text="$250"
+                                android:textColor="#003399"
+                                android:textSize="@dimen/_15sdp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/tvPaymentMode"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:background="@drawable/background_booking_status_pending"
+                                android:fontFamily="@font/sf_pro_text_bold"
+                                android:padding="@dimen/_5sdp"
+                                android:text="Paytm"
+                                android:textColor="#003399"
+                                android:textSize="@dimen/_8sdp" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/tvKM"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/sf_pro_text_semibold"
+                                android:gravity="right"
+                                android:text="4.4km"
+                                android:textColor="#B7B7B7"
+                                android:textSize="@dimen/_12sdp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/tvPickup"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/_5sdp"
+                                android:fontFamily="@font/sf_pro_text_regular"
+                                android:text="Pickup:"
+                                android:textColor="#303639"
+                                android:textSize="@dimen/_13sdp" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/tvPickupAddress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/_2sdp"
+                                android:fontFamily="@font/sf_pro_text_semibold"
+                                android:text="Wall Street 2, Ellis Bridge"
+                                android:textAlignment="textStart"
+                                android:textColor="#303639"
+                                android:textSize="@dimen/_13sdp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnAccept"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginBottom="@dimen/_15sdp"
+                    android:background="@drawable/button_background"
+                    android:fontFamily="@font/sf_pro_text_regular"
+                    android:padding="@dimen/_10sdp"
+                    android:text="ACCEPT"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12sdp"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/btnDecline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/_15sdp"
+                    android:fontFamily="@font/sf_pro_text_bold"
+                    android:text="Decline"
+                    android:textAllCaps="false"
+                    android:textColor="#8F9596"
+                    android:textSize="@dimen/_17sdp"
+                    android:visibility="visible" />
+            </LinearLayout>
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>

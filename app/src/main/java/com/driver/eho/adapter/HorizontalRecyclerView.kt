@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.driver.eho.R
+import com.driver.eho.utils.Constants.IMAGE_URL
 
 
 class HorizontalRecyclerView(private var uri: List<Uri>) :

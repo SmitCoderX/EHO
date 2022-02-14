@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:fontFamily="@font/sf_pro_text_bold"
+        android:text="@string/ambulance_request"
+        android:textColor="@color/black_2"
+        android:textSize="@dimen/_17ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_profile_accept"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:src="@drawable/profile" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_patientName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:fontFamily="@font/sf_pro_text_bold"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_15ssp"
+        app:layout_constraintStart_toEndOf="@id/iv_profile_accept"
+        app:layout_constraintTop_toTopOf="@id/iv_profile_accept"
+        tools:text="Patient Name" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:fontFamily="@font/sf_pro_text_semibold"
+        android:gravity="end"
+        android:textColor="#003399"
+        android:textSize="@dimen/_15ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_patientName"
+        tools:text="$250" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_payment_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:background="@drawable/background_booking_status_pending"
+        android:fontFamily="@font/sf_pro_text_bold"
+        android:padding="@dimen/_3sdp"
+        android:textColor="#003399"
+        android:textSize="@dimen/_8ssp"
+        app:layout_constraintStart_toStartOf="@id/tv_patientName"
+        app:layout_constraintTop_toBottomOf="@id/tv_patientName"
+        tools:text="Paytm" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_accept_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:fontFamily="@font/sf_pro_text_semibold"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintEnd_toEndOf="@id/tv_amount"
+        app:layout_constraintStart_toStartOf="@id/tv_amount"
+        app:layout_constraintTop_toBottomOf="@id/tv_amount"
+        tools:text="4.4km" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_pickup_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:fontFamily="@font/sf_pro_text_regular"
+        android:text="@string/pickup"
+        android:textSize="@dimen/_13ssp"
+        app:layout_constraintStart_toStartOf="@id/tv_payment_mode"
+        app:layout_constraintTop_toBottomOf="@id/tv_payment_mode" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_pickup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_3sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:fontFamily="@font/sf_pro_text_semibold"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_13ssp"
+        app:layout_constraintStart_toEndOf="@id/tv_pickup_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_payment_mode"
+        tools:text="Wall Street 2, Ellis Bridge" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_drop_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:fontFamily="@font/sf_pro_text_regular"
+        android:text="@string/drop"
+        android:textSize="@dimen/_13ssp"
+        app:layout_constraintStart_toStartOf="@id/tv_payment_mode"
+        app:layout_constraintTop_toBottomOf="@id/tv_pickup_title" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_drop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:fontFamily="@font/sf_pro_text_semibold"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_13ssp"
+        app:layout_constraintStart_toStartOf="@id/tv_pickup"
+        app:layout_constraintTop_toBottomOf="@id/tv_pickup_title"
+        tools:text="Wall Street 2, Ellis Bridge" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCall"
+        android:layout_width="@dimen/_104sdp"
+        android:layout_height="@dimen/_70sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:backgroundTint="#03F142"
+        android:fontFamily="@font/sf_pro_text_regular"
+        android:gravity="center"
+        android:paddingTop="@dimen/_5sdp"
+        android:paddingBottom="@dimen/_10sdp"
+        android:text="@string/call"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_12sdp"
+        app:cornerRadius="@dimen/_10sdp"
+        app:icon="@drawable/ic_call"
+        app:iconGravity="top"
+        app:iconSize="@dimen/_24sdp"
+        app:iconTint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_drop_title" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancel"
+        android:layout_width="@dimen/_104sdp"
+        android:layout_height="@dimen/_70sdp"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:backgroundTint="#B7B7B7"
+        android:fontFamily="@font/sf_pro_text_regular"
+        android:gravity="center"
+        android:paddingTop="@dimen/_5sdp"
+        android:paddingBottom="@dimen/_10sdp"
+        android:text="@string/cancel"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_12sdp"
+        app:cornerRadius="@dimen/_10sdp"
+        app:icon="@drawable/ic_cancel"
+        app:iconGravity="top"
+        app:iconSize="@dimen/_24sdp"
+        app:iconTint="@color/white"
+        app:layout_constraintStart_toEndOf="@id/btnCall"
+        app:layout_constraintTop_toBottomOf="@id/tv_drop_title" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnDropOff"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_15sdp"
+        android:background="@drawable/button_background"
+        android:fontFamily="@font/sf_pro_text_regular"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/drop_off"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_12sdp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnCall" />
+</androidx.constraintlayout.widget.ConstraintLayout>

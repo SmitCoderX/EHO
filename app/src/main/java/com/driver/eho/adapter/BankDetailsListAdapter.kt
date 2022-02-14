@@ -7,8 +7,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.driver.eho.databinding.LayoutAccountListBinding
 import com.driver.eho.model.AccountList
+import com.driver.eho.model.BankAccountList
 
-class BankDetailsListAdapter(private val listener: OnAccountDetailsClick) :
+class BankDetailsListAdapter(
+    private var dataList: ArrayList<AccountList>?,
+    private val listener: OnAccountDetailsClick
+) :
     RecyclerView.Adapter<BankDetailsListAdapter.AccountListViewHolder>() {
 
     inner class AccountListViewHolder(val binding: LayoutAccountListBinding) :
@@ -18,6 +22,18 @@ class BankDetailsListAdapter(private val listener: OnAccountDetailsClick) :
             binding.apply {
                 tvAccountNumber.text = data.accountNumber
                 tvIFSC.text = data.ifscCode
+
+                btnDelete.setOnClickListener {
+                    val position = bindingAdapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        val item = dataList?.get(position)
+                        if (item != null) {
+                            listener.onDeleteClick(item, bindingAdapterPosition)
+                            notifyItemRemoved(bindingAdapterPosition)
+                            dataList?.remove(item)
+                        }
+                    }
+                }
             }
         }
     }
@@ -29,7 +45,7 @@ class BankDetailsListAdapter(private val listener: OnAccountDetailsClick) :
     }
 
     override fun onBindViewHolder(holder: AccountListViewHolder, position: Int) {
-        val currentItem = differ.currentList[position]
+        val currentItem = dataList?.get(position)
 
         if (currentItem != null) {
             holder.bind(currentItem)
@@ -37,23 +53,28 @@ class BankDetailsListAdapter(private val listener: OnAccountDetailsClick) :
     }
 
     override fun getItemCount(): Int {
-        return differ.currentList.size
+        return dataList!!.size
     }
 
-    private val differCallback = object : DiffUtil.ItemCallback<AccountList>() {
-        override fun areItemsTheSame(oldItem: AccountList, newItem: AccountList): Boolean {
-            return true
-        }
+    /* private val differCallback = object : DiffUtil.ItemCallback<AccountList>() {
+         override fun areItemsTheSame(oldItem: AccountList, newItem: AccountList): Boolean {
+             return true
+         }
 
-        override fun areContentsTheSame(oldItem: AccountList, newItem: AccountList): Boolean {
-            return oldItem == newItem
-        }
-    }
+         override fun areContentsTheSame(oldItem: AccountList, newItem: AccountList): Boolean {
+             return oldItem == newItem
+         }
+     }
 
-    val differ = AsyncListDiffer(this, differCallback)
+     val differ = AsyncListDiffer(this, differCallback)*/
 
     interface OnAccountDetailsClick {
-        fun onDeleteClick(data: AccountList)
+        fun onDeleteClick(data: AccountList, position: Int)
+    }
+
+    fun updateAdapter(payload: ArrayList<AccountList>) {
+        dataList = payload
+        notifyDataSetChanged()
     }
 
 }

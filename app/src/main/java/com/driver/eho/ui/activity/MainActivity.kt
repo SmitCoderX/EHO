@@ -25,6 +25,7 @@ import com.driver.eho.ui.fragment.TermsConditionFragment
 import com.driver.eho.ui.viewModel.viewModelFactory.MainActivityViewModelProviderFactory
 import com.driver.eho.ui.viewModels.MainActivityViewModel
 import com.driver.eho.utils.Constants.DRIVERSDATA
+import com.driver.eho.utils.Constants.IMAGE_URL
 import com.driver.eho.utils.Constants.snackbarError
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
@@ -34,7 +35,6 @@ import com.google.android.material.navigation.NavigationView
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var actionBarToggle: ActionBarDrawerToggle
-    private var driverData: DriverSignInResponse? = DriverSignInResponse()
     private val mainViewModel by viewModels<MainActivityViewModel> {
         MainActivityViewModelProviderFactory(
             application,
@@ -57,12 +57,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         prefs = SharedPreferenceManager(this)
 
-        driverData = if (driverData != null) {
-            intent.getParcelableExtra(DRIVERSDATA)
-        } else {
-            prefs.getData()
-        }
-
+        mainViewModel.getDriverDetails(
+            prefs.getToken().toString()
+        )
         profileData()
         actionBarToggle.syncState()
 
@@ -74,34 +71,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     @SuppressLint("SetTextI18n")
     private fun profileData() {
-        val header = binding.navigationView.getHeaderView(0)
-        val edtProfile = header.findViewById<CardView>(R.id.cv1)
-        val ehoMoneyActivity = header.findViewById<CardView>(R.id.cv2)
+        mainViewModel.driverMutableLiveData.observe(this) { resources ->
+            when (resources) {
+                is Resources.Success -> {
+                    setData(resources.data!!)
+                }
 
-        val profileImage = header.findViewById<ShapeableImageView>(R.id.iv_profile)
-        val userName = header.findViewById<TextView>(R.id.tvUsername)
-        val mobileNo = header.findViewById<TextView>(R.id.tvMobileNumber)
-        val amount = header.findViewById<TextView>(R.id.tvAmount)
+                is Resources.Error -> {
+                }
 
-        Glide.with(this)
-            .load(driverData?.data?.image)
-            .placeholder(R.drawable.profile)
-            .error(R.drawable.profile)
-            .into(profileImage)
+                is Resources.Loading -> {
 
-        userName.text = driverData?.data?.userName
-        mobileNo.text = driverData?.data?.mobile.toString()
-        amount.text = getString(R.string.Rs) + driverData?.data?.amount.toString()
-        edtProfile.setOnClickListener {
-            val intent = Intent(this, ProfileActivity::class.java)
-            intent.putExtra(DRIVERSDATA, driverData)
-            startActivity(intent)
-            finish()
-        }
-
-        ehoMoneyActivity.setOnClickListener {
-            startActivity(Intent(this, EhoMoneyActivity::class.java))
-            finish()
+                }
+            }
         }
     }
 
@@ -221,6 +203,38 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
 
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setData(details: DriverSignInResponse) {
+
+        val header = binding.navigationView.getHeaderView(0)
+        val edtProfile = header.findViewById<CardView>(R.id.cv1)
+        val ehoMoneyActivity = header.findViewById<CardView>(R.id.cv2)
+
+        val profileImage = header.findViewById<ShapeableImageView>(R.id.iv_profile)
+        val userName = header.findViewById<TextView>(R.id.tvUsername)
+        val mobileNo = header.findViewById<TextView>(R.id.tvMobileNumber)
+        val amount = header.findViewById<TextView>(R.id.tvAmount)
+
+        Glide.with(this)
+            .load(IMAGE_URL + details.data?.image)
+            .placeholder(R.drawable.profile)
+            .error(R.drawable.profile)
+            .into(profileImage)
+
+        userName.text = details.data?.userName
+        mobileNo.text = details?.data?.mobile.toString()
+        amount.text = getString(R.string.Rs) + details.data?.amount.toString()
+        edtProfile.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+            finish()
+        }
+
+        ehoMoneyActivity.setOnClickListener {
+            startActivity(Intent(this, EhoMoneyActivity::class.java))
+            finish()
         }
     }
 

@@ -9,8 +9,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.driver.eho.model.DriverSignUpResponse
+import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.repository.EHORepository
 import com.driver.eho.utils.Constants
+import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
 import kotlinx.coroutines.launch
@@ -23,6 +25,40 @@ class MainActivityViewModel(
 ) : AndroidViewModel(app) {
 
     val logoutMutableLiveData = MutableLiveData<Resources<DriverSignUpResponse>>()
+    val driverMutableLiveData = MutableLiveData<Resources<DriverSignInResponse>>()
+
+    fun getDriverDetails(token: String) = viewModelScope.launch {
+        safeHandleDriverDetails(token)
+    }
+
+    private fun handleDriverDetails(response: Response<DriverSignInResponse>): Resources<DriverSignInResponse> {
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+                return Resources.Success(resultResponse)
+            }
+        }
+        return Resources.Error(response.errorBody()?.string().toString())
+    }
+
+    private suspend fun safeHandleDriverDetails(token: String) {
+        driverMutableLiveData.postValue(Resources.Loading())
+        try {
+            if (hasInternetConnection()) {
+                val response = repository.getDriverDetails(token)
+                driverMutableLiveData.postValue(handleDriverDetails(response))
+            } else {
+                driverMutableLiveData.postValue(Resources.Error("No Internet Connection"))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> driverMutableLiveData.postValue(Resources.Error("Network Failure"))
+                else -> {
+                    driverMutableLiveData.postValue(Resources.Error(t.message.toString()))
+                    Log.d(TAG, "safeDriverDetails: ${t.message}")
+                }
+            }
+        }
+    }
 
     fun logoutUser(token: String) = viewModelScope.launch {
         safeHandleLogout(token)

@@ -4,8 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.utils.Constants.DATA
+import com.driver.eho.utils.Constants.LAT
 import com.driver.eho.utils.Constants.LOGGEDIN
+import com.driver.eho.utils.Constants.LONG
 import com.driver.eho.utils.Constants.SP_NAME
+import com.driver.eho.utils.Constants.TOGGLE_STATE
 import com.driver.eho.utils.Constants.TOKEN
 import com.google.gson.Gson
 
@@ -40,7 +43,31 @@ class SharedPreferenceManager(val context: Context) {
         return Gson().fromJson(parcedData, DriverSignInResponse::class.java)
     }
 
+    fun setLat(latitude: String) {
+        sharedPreferences.edit().putString(LAT, latitude).apply()
+    }
+
+    fun getLat(): String? {
+        return sharedPreferences.getString(LAT, "")
+    }
+
+    fun setLong(longitude: String) {
+        sharedPreferences.edit().putString(LONG, longitude).apply()
+    }
+
+    fun getLong(): String? {
+        return sharedPreferences.getString(LONG, "")
+    }
+
     fun logoutUser() {
         sharedPreferences.edit().clear().apply()
+    }
+
+    fun setToggleState(toggleState: Boolean) {
+        sharedPreferences.edit().putBoolean(TOGGLE_STATE, toggleState).apply()
+    }
+
+    fun getToggleState(): Boolean {
+        return sharedPreferences.getBoolean(TOGGLE_STATE, false)
     }
 }

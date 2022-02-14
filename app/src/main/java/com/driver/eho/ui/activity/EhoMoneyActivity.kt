@@ -44,11 +44,16 @@ class EhoMoneyActivity : AppCompatActivity() {
 
         prefs = SharedPreferenceManager(this)
 
+        withdrawHistoryViewModel.getDriverDetails(
+            prefs.getToken().toString()
+        )
+        profileData()
+
         withdrawAdapter = WithdrawlHistoryListAdapter(listOf())
         getWithdrawlHistoryList()
 
         binding.menuIcon.setOnClickListener {
-            sendToMainActivity(prefs.getData())
+            sendToMainActivity()
         }
 
         binding.ivAdd.setOnClickListener {
@@ -103,6 +108,27 @@ class EhoMoneyActivity : AppCompatActivity() {
         )
     }
 
+    private fun profileData() {
+        withdrawHistoryViewModel.driverMutableLiveData.observe(this) { resources ->
+            when (resources) {
+                is Resources.Success -> {
+                    hideLoadingView()
+                    binding.tvEhoAmount.text = resources.data?.data?.amount.toString()
+                }
+
+                is Resources.Error -> {
+                    hideLoadingView()
+                    snackbarError(binding.root, resources.message.toString())
+                }
+
+                is Resources.Loading -> {
+                    showLoadingView()
+                }
+            }
+        }
+    }
+
+
     private fun showLoadingView() {
         binding.viewLoader.visibility = View.VISIBLE
     }
@@ -112,15 +138,14 @@ class EhoMoneyActivity : AppCompatActivity() {
     }
 
 
-    private fun sendToMainActivity(data: DriverSignInResponse?) {
+    private fun sendToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra(Constants.DRIVERSDATA, data)
         startActivity(intent)
         finish()
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        sendToMainActivity(prefs.getData())
+        sendToMainActivity()
     }
 }

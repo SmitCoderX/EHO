@@ -13,6 +13,11 @@ object Constants {
     const val DATA = "BookingData"
     const val SPLASH_DELAY = 3000L
     const val BOOKING_ID = ""
+    const val IMAGE_URL = "https://test-eho.s3.ap-south-1.amazonaws.com/"
+    const val LAT = "Lat"
+    const val LONG = "Long"
+    const val TOGGLE_STATE = "ToggleState"
+    const val REQUEST = "Request"
 
 
     fun snackbarError(view: View, message: String) {

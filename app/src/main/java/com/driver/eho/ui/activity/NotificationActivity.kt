@@ -44,7 +44,7 @@ class NotificationActivity : AppCompatActivity() {
         notificationAdapter = NotificationAdapter(listOf())
 
         binding.ivBack.setOnClickListener {
-            sendToMainActivity(prefs.getData())
+            sendToMainActivity()
         }
 
         binding.rvNotification.apply {
@@ -100,7 +100,7 @@ class NotificationActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        sendToMainActivity(prefs.getData())
+        sendToMainActivity()
     }
 
     private fun showLoadingView() {
@@ -111,9 +111,8 @@ class NotificationActivity : AppCompatActivity() {
         binding.viewLoader.visibility = View.GONE
     }
 
-    private fun sendToMainActivity(data: DriverSignInResponse?) {
+    private fun sendToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra(Constants.DRIVERSDATA, data)
         startActivity(intent)
         finish()
     }
