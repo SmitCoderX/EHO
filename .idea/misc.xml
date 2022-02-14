@@ -90,6 +90,7 @@
         <entry key="app/src/main/res/layout/activity_eho_money.xml" value="0.2477355072463768" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_profile.xml" value="0.2477355072463768" />
+        <entry key="app/src/main/res/layout/bottom_fragment_received_ambulance.xml" value="0.2967592592592593" />
         <entry key="app/src/main/res/layout/fragment_ambulanc_request_bottom.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_ambulance_accept_request_bottom.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_history.xml" value="0.14244791666666667" />

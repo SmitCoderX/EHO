@@ -155,8 +155,8 @@
                     android:fontFamily="@font/sf_pro_text_bold"
                     android:hint="Mobile Number"
                     android:inputType="text"
-                    android:padding="@dimen/_10sdp"
                     android:maxLength="10"
+                    android:padding="@dimen/_10sdp"
                     android:textAllCaps="false"
                     android:textColor="@color/black"
                     android:textColorHint="@color/gray"
@@ -422,6 +422,21 @@
                         android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_12sdp" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_deactivate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/_20sdp"
+                        android:fontFamily="@font/sf_pro_text_bold"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:textColor="@color/gray_2"
+                        android:text="Deactivate Account"
+                        android:textSize="@dimen/_18ssp" />
                 </LinearLayout>
             </LinearLayout>
 

@@ -495,6 +495,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                         hideLoadingView()
 //                        snackbarSuccess(binding.root, "Registred Successfully")
                         startActivity(Intent(this, WelcomeActivity::class.java))
+                        finish()
                     }
                 }
 

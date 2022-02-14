@@ -128,4 +128,9 @@ interface ApiInterface {
         @Header("x-access-token") token: String
     ): Response<DriverSignInResponse>
 
+    @POST("user/deactivateDriver")
+    suspend fun deactiveDriver(
+        @Header("x-access-token") token: String
+    ): Response<DriverSignUpResponse>
+
 }

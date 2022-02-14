@@ -27,10 +27,8 @@ import com.driver.eho.SharedPreferenceManager
 import com.driver.eho.adapter.HorizontalRecyclerView
 import com.driver.eho.databinding.ActivityProfileBinding
 import com.driver.eho.model.Login.Data
-import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.ui.viewModel.viewModelFactory.UpdateProfileViewModelProviderFactory
 import com.driver.eho.ui.viewModels.UpdateProfileViewModel
-import com.driver.eho.utils.Constants.DRIVERSDATA
 import com.driver.eho.utils.Constants.IMAGE_URL
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.Constants.snackbarError
@@ -49,7 +47,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
 
@@ -108,6 +105,10 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
             submit()
         }
         getUpdatedResult()
+
+        binding.tvDeactivate.setOnClickListener {
+            handleDeactivateDriver()
+        }
     }
 
     private fun getUpdatedResult() {
@@ -150,6 +151,28 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                     edtCountry.text.toString().trim(),
 //                        edtPassword.text.toString().trim()
                 )
+            }
+        }
+    }
+
+    private fun handleDeactivateDriver() {
+        updateProfileViewModel.deactivateDriver(prefs.getToken().toString())
+        updateProfileViewModel.deactivateMutableLiveData.observe(this) { resources ->
+            when (resources) {
+                is Resources.Success -> {
+                    prefs.logoutUser()
+                    startActivity(Intent(this, WelcomeActivity::class.java))
+                    finish()
+                }
+
+                is Resources.Error -> {
+                    hideLoading()
+                    snackbarError(binding.root, resources.message.toString())
+                }
+
+                is Resources.Loading -> {
+                    showLoading()
+                }
             }
         }
     }

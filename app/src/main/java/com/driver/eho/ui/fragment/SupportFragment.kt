@@ -18,6 +18,7 @@ import com.driver.eho.ui.viewModel.viewModelFactory.SupportViewModelProviderFact
 import com.driver.eho.ui.viewModels.SupportViewModel
 import com.driver.eho.utils.Constants
 import com.driver.eho.utils.Constants.DRIVERSDATA
+import com.driver.eho.utils.Constants.snackbarError
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
 
@@ -38,13 +39,10 @@ class SupportFragment : Fragment(R.layout.fragment_support) {
         binding = FragmentSupportBinding.bind(view)
 
         val prefs = SharedPreferenceManager(requireContext())
-        val data: Data? = prefs.getData()?.data
-
-        if (data != null) {
-            binding.edtFullName.setText(data.name)
-            binding.edtEmail.setText(data.email)
-            binding.edtMobileNumber.setText(data.mobile.toString())
-        }
+        supportViewModel.getDriverDetails(
+            prefs.getToken().toString()
+        )
+        profileData()
 
         binding.tvOfficeAddress.append(getString(R.string.support_address))
 
@@ -71,6 +69,28 @@ class SupportFragment : Fragment(R.layout.fragment_support) {
                 is Resources.Error -> {
                     hideLoading()
                     Constants.snackbarError(binding.root, resources.message.toString())
+                }
+
+                is Resources.Loading -> {
+                    showLoading()
+                }
+            }
+        }
+    }
+
+    private fun profileData() {
+        supportViewModel.driverMutableLiveData.observe(viewLifecycleOwner) { resources ->
+            when (resources) {
+                is Resources.Success -> {
+                    hideLoading()
+                    binding.edtFullName.setText(resources.data?.data?.name)
+                    binding.edtEmail.setText(resources.data?.data?.email)
+                    binding.edtMobileNumber.setText(resources.data?.data?.mobile.toString())
+                }
+
+                is Resources.Error -> {
+                    hideLoading()
+                    snackbarError(binding.root, resources.message.toString())
                 }
 
                 is Resources.Loading -> {

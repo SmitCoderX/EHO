@@ -134,4 +134,8 @@ class EHORepository {
     suspend fun getDriverDetails(
         token: String
     ) = ApiClient.getInstance().getDriverDetails(token)
+
+    suspend fun deactivateDriver(
+        token: String
+    ) = ApiClient.getInstance().deactiveDriver(token)
 }

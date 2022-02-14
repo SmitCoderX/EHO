@@ -2,7 +2,6 @@ package com.driver.eho.ui.fragment
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,21 +10,20 @@ import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.driver.eho.R
 import com.driver.eho.SharedPreferenceManager
-import com.driver.eho.databinding.FragmentAmbulanceAcceptRequestBottomBinding
+import com.driver.eho.databinding.BottomFragmentReceivedAmbulanceBinding
 import com.driver.eho.model.BottomSheetModal
 import com.driver.eho.model.Login.DriverSignInResponse
+import com.driver.eho.ui.activity.BookingHistoryActivity
 import com.driver.eho.ui.viewModel.viewModelFactory.HomeFragmentViewModelProviderFactory
 import com.driver.eho.ui.viewModels.HomeViewModel
 import com.driver.eho.utils.Constants
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
-import com.driver.eho.utils.SocketHandler
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
+class AmbulanceReceivedBottomFragment : BottomSheetDialogFragment() {
 
-class AmbulanceAcceptBottomFragment : BottomSheetDialogFragment() {
-
-    private lateinit var binding: FragmentAmbulanceAcceptRequestBottomBinding
+    private lateinit var binding: BottomFragmentReceivedAmbulanceBinding
     private var requestDetails: BottomSheetModal? = BottomSheetModal()
     private var driverDetails: DriverSignInResponse? = DriverSignInResponse()
     private val homeViewModel: HomeViewModel by viewModels {
@@ -36,19 +34,18 @@ class AmbulanceAcceptBottomFragment : BottomSheetDialogFragment() {
     }
     private lateinit var prefs: SharedPreferenceManager
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_ambulance_accept_request_bottom, container, false)
+        return inflater.inflate(R.layout.bottom_fragment_received_ambulance, container, false)
     }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentAmbulanceAcceptRequestBottomBinding.bind(view)
+        binding = BottomFragmentReceivedAmbulanceBinding.bind(view)
 
         prefs = SharedPreferenceManager(requireContext())
         requestDetails = arguments?.getParcelable(Constants.REQUEST)
@@ -63,41 +60,17 @@ class AmbulanceAcceptBottomFragment : BottomSheetDialogFragment() {
                 .placeholder(R.drawable.profile)
                 .error(R.drawable.profile)
                 .centerCrop()
-                .into(ivProfileAccept)
+                .into(ivProfileReceived)
 
             tvPatientName.text = requestDetails?.userName.toString()
-            tvAcceptDistance.text = requestDetails?.distance.toString()
-            tvPickup.text = requestDetails?.pickupLocation.toString()
+            tvReceivedDistance.text = requestDetails?.distance.toString()
             tvAmount.text = getString(R.string.Rs) + requestDetails?.price
-            tvDrop.text = requestDetails?.dropLocation.toString()
         }
 
-        binding.btnDropOff.setOnClickListener {
-            SocketHandler.emitDropOffRequest(
-                requestDetails?.userId.toString(),
-                driverDetails?.data?.id.toString(),
-                requestDetails?.bookingId.toString(),
-                requestDetails?.dropLatitude.toString(),
-                requestDetails?.dropLongitude.toString()
-            )
+        binding.btnReceived.setOnClickListener {
+            startActivity(Intent(requireContext(), BookingHistoryActivity::class.java))
             dismiss()
         }
-
-        binding.btnCancel.setOnClickListener {
-            SocketHandler.emitRejectRequest(
-                requestDetails?.userId.toString(),
-                driverDetails?.data?.id.toString(),
-                requestDetails?.bookingId.toString()
-            )
-            dismiss()
-        }
-
-        binding.btnCall.setOnClickListener {
-            val intent = Intent(Intent.ACTION_DIAL)
-            intent.data = Uri.parse("tel:${requestDetails?.userMobile}")
-            startActivity(intent)
-        }
-
     }
 
     private fun profileData() {
@@ -116,4 +89,6 @@ class AmbulanceAcceptBottomFragment : BottomSheetDialogFragment() {
             }
         }
     }
+
+
 }

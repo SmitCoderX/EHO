@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.driver.eho.model.DriverSignUpResponse
 import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.repository.EHORepository
 import com.driver.eho.utils.Constants
@@ -26,6 +27,7 @@ class UpdateProfileViewModel(
 
     val updateProfileLiveData = MutableLiveData<Resources<DriverSignInResponse>>()
     val driverMutableLiveData = MutableLiveData<Resources<DriverSignInResponse>>()
+    val deactivateMutableLiveData = MutableLiveData<Resources<DriverSignUpResponse>>()
 
     fun getDriverDetails(token: String) = viewModelScope.launch {
         safeHandleDriverDetails(token)
@@ -59,6 +61,41 @@ class UpdateProfileViewModel(
             }
         }
     }
+
+
+    fun deactivateDriver(token: String) = viewModelScope.launch {
+        safeHandleDeactivateDriver(token)
+    }
+
+    private fun handleDeactivateDriver(response: Response<DriverSignUpResponse>): Resources<DriverSignUpResponse> {
+        if (response.isSuccessful) {
+            response.body().let { resultResponse ->
+                return Resources.Success(resultResponse)
+            }
+        }
+        return Resources.Error(response.errorBody()?.string().toString())
+    }
+
+    private suspend fun safeHandleDeactivateDriver(token: String) {
+        deactivateMutableLiveData.postValue(Resources.Loading())
+        try {
+            if (hasInternetConnection()) {
+                val response = repositroy.deactivateDriver(token)
+                deactivateMutableLiveData.postValue(handleDeactivateDriver(response))
+            } else {
+                deactivateMutableLiveData.postValue(Resources.Error("No Internet Connection!!"))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> deactivateMutableLiveData.postValue(Resources.Error("Network Failure"))
+                else -> {
+                    deactivateMutableLiveData.postValue(Resources.Error(t.message.toString()))
+                    Log.d(Constants.TAG, "deactivateMutableLiveData: ${t.message}")
+                }
+            }
+        }
+    }
+
 
     fun updateProfile(
         token: String,

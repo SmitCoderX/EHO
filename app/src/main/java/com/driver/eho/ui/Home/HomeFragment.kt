@@ -21,6 +21,7 @@ import com.driver.eho.databinding.FragmentHomeBinding
 import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.ui.fragment.AmbulancRequestBottomFragment
 import com.driver.eho.ui.fragment.AmbulanceAcceptBottomFragment
+import com.driver.eho.ui.fragment.AmbulanceReceivedBottomFragment
 import com.driver.eho.ui.viewModel.viewModelFactory.HomeFragmentViewModelProviderFactory
 import com.driver.eho.ui.viewModels.HomeViewModel
 import com.driver.eho.utils.Constants.REQUEST
@@ -292,7 +293,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
             val bundle = Bundle()
             bundle.putParcelable(REQUEST, it)
             Log.d(TAG, "sendRequestDriverListener: $it")
-            val ambulancRequestBottomFragment = AmbulancRequestBottomFragment()
+            val ambulancRequestBottomFragment = AmbulanceReceivedBottomFragment()
             ambulancRequestBottomFragment.setTargetFragment(this, 1)
             ambulancRequestBottomFragment.arguments = bundle
             ambulancRequestBottomFragment.show(
