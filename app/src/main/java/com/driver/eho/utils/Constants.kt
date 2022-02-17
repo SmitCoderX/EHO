@@ -2,7 +2,10 @@ package com.driver.eho.utils
 
 import android.graphics.Color
 import android.view.View
+import com.driver.eho.model.BottomSheetModal
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 object Constants {
     const val TAG = "EHO"
@@ -28,5 +31,11 @@ object Constants {
     fun snackbarSuccess(view: View, message: String) {
         Snackbar.make(view, message, Snackbar.LENGTH_SHORT).setBackgroundTint(Color.GREEN)
             .setTextColor(Color.BLACK).show()
+    }
+
+    fun stringToAcceptReject(jsonOutput: String?): BottomSheetModal? {
+        val gson = Gson()
+        val listType = object : TypeToken<BottomSheetModal?>() {}.type
+        return gson.fromJson(jsonOutput, listType)
     }
 }

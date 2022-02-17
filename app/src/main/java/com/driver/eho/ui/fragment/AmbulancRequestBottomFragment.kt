@@ -30,8 +30,7 @@ class AmbulancRequestBottomFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentAmbulancRequestBottomBinding
     private lateinit var mediaPlayer: MediaPlayer
-    private val handler = Handler(Looper.myLooper()!!)
-    private var requestDetails: BottomSheetModal? = BottomSheetModal()
+    private lateinit var requestDetails: BottomSheetModal
     private var driverDetails: DriverSignInResponse? = DriverSignInResponse()
     private val homeViewModel: HomeViewModel by viewModels {
         HomeFragmentViewModelProviderFactory(
@@ -55,7 +54,7 @@ class AmbulancRequestBottomFragment : BottomSheetDialogFragment() {
         binding = FragmentAmbulancRequestBottomBinding.bind(view)
 
         prefs = SharedPreferenceManager(requireContext())
-        requestDetails = arguments?.getParcelable(REQUEST)
+        requestDetails = arguments?.getParcelable(REQUEST)!!
         homeViewModel.getDriverDetails(
             prefs.getToken().toString()
         )
@@ -69,10 +68,10 @@ class AmbulancRequestBottomFragment : BottomSheetDialogFragment() {
                 .centerCrop()
                 .into(ivProfile)
 
-            tvPatientName.text = requestDetails?.userName.toString()
-            tvKM.text = requestDetails?.distance.toString()
-            tvPickupAddress.text = requestDetails?.pickupLocation.toString()
-            tvAmmount.text = getString(R.string.Rs) + requestDetails?.price
+            tvPatientName.text = requestDetails.userName.toString()
+            tvKM.text = requestDetails.distance.toString() + "Km"
+            tvPickupAddress.text = requestDetails.pickupLocation.toString()
+            tvAmmount.text = getString(R.string.Rs) + requestDetails.price
 
 //            tvDropAddress.text = requestDetails?.dropLocation.toString()
         }
@@ -82,23 +81,24 @@ class AmbulancRequestBottomFragment : BottomSheetDialogFragment() {
 
         binding.btnAccept.setOnClickListener {
             SocketHandler.emitAcceptRequest(
-                requestDetails?.userId.toString(),
-                driverDetails?.data?.id.toString(),
-                requestDetails?.bookingId.toString()
+                requestDetails.userId.toString(),
+                prefs.getData()?.data?.id.toString(),
+                requestDetails.bookingId.toString()
             )
 
             performButtonAccept()
             mediaPlayer.stop()
-            handler.removeCallbacksAndMessages(null)
+            val handler = Looper.myLooper()?.let { it1 -> Handler(it1) }
+            handler?.removeCallbacksAndMessages(null)
         }
 
 
 
         binding.btnDecline.setOnClickListener {
             SocketHandler.emitRejectRequest(
-                requestDetails?.userId.toString(),
-                driverDetails?.data?.id.toString(),
-                requestDetails?.bookingId.toString()
+                requestDetails.userId.toString(),
+                prefs.getData()?.data?.id.toString(),
+                requestDetails.bookingId.toString()
             )
             dismiss()
             mediaPlayer.stop()
@@ -133,7 +133,8 @@ class AmbulancRequestBottomFragment : BottomSheetDialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        handler.postDelayed({
+        val handler = Looper.myLooper()?.let { Handler(it) }
+        handler?.postDelayed({
             dismiss()
             mediaPlayer.stop()
         }, 10000)

@@ -3,6 +3,7 @@ package com.driver.eho.utils
 import android.util.Log
 import com.driver.eho.model.BottomSheetModal
 import com.driver.eho.utils.Constants.TAG
+import com.driver.eho.utils.Constants.stringToAcceptReject
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.engineio.client.transports.Polling
@@ -111,9 +112,12 @@ object SocketHandler {
 
     fun sendRequestDriverListener(callback: (callbackValue: BottomSheetModal) -> Unit) {
         mSocket.on("sendRequestDriverListener") {
+            val data = it[0] as String
             Log.d(TAG, "Accept Request sendRequestDriverListener: $it")
-            val data = it[0] as BottomSheetModal
-            callback.invoke(data)
+            val accpetedData = stringToAcceptReject(data)
+            if (accpetedData != null) {
+                callback.invoke(accpetedData)
+            }
         }
     }
 
@@ -127,8 +131,12 @@ object SocketHandler {
     fun acceptRequestDriverListener(callback: (callbackValue: BottomSheetModal) -> Unit) {
         mSocket.on("acceptRequestDriverListener") {
             Log.d(TAG, "acceptRequestDriverListener: $it")
-            val data = it[0] as BottomSheetModal
-            callback.invoke(data)
+            val data = it[0] as String
+            Log.d(TAG, "Accept Request sendRequestDriverListener: $it")
+            val accpetedData = stringToAcceptReject(data)
+            if (accpetedData != null) {
+                callback.invoke(accpetedData)
+            }
         }
     }
 
@@ -140,9 +148,12 @@ object SocketHandler {
 
     fun dropOffRequestDriverListener(callback: (callbackValue: BottomSheetModal) -> Unit) {
         mSocket.on("dropOffRequestDriverListener") {
-            Log.d(TAG, "dropOffRequestDriverListener: $it")
-            val data = it[0] as BottomSheetModal
-            callback.invoke(data)
+            val data = it[0] as String
+            Log.d(TAG, "Accept Request sendRequestDriverListener: $it")
+            val accpetedData = stringToAcceptReject(data)
+            if (accpetedData != null) {
+                callback.invoke(accpetedData)
+            }
         }
     }
 
@@ -152,11 +163,14 @@ object SocketHandler {
         }
     }
 
-    fun rejectRequestDriverListener(callback: (callbackValue: String) -> Unit) {
+    fun rejectRequestDriverListener(callback: (callbackValue: BottomSheetModal) -> Unit) {
         mSocket.on("rejectRequestDriverListener") {
-            Log.d(TAG, "rejectRequestDriverListener: $it")
             val data = it[0] as String
-            callback.invoke(data)
+            Log.d(TAG, "Accept Request sendRequestDriverListener: $it")
+            val accpetedData = stringToAcceptReject(data)
+            if (accpetedData != null) {
+                callback.invoke(accpetedData)
+            }
         }
     }
 

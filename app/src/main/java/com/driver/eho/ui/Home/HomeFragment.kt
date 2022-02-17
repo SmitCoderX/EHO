@@ -36,6 +36,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import java.util.*
+
 
 class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
     GoogleMap.OnMarkerClickListener {
@@ -79,6 +81,24 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
         binding.toggle.setOnToggledListener { _, isOn ->
             if (isOn) {
                 prefs.setToggleState(true)
+                SocketHandler.establishConnection()
+
+                handler.postDelayed({
+                    SocketHandler.emitSubscribe(prefs.getData()?.data?.id.toString())
+                }, 500)
+
+                handler.postDelayed({
+                    startListeners()
+                }, 800)
+
+
+                // Send Location using Timer every 1 Sec
+                Timer().scheduleAtFixedRate(object : TimerTask() {
+                    override fun run() {
+                        sendLocation()
+                    }
+                }, 0, 1000)
+
             } else {
                 prefs.setToggleState(false)
                 SocketHandler.closeConnection()
@@ -101,9 +121,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
 
 
             // Send Location using Timer every 1 Sec
-            /*  handler.postDelayed({
-                  sendLocation()
-              }, 1000)*/
+            Timer().scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    sendLocation()
+                }
+            }, 0, 1000)
 
         } else {
             binding.toggle.isOn = false
@@ -249,9 +271,9 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
 
     private fun sendLocation() {
         SocketHandler.emitSentLocation(
-            latitude = lasttLocation?.latitude.toString(),
-            longitude = lasttLocation?.longitude.toString(),
-            driverId = driverDetails?.data?.id.toString()
+            latitude = prefs.getLat().toString(),
+            longitude = prefs.getLong().toString(),
+            driverId = prefs.getData()?.data?.id.toString()
         )
     }
 
@@ -286,7 +308,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
         }
 
         SocketHandler.emitIsAccepted(
-            driverDetails?.data?.id.toString()
+            prefs.getData()?.data?.id.toString()
         )
 
         SocketHandler.dropOffRequestDriverListener {

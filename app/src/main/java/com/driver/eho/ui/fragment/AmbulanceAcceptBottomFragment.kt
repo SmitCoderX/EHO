@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.ui.viewModel.viewModelFactory.HomeFragmentViewModelProviderFactory
 import com.driver.eho.ui.viewModels.HomeViewModel
 import com.driver.eho.utils.Constants
+import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
 import com.driver.eho.utils.SocketHandler
@@ -26,7 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 class AmbulanceAcceptBottomFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentAmbulanceAcceptRequestBottomBinding
-    private var requestDetails: BottomSheetModal? = BottomSheetModal()
+    private lateinit var requestDetails: BottomSheetModal
     private var driverDetails: DriverSignInResponse? = DriverSignInResponse()
     private val homeViewModel: HomeViewModel by viewModels {
         HomeFragmentViewModelProviderFactory(
@@ -51,7 +53,9 @@ class AmbulanceAcceptBottomFragment : BottomSheetDialogFragment() {
         binding = FragmentAmbulanceAcceptRequestBottomBinding.bind(view)
 
         prefs = SharedPreferenceManager(requireContext())
-        requestDetails = arguments?.getParcelable(Constants.REQUEST)
+        requestDetails = arguments?.getParcelable(Constants.REQUEST)!!
+
+        Log.d(TAG, "onViewCreated: ")
         homeViewModel.getDriverDetails(
             prefs.getToken().toString()
         )
@@ -59,35 +63,35 @@ class AmbulanceAcceptBottomFragment : BottomSheetDialogFragment() {
 
         binding.apply {
             Glide.with(requireContext())
-                .load(Constants.IMAGE_URL + requestDetails?.userImage)
+                .load(Constants.IMAGE_URL + requestDetails.userImage)
                 .placeholder(R.drawable.profile)
                 .error(R.drawable.profile)
                 .centerCrop()
                 .into(ivProfileAccept)
 
-            tvPatientName.text = requestDetails?.userName.toString()
-            tvAcceptDistance.text = requestDetails?.distance.toString()
-            tvPickup.text = requestDetails?.pickupLocation.toString()
-            tvAmount.text = getString(R.string.Rs) + requestDetails?.price
-            tvDrop.text = requestDetails?.dropLocation.toString()
+            tvPatientName.text = requestDetails.userName.toString()
+            tvAcceptDistance.text = requestDetails.distance.toString()
+            tvPickup.text = requestDetails.pickupLocation.toString()
+            tvAmount.text = getString(R.string.Rs) + requestDetails.price
+            tvDrop.text = requestDetails.dropLocation.toString()
         }
 
         binding.btnDropOff.setOnClickListener {
             SocketHandler.emitDropOffRequest(
-                requestDetails?.userId.toString(),
-                driverDetails?.data?.id.toString(),
-                requestDetails?.bookingId.toString(),
-                requestDetails?.dropLatitude.toString(),
-                requestDetails?.dropLongitude.toString()
+                requestDetails.userId.toString(),
+                prefs.getData()?.data?.id.toString(),
+                requestDetails.bookingId.toString(),
+                requestDetails.dropLatitude.toString(),
+                requestDetails.dropLongitude.toString()
             )
             dismiss()
         }
 
         binding.btnCancel.setOnClickListener {
             SocketHandler.emitRejectRequest(
-                requestDetails?.userId.toString(),
-                driverDetails?.data?.id.toString(),
-                requestDetails?.bookingId.toString()
+                requestDetails.userId.toString(),
+                prefs.getData()?.data?.id.toString(),
+                requestDetails.bookingId.toString()
             )
             dismiss()
         }
