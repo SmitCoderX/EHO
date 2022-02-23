@@ -13,6 +13,8 @@ import com.driver.eho.repository.EHORepository
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -40,6 +42,8 @@ class DriverSignUpViewModel(
         state: RequestBody,
         city: RequestBody,
         country: RequestBody,
+        ambulanceType: RequestBody,
+        ambulancePrice: RequestBody,
         driverExperience: RequestBody,
         driverLicenseNumber: RequestBody,
         ambulanceVehicleNumber: RequestBody,
@@ -59,6 +63,8 @@ class DriverSignUpViewModel(
             state = state,
             city = city,
             country = country,
+            ambulanceType = ambulanceType,
+            ambulancePrice = ambulancePrice,
             driverExperience = driverExperience,
             driverLicenseNumber = driverLicenseNumber,
             ambulanceVehicleNumber = ambulanceVehicleNumber,
@@ -80,6 +86,8 @@ class DriverSignUpViewModel(
         state: RequestBody,
         city: RequestBody,
         country: RequestBody,
+        ambulanceType: RequestBody,
+        ambulancePrice: RequestBody,
         driverExperience: RequestBody,
         driverLicenseNumber: RequestBody,
         ambulanceVehicleNumber: RequestBody,
@@ -102,6 +110,8 @@ class DriverSignUpViewModel(
                     state = state,
                     city = city,
                     country = country,
+                    ambulanceType = ambulanceType,
+                    ambulancePrice = ambulancePrice,
                     driverExperience = driverExperience,
                     driverLicenseNumber = driverLicenseNumber,
                     ambulanceVehicleNumber = ambulanceVehicleNumber,
@@ -129,10 +139,14 @@ class DriverSignUpViewModel(
                 return Resources.Success(resultResponse)
             }
         }
-        val message = response.errorBody()?.string().toString()
-        val messageNew = response.errorBody()?.string().toString()
-        Log.d(TAG, "handleRegister: $messageNew")
-        return Resources.Error(message)
+        if (response.code() == 500) {
+            return Resources.Error("Something Went Wrong!!")
+        }
+        val gson = Gson()
+        val type = object : TypeToken<DriverSignUpResponse>() {}.type
+        val errorResponse: DriverSignUpResponse? =
+            gson.fromJson(response.errorBody()!!.charStream(), type)
+        return Resources.Error(errorResponse?.message.toString())
     }
 
     private fun hasInternetConnection(): Boolean {

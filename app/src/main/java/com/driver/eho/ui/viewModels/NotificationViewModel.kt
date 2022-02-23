@@ -13,6 +13,8 @@ import com.driver.eho.repository.EHORepository
 import com.driver.eho.utils.Constants
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
@@ -34,7 +36,11 @@ class NotificationViewModel(
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.errorBody()?.string().toString())
+        val gson = Gson()
+        val type = object : TypeToken<Notification>() {}.type
+        val errorResponse: Notification? =
+            gson.fromJson(response.errorBody()!!.charStream(), type)
+        return Resources.Error(errorResponse?.message.toString())
     }
 
     private suspend fun safeHandleNotification(token: String, items: Int, start: Int) {

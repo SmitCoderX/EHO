@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1082762060482",
+    "project_id": "eho-driver",
+    "storage_bucket": "eho-driver.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1082762060482:android:3c3ef2412563781246d15b",
+        "android_client_info": {
+          "package_name": "com.driver.EHO"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1082762060482-t08pnl4fh3agol9774h6grm8t1872524.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.driver.EHO",
+            "certificate_hash": "07ee89fa5fd95862b7705246d378e08a3fa9f728"
+          }
+        },
+        {
+          "client_id": "1082762060482-i86dem48bvgh0qlja1dmbfs6lqdn3qbi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZ_oD5vtVXu7pHr0UjSOlyRUCt12_G9Ls"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1082762060482-i86dem48bvgh0qlja1dmbfs6lqdn3qbi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -31,6 +31,12 @@ data class BottomSheetModal(
     var userMobile: String? = "",
     @SerializedName("userName")
     var userName: String? = "",
+    @SerializedName("paymentMode")
+    var paymentMode: String? = "",
+    @SerializedName("ambulanceCharge")
+    var ambulanceCharge: String? = "",
+    @SerializedName("bookingFee")
+    var bookingFee: String? = ""
 
     /*paymentMode,
         ambulanceCharge,

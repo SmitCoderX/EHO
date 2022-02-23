@@ -8,12 +8,13 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.driver.eho.model.DriverSignUpResponse
 import com.driver.eho.model.ReceiptModel
 import com.driver.eho.repository.EHORepository
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
@@ -36,7 +37,11 @@ class ReceiptDataViewModel(
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.message().toString())
+        val gson = Gson()
+        val type = object : TypeToken<ReceiptModel>() {}.type
+        val errorResponse: ReceiptModel? =
+            gson.fromJson(response.errorBody()!!.charStream(), type)
+        return Resources.Error(errorResponse?.message.toString())
     }
 
     private suspend fun safeHandleReceipt(

@@ -13,6 +13,8 @@ import com.driver.eho.repository.EHORepository
 import com.driver.eho.utils.Constants
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
@@ -34,7 +36,11 @@ class HomeViewModel(
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.errorBody()?.string().toString())
+        val gson = Gson()
+        val type = object : TypeToken<DriverSignInResponse>() {}.type
+        val errorResponse: DriverSignInResponse? =
+            gson.fromJson(response.errorBody()!!.charStream(), type)
+        return Resources.Error(errorResponse?.message.toString())
     }
 
     private suspend fun safeHandleDriverDetails(token: String) {

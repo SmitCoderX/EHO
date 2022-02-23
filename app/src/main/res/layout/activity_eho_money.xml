@@ -130,7 +130,8 @@
                         android:padding="@dimen/_5sdp"
                         android:text="Wallet to Bank"
                         android:textAllCaps="false"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:visibility="gone" />
                 </LinearLayout>
             </FrameLayout>
 

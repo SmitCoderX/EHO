@@ -62,7 +62,7 @@ class AmbulancRequestBottomFragment : BottomSheetDialogFragment() {
 
         binding.apply {
             Glide.with(requireContext())
-                .load(IMAGE_URL + requestDetails?.userImage)
+                .load(IMAGE_URL + requestDetails.userImage)
                 .placeholder(R.drawable.profile)
                 .error(R.drawable.profile)
                 .centerCrop()
@@ -71,7 +71,13 @@ class AmbulancRequestBottomFragment : BottomSheetDialogFragment() {
             tvPatientName.text = requestDetails.userName.toString()
             tvKM.text = requestDetails.distance.toString() + "Km"
             tvPickupAddress.text = requestDetails.pickupLocation.toString()
-            tvAmmount.text = getString(R.string.Rs) + requestDetails.price
+            tvPaymentMode.text = requestDetails.paymentMode.toString()
+            if (prefs.getData()?.data?.ambulanceType == "1") {
+                tvAmmount.visibility = View.GONE
+            } else {
+                tvAmmount.visibility = View.VISIBLE
+                tvAmmount.text = getString(R.string.Rs) + requestDetails.ambulanceCharge
+            }
 
 //            tvDropAddress.text = requestDetails?.dropLocation.toString()
         }
@@ -85,22 +91,14 @@ class AmbulancRequestBottomFragment : BottomSheetDialogFragment() {
                 prefs.getData()?.data?.id.toString(),
                 requestDetails.bookingId.toString()
             )
-
-            performButtonAccept()
             mediaPlayer.stop()
             val handler = Looper.myLooper()?.let { it1 -> Handler(it1) }
             handler?.removeCallbacksAndMessages(null)
+            dismissAllowingStateLoss()
         }
 
-
-
         binding.btnDecline.setOnClickListener {
-            SocketHandler.emitRejectRequest(
-                requestDetails.userId.toString(),
-                prefs.getData()?.data?.id.toString(),
-                requestDetails.bookingId.toString()
-            )
-            dismiss()
+            rejectEmitter()
             mediaPlayer.stop()
         }
     }
@@ -135,9 +133,9 @@ class AmbulancRequestBottomFragment : BottomSheetDialogFragment() {
         super.onResume()
         val handler = Looper.myLooper()?.let { Handler(it) }
         handler?.postDelayed({
-            dismiss()
+            rejectEmitter()
             mediaPlayer.stop()
-        }, 10000)
+        }, 15000)
     }
 
     override fun onPause() {
@@ -149,5 +147,15 @@ class AmbulancRequestBottomFragment : BottomSheetDialogFragment() {
         super.onDestroy()
         mediaPlayer.stop()
     }
+
+    private fun rejectEmitter() {
+        SocketHandler.emitRejectRequest(
+            requestDetails.userId.toString(),
+            prefs.getData()?.data?.id.toString(),
+            requestDetails.bookingId.toString()
+        )
+        dismissAllowingStateLoss()
+    }
+
 
 }

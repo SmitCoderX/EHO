@@ -18,6 +18,7 @@ import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.ui.viewModel.viewModelFactory.HomeFragmentViewModelProviderFactory
 import com.driver.eho.ui.viewModels.HomeViewModel
 import com.driver.eho.utils.Constants
+import com.driver.eho.utils.Constants.REQUEST
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
@@ -28,7 +29,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 class AmbulanceAcceptBottomFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentAmbulanceAcceptRequestBottomBinding
-    private lateinit var requestDetails: BottomSheetModal
+    private var requestDetails: BottomSheetModal? = BottomSheetModal()
     private var driverDetails: DriverSignInResponse? = DriverSignInResponse()
     private val homeViewModel: HomeViewModel by viewModels {
         HomeFragmentViewModelProviderFactory(
@@ -53,7 +54,7 @@ class AmbulanceAcceptBottomFragment : BottomSheetDialogFragment() {
         binding = FragmentAmbulanceAcceptRequestBottomBinding.bind(view)
 
         prefs = SharedPreferenceManager(requireContext())
-        requestDetails = arguments?.getParcelable(Constants.REQUEST)!!
+        requestDetails = arguments?.getParcelable(REQUEST)!!
 
         Log.d(TAG, "onViewCreated: ")
         homeViewModel.getDriverDetails(
@@ -63,39 +64,48 @@ class AmbulanceAcceptBottomFragment : BottomSheetDialogFragment() {
 
         binding.apply {
             Glide.with(requireContext())
-                .load(Constants.IMAGE_URL + requestDetails.userImage)
+                .load(Constants.IMAGE_URL + requestDetails?.userImage)
                 .placeholder(R.drawable.profile)
                 .error(R.drawable.profile)
                 .centerCrop()
                 .into(ivProfileAccept)
 
-            tvPatientName.text = requestDetails.userName.toString()
-            tvAcceptDistance.text = requestDetails.distance.toString()
-            tvPickup.text = requestDetails.pickupLocation.toString()
-            tvAmount.text = getString(R.string.Rs) + requestDetails.price
-            tvDrop.text = requestDetails.dropLocation.toString()
+            tvPatientName.text = requestDetails?.userName.toString()
+            tvAcceptDistance.text = requestDetails?.distance.toString() + "Km"
+            tvPickup.text = requestDetails?.pickupLocation.toString()
+            tvPaymentMode.text = requestDetails?.paymentMode.toString()
+            if (prefs.getData()?.data?.ambulanceType == "1") {
+                tvAmount.visibility = View.GONE
+            } else {
+                tvAmount.visibility = View.VISIBLE
+                tvAmount.text = getString(R.string.Rs) + requestDetails?.ambulanceCharge
+            }
+            tvDrop.text = requestDetails?.dropLocation.toString()
         }
 
         binding.btnDropOff.setOnClickListener {
-            SocketHandler.emitDropOffRequest(
-                requestDetails.userId.toString(),
-                prefs.getData()?.data?.id.toString(),
-                requestDetails.bookingId.toString(),
-                requestDetails.dropLatitude.toString(),
-                requestDetails.dropLongitude.toString()
-            )
-            dismiss()
+            if (prefs.getData()?.data?.ambulanceType == "1") {
+                dismissAllowingStateLoss()
+            } else {
+                SocketHandler.emitDropOffRequest(
+                    requestDetails?.userId.toString(),
+                    prefs.getData()?.data?.id.toString(),
+                    requestDetails?.bookingId.toString(),
+                    requestDetails?.dropLatitude.toString(),
+                    requestDetails?.dropLongitude.toString()
+                )
+                dismissAllowingStateLoss()
+            }
         }
 
         binding.btnCancel.setOnClickListener {
             SocketHandler.emitRejectRequest(
-                requestDetails.userId.toString(),
+                requestDetails?.userId.toString(),
                 prefs.getData()?.data?.id.toString(),
-                requestDetails.bookingId.toString()
+                requestDetails?.bookingId.toString()
             )
-            dismiss()
+            dismissAllowingStateLoss()
         }
-
         binding.btnCall.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL)
             intent.data = Uri.parse("tel:${requestDetails?.userMobile}")

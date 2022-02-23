@@ -8,14 +8,16 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.driver.eho.model.DriverSignUpResponse
 import com.driver.eho.model.Login.DriverSignInResponse
+import com.driver.eho.model.MessageResponseModal
 import com.driver.eho.repository.EHORepository
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Response
@@ -26,7 +28,7 @@ class SupportViewModel(
     private val repository: EHORepository
 ) : AndroidViewModel(application) {
 
-    val supportLiveData = MutableLiveData<Resources<DriverSignUpResponse>>()
+    val supportLiveData = MutableLiveData<Resources<MessageResponseModal>>()
     val driverMutableLiveData = MutableLiveData<Resources<DriverSignInResponse>>()
 
     fun getDriverDetails(token: String) = viewModelScope.launch {
@@ -39,7 +41,11 @@ class SupportViewModel(
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.errorBody()?.string().toString())
+        val gson = Gson()
+        val type = object : TypeToken<DriverSignInResponse>() {}.type
+        val errorResponse: DriverSignInResponse? =
+            gson.fromJson(response.errorBody()!!.charStream(), type)
+        return Resources.Error(errorResponse?.message.toString())
     }
 
     private suspend fun safeHandleDriverDetails(token: String) {
@@ -68,13 +74,17 @@ class SupportViewModel(
             safeHandleHistoryList(token, name, email, mobile, message)
         }
 
-    private fun handleHistoryList(response: Response<DriverSignUpResponse>): Resources<DriverSignUpResponse> {
+    private fun handleHistoryList(response: Response<MessageResponseModal>): Resources<MessageResponseModal> {
         if (response.isSuccessful) {
             response.body().let { resultResponse ->
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.message().toString())
+        val gson = Gson()
+        val type = object : TypeToken<MessageResponseModal>() {}.type
+        val errorResponse: MessageResponseModal? =
+            gson.fromJson(response.errorBody()!!.charStream(), type)
+        return Resources.Error(errorResponse?.message.toString())
     }
 
     private suspend fun safeHandleHistoryList(

@@ -27,4 +27,6 @@
     <string name="call">Call</string>
     <string name="drop_off">Drop Off</string>
     <string name="payment_details">Payment Details</string>
+    <string name="received">Received</string>
+    <string name="msg_token_fmt">FCM TOKEN</string>
 </resources>

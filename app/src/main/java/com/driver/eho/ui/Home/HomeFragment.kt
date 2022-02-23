@@ -14,6 +14,7 @@ import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.driver.eho.R
 import com.driver.eho.SharedPreferenceManager
@@ -27,6 +28,7 @@ import com.driver.eho.ui.viewModels.HomeViewModel
 import com.driver.eho.utils.Constants.REQUEST
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.Constants.snackbarError
+import com.driver.eho.utils.Constants.snackbarSuccess
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
 import com.driver.eho.utils.SocketHandler
@@ -36,6 +38,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
 
 
@@ -49,6 +52,10 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
     internal var mCurrLocationMarker: Marker? = null
     private lateinit var mLocationRequest: LocationRequest
     private lateinit var prefs: SharedPreferenceManager
+    private var ambulanceAcceptSheet = AmbulanceAcceptBottomFragment()
+    private var ambulancRequestBottomFragment = AmbulancRequestBottomFragment()
+    private var ambulanceReceivedSheet = AmbulanceReceivedBottomFragment()
+
     private var driverDetails: DriverSignInResponse? = DriverSignInResponse()
     private val homeViewModel: HomeViewModel by viewModels {
         HomeFragmentViewModelProviderFactory(
@@ -78,8 +85,9 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
         mGoogleMao?.let { onMapReady(it) }
         client = LocationServices.getFusedLocationProviderClient(requireContext())
 
-        binding.toggle.setOnToggledListener { _, isOn ->
-            if (isOn) {
+        SocketHandler.setSocket()
+        binding.toggle.setOnCheckedChangeListener { _, b ->
+            if (b) {
                 prefs.setToggleState(true)
                 SocketHandler.establishConnection()
 
@@ -98,39 +106,40 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
                         sendLocation()
                     }
                 }, 0, 1000)
-
+                snackbarSuccess(binding.root, "Your are Online")
             } else {
                 prefs.setToggleState(false)
                 SocketHandler.closeConnection()
+                snackbarSuccess(binding.root, "Your are Offline")
             }
         }
 
+        /* if (prefs.getToggleState()) {
+             binding.toggle.isChecked = true
+             SocketHandler.establishConnection()
 
-        SocketHandler.setSocket()
-        if (prefs.getToggleState()) {
-            binding.toggle.isOn = true
-            SocketHandler.establishConnection()
+             handler.postDelayed({
+                 SocketHandler.emitSubscribe(prefs.getData()?.data?.id.toString())
+             }, 500)
 
-            handler.postDelayed({
-                SocketHandler.emitSubscribe(prefs.getData()?.data?.id.toString())
-            }, 500)
-
-            handler.postDelayed({
-                startListeners()
-            }, 800)
+             handler.postDelayed({
+                 startListeners()
+             }, 800)
 
 
-            // Send Location using Timer every 1 Sec
-            Timer().scheduleAtFixedRate(object : TimerTask() {
-                override fun run() {
-                    sendLocation()
-                }
-            }, 0, 1000)
-
-        } else {
-            binding.toggle.isOn = false
-            SocketHandler.closeConnection()
-        }
+             // Send Location using Timer every 1 Sec
+             Timer().scheduleAtFixedRate(object : TimerTask() {
+                 override fun run() {
+                     Log.d(TAG, "run: EmitLoc => send")
+                     sendLocation()
+                 }
+             }, 0, 1000)
+             snackbarSuccess(binding.root, "Your are Online")
+         } else {
+             binding.toggle.isChecked = false
+             SocketHandler.closeConnection()
+             snackbarSuccess(binding.root, "Your are Offline")
+         }*/
 
     }
 
@@ -194,6 +203,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
             setUpMap()
             return
         }
+
         mGoogleMao?.isMyLocationEnabled = true
         client.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper()!!)
         client.lastLocation.addOnSuccessListener(requireActivity()) { location ->
@@ -203,10 +213,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
                 placeMakerOnMap(currentLatLog)
                 mGoogleMao?.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLog, 12f))
                 Log.d(TAG, "setUpMap: $currentLatLog")
+                placeMakerOnMap(currentLatLog)
             }
         }
-    }
 
+    }
 
     private fun placeMakerOnMap(currentLatLog: LatLng) {
         val markerOptions = MarkerOptions().position(currentLatLog)
@@ -278,16 +289,17 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
     }
 
     private fun startListeners() {
+        val fm: FragmentManager = childFragmentManager
         stopListeners()
         SocketHandler.sendRequestDriverListener {
             val bundle = Bundle()
             bundle.putParcelable(REQUEST, it)
             Log.d(TAG, "sendRequestDriverListener: $it")
-            val ambulancRequestBottomFragment = AmbulancRequestBottomFragment()
-            ambulancRequestBottomFragment.setTargetFragment(this, 1)
+            ambulancRequestBottomFragment = AmbulancRequestBottomFragment()
+            ambulancRequestBottomFragment.isCancelable = false
             ambulancRequestBottomFragment.arguments = bundle
             ambulancRequestBottomFragment.show(
-                parentFragmentManager,
+                fm,
                 ambulancRequestBottomFragment.tag
             )
         }
@@ -298,12 +310,12 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
             val bundle = Bundle()
             bundle.putParcelable(REQUEST, it)
             Log.d(TAG, "sendRequestDriverListener: $it")
-            val ambulancRequestBottomFragment = AmbulanceAcceptBottomFragment()
-            ambulancRequestBottomFragment.setTargetFragment(this, 1)
-            ambulancRequestBottomFragment.arguments = bundle
-            ambulancRequestBottomFragment.show(
-                parentFragmentManager,
-                ambulancRequestBottomFragment.tag
+            ambulanceAcceptSheet = AmbulanceAcceptBottomFragment()
+            ambulanceAcceptSheet.isCancelable = false
+            ambulanceAcceptSheet.arguments = bundle
+            ambulanceAcceptSheet.show(
+                fm,
+                ambulanceAcceptSheet.tag
             )
         }
 
@@ -311,25 +323,46 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
             prefs.getData()?.data?.id.toString()
         )
 
+        SocketHandler.emitWalletBalance(
+            prefs.getData()?.data?.id.toString()
+        )
+
         SocketHandler.dropOffRequestDriverListener {
             val bundle = Bundle()
             bundle.putParcelable(REQUEST, it)
             Log.d(TAG, "sendRequestDriverListener: $it")
-            val ambulancRequestBottomFragment = AmbulanceReceivedBottomFragment()
-            ambulancRequestBottomFragment.setTargetFragment(this, 1)
-            ambulancRequestBottomFragment.arguments = bundle
-            ambulancRequestBottomFragment.show(
-                parentFragmentManager,
-                ambulancRequestBottomFragment.tag
+            ambulanceReceivedSheet = AmbulanceReceivedBottomFragment()
+            ambulanceReceivedSheet.isCancelable = false
+            ambulanceReceivedSheet.arguments = bundle
+            ambulanceReceivedSheet.show(
+                fm, ambulanceReceivedSheet.tag
             )
         }
 
         SocketHandler.rejectRequestDriverListener {
-            Log.d(TAG, "startListeners Reject: $it")
+//            All Pop SHould be hidden
+            Log.d(TAG, "rejectListeners Reject: $it")
+            dismissAllDialogs(fm)
+//            dismissAllDialogs(parentFragmentManager)
+//            parentFragmentManager.fragments.clear()
+            /*lifecycleScope.launchWhenResumed {
+            }*/
         }
 
         SocketHandler.cancelRequestDriverListener {
+//            All Pop SHould be hidden
             Log.d(TAG, "startListeners Cancel: $it")
+            dismissAllDialogs(fm)
+//            parentFragmentManager.fragments.clear()
+            /* lifecycleScope.launchWhenCreated {
+                 AmbulancRequestBottomFragment().dismissAllowingStateLoss()
+                 AmbulanceReceivedBottomFragment().dismissAllowingStateLoss()
+                 AmbulanceAcceptBottomFragment().dismissAllowingStateLoss()
+             }*/
+        }
+
+        SocketHandler.getWalletBalanceDriverListener {
+            prefs.setLatestBalance(it.amount.toString())
         }
     }
 
@@ -352,6 +385,23 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
 
         SocketHandler.closeCancelRequestDriverListener {
             Log.d(TAG, "stopListeners: $it")
+        }
+
+        SocketHandler.offGetWalletBalanceDriverListener {
+            Log.d(TAG, "stopListeners: $it")
+        }
+    }
+
+    private fun dismissAllDialogs(manager: FragmentManager?) {
+        val fragments: List<Fragment> = manager?.fragments ?: return
+        for (fragment in fragments) {
+            if (fragment is BottomSheetDialogFragment) {
+                val dialogFragment: BottomSheetDialogFragment =
+                    fragment
+                dialogFragment.dismissAllowingStateLoss()
+            }
+            val childFragmentManager: FragmentManager = fragment.childFragmentManager
+            dismissAllDialogs(childFragmentManager)
         }
     }
 }

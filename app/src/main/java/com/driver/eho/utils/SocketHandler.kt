@@ -1,9 +1,14 @@
 package com.driver.eho.utils
 
 import android.util.Log
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.driver.eho.model.BottomSheetModal
+import com.driver.eho.model.WalletAmount
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.Constants.stringToAcceptReject
+import com.driver.eho.utils.Constants.stringToWalletAmount
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.engineio.client.transports.Polling
@@ -35,7 +40,7 @@ object SocketHandler {
                 .setTimeout(2000)
                 .setAuth(null)
                 .build()
-            mSocket = IO.socket("https://test-app-eho.herokuapp.com", options)
+            mSocket = IO.socket("https://dev.ehohealthcare.net", options)
         } catch (e: URISyntaxException) {
             Log.d(TAG, "setSocket: ErroConnection ${e.message.toString()}")
         }
@@ -110,10 +115,40 @@ object SocketHandler {
         mSocket.emit("dropOffRequest", obj6.toString())
     }
 
+    fun emitWalletBalance(
+        driverId: String
+    ) {
+        val obj7 = JSONObject()
+        obj7.put(
+            "driverId",
+            driverId
+        )
+        mSocket.emit("getWalletBalance", obj7.toString())
+    }
+
+    fun getWalletBalanceDriverListener(callback: (callbackValue: WalletAmount) -> Unit) {
+        mSocket.on("getWalletBalanceDriverListener") {
+            val data = it[0] as String
+            Log.d(TAG, "Socket Wallet: $data")
+            val acceptedData = stringToWalletAmount(data)
+            if (acceptedData != null) {
+                callback.invoke(acceptedData)
+            }
+
+        }
+    }
+
+    fun offGetWalletBalanceDriverListener(callback: (callbackValue: String) -> Unit) {
+        mSocket.off("getWalletBalanceDriverListener") {
+            val data = it[0] as String
+            Log.d(TAG, "Socket offWallet: $data")
+        }
+    }
+
     fun sendRequestDriverListener(callback: (callbackValue: BottomSheetModal) -> Unit) {
         mSocket.on("sendRequestDriverListener") {
             val data = it[0] as String
-            Log.d(TAG, "Accept Request sendRequestDriverListener: $it")
+            Log.d(TAG, "Socket sendRequestDriverListener: $data")
             val accpetedData = stringToAcceptReject(data)
             if (accpetedData != null) {
                 callback.invoke(accpetedData)
@@ -123,7 +158,8 @@ object SocketHandler {
 
     fun closeSendRequestDriverListner(callback: (callbackValue: String) -> Unit) {
         mSocket.off("sendRequestDriverListener") {
-            Log.d(TAG, "closeSendRequestDriverListner: $it")
+            val data = it[0] as String
+            Log.d(TAG, "Socket closeSendRequestDriverListner: $data")
 
         }
     }
@@ -132,7 +168,7 @@ object SocketHandler {
         mSocket.on("acceptRequestDriverListener") {
             Log.d(TAG, "acceptRequestDriverListener: $it")
             val data = it[0] as String
-            Log.d(TAG, "Accept Request sendRequestDriverListener: $it")
+            Log.d(TAG, "Socket Accept Request sendRequestDriverListener: $data")
             val accpetedData = stringToAcceptReject(data)
             if (accpetedData != null) {
                 callback.invoke(accpetedData)
@@ -142,14 +178,15 @@ object SocketHandler {
 
     fun closeAcceptRequestDriverListener(callback: (callbackValue: String) -> Unit) {
         mSocket.off("acceptRequestDriverListener") {
-            Log.d(TAG, "closeAcceptRequestDriverListener: $it")
+            val data = it[0] as String
+            Log.d(TAG, "Socket closeAcceptRequestDriverListener: $data")
         }
     }
 
     fun dropOffRequestDriverListener(callback: (callbackValue: BottomSheetModal) -> Unit) {
         mSocket.on("dropOffRequestDriverListener") {
             val data = it[0] as String
-            Log.d(TAG, "Accept Request sendRequestDriverListener: $it")
+            Log.d(TAG, "Socket DropOffRequestDriverListener: $data")
             val accpetedData = stringToAcceptReject(data)
             if (accpetedData != null) {
                 callback.invoke(accpetedData)
@@ -159,14 +196,15 @@ object SocketHandler {
 
     fun closeDropOffRequestDriverListener(callback: (callbackValue: String) -> Unit) {
         mSocket.off("dropOffRequestDriverListener") {
-            Log.d(TAG, "closeDropOffRequestDriverListener: $it")
+            val data = it[0] as String
+            Log.d(TAG, "Socket closeDropOffRequestDriverListener: $data")
         }
     }
 
     fun rejectRequestDriverListener(callback: (callbackValue: BottomSheetModal) -> Unit) {
         mSocket.on("rejectRequestDriverListener") {
             val data = it[0] as String
-            Log.d(TAG, "Accept Request sendRequestDriverListener: $it")
+            Log.d(TAG, "Socket reject Request DriverListener: $data")
             val accpetedData = stringToAcceptReject(data)
             if (accpetedData != null) {
                 callback.invoke(accpetedData)
@@ -176,19 +214,22 @@ object SocketHandler {
 
     fun closeRejectRequestDriverListener(callback: (callbackValue: String) -> Unit) {
         mSocket.off("rejectRequestDriverListener") {
-            Log.d(TAG, "closeRejectRequestDriverListener: $it")
+            val data = it[0] as String
+            Log.d(TAG, "Socket closeRejectRequestDriverListener: $data")
         }
     }
 
     fun cancelRequestDriverListener(callback: (callbackValue: String) -> Unit) {
         mSocket.on("cancelRequestDriverListener") {
-            Log.d(TAG, "cancelRequestDriverListener: $it")
+            val data = it[0] as String
+            Log.d(TAG, "Socket cancelRequestDriverListener: $data")
         }
     }
 
     fun closeCancelRequestDriverListener(callback: (callbackValue: String) -> Unit) {
         mSocket.off("cancelRequestDriverListener") {
-            Log.d(TAG, "closeCancelRequestDriverListener: $it")
+            val data = it[0] as String
+            Log.d(TAG, "Socket closeCancelRequestDriverListener: $data")
         }
     }
 

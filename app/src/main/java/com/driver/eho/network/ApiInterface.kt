@@ -4,6 +4,7 @@ import com.driver.eho.model.BankAccountList
 import com.driver.eho.model.Booking.BookingHistoryListModel
 import com.driver.eho.model.DriverSignUpResponse
 import com.driver.eho.model.Login.DriverSignInResponse
+import com.driver.eho.model.MessageResponseModal
 import com.driver.eho.model.Notification.Notification
 import com.driver.eho.model.ReceiptModel
 import com.driver.eho.model.Withdraw.WithdrawModel
@@ -39,9 +40,11 @@ interface ApiInterface {
         @Part("state") state: RequestBody,
         @Part("city") city: RequestBody,
         @Part("country") country: RequestBody,
+        @Part("ambulanceType") ambulanceType: RequestBody,
+        @Part("ambulancePrice") ambulancePrice: RequestBody,
         @Part("driverExperience") driverExperience: RequestBody,
         @Part("driverLicenseNumber") driverLicenseNumber: RequestBody,
-        @Part("ambulanceVehicleNumber") ambulanceVehicleNumber: RequestBody,
+        @Part("ambulenceVehicleNumber") ambulanceVehicleNumber: RequestBody,
         @Part("latitude ") latitude: RequestBody,
         @Part("longitude ") longitude: RequestBody,
     ): Response<DriverSignUpResponse>
@@ -60,6 +63,8 @@ interface ApiInterface {
         @Part("state") state: RequestBody,
         @Part("city") city: RequestBody,
         @Part("country") country: RequestBody,
+        @Part("ambulanceType") ambulanceType: RequestBody,
+        @Part("ambulancePrice") ambulancePrice: RequestBody,
         @Part("driverExperience") driverExperience: RequestBody,
         @Part("driverLicenseNumber") driverLicenseNumber: RequestBody,
         @Part("ambulenceVehicleNumber") ambulanceVehicleNumber: RequestBody,
@@ -79,13 +84,13 @@ interface ApiInterface {
     suspend fun createSupport(
         @Header("x-access-token") token: String,
         @Body parameter: JsonObject
-    ): Response<DriverSignUpResponse>
+    ): Response<MessageResponseModal>
 
     @POST("user/addDriverBankAccount")
     suspend fun addBankAccount(
         @Header("x-access-token") token: String,
         @Body parameter: JsonObject
-    ): Response<DriverSignUpResponse>
+    ): Response<MessageResponseModal>
 
     @GET("user/getDriverBankAccount")
     suspend fun getBankAccountList(
@@ -108,7 +113,7 @@ interface ApiInterface {
     @POST("auth/driverLogOut")
     suspend fun logoutUser(
         @Header("x-access-token") token: String
-    ): Response<DriverSignUpResponse>
+    ): Response<MessageResponseModal>
 
     @GET("user/getNotification")
     suspend fun getNotificationList(
@@ -121,7 +126,7 @@ interface ApiInterface {
     suspend fun deactivateAccount(
         @Header("x-access-token") token: String,
         @Body parameter: JsonObject
-    ): Response<DriverSignUpResponse>
+    ): Response<MessageResponseModal>
 
     @GET("user/getDriverDetails")
     suspend fun getDriverDetails(
@@ -131,6 +136,10 @@ interface ApiInterface {
     @POST("user/deactivateDriver")
     suspend fun deactiveDriver(
         @Header("x-access-token") token: String
-    ): Response<DriverSignUpResponse>
+    ): Response<MessageResponseModal>
 
+    @POST("user/forgotPassword")
+    suspend fun forgotPassword(
+        @Query("email") email: String
+    ): Response<MessageResponseModal>
 }

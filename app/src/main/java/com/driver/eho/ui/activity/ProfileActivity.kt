@@ -21,12 +21,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
 import com.driver.eho.R
 import com.driver.eho.SharedPreferenceManager
 import com.driver.eho.adapter.HorizontalRecyclerView
 import com.driver.eho.databinding.ActivityProfileBinding
 import com.driver.eho.model.Login.Data
+import com.driver.eho.ui.fragment.AmbulanceTypeBottomSheet
 import com.driver.eho.ui.viewModel.viewModelFactory.UpdateProfileViewModelProviderFactory
 import com.driver.eho.ui.viewModels.UpdateProfileViewModel
 import com.driver.eho.utils.Constants.IMAGE_URL
@@ -48,7 +51,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
 
-class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
+class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback,
+    AmbulanceTypeBottomSheet.AmbulanceType {
 
     private lateinit var binding: ActivityProfileBinding
     private var uri: ArrayList<Uri> = ArrayList()
@@ -85,6 +89,11 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
             checkPermissionForProfileImage()
         }
 
+        binding.tvAmbulanceType.setOnClickListener {
+            val typeFragment = AmbulanceTypeBottomSheet()
+            typeFragment.show(supportFragmentManager, typeFragment.tag)
+        }
+
         // adapter fot upload document
         recyclerView = binding.rvDocument
         adapter = HorizontalRecyclerView(listOf())
@@ -115,17 +124,20 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
         updateProfileViewModel.updateProfileLiveData.observe(this) { resources ->
             when (resources) {
                 is Resources.Success -> {
+                    setEnabled()
                     hideLoading()
                     snackbarSuccess(binding.root, resources.message.toString())
                     sendToMainActivity()
                 }
 
                 is Resources.Error -> {
+                    setEnabled()
                     hideLoading()
                     snackbarError(binding.root, resources.message.toString())
                 }
 
                 is Resources.Loading -> {
+                    removeEnabled()
                     showLoading()
                 }
             }
@@ -137,7 +149,7 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
         if (validate()) {
             binding.apply {
                 driverUpdateProfile(
-                    prefs.getToken().toString(),
+                    prefs.getToken().toString().trim(),
                     edtUserName.text.toString().trim(),
                     edtMobileNumber.text.toString().trim(),
                     edtEmail.text.toString().trim(),
@@ -149,6 +161,8 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                     edtState.text.toString().trim(),
                     edtCity.text.toString().trim(),
                     edtCountry.text.toString().trim(),
+                    tvAmbulanceType.text.toString().trim(),
+                    edtPriceFair.text.toString().trim(),
 //                        edtPassword.text.toString().trim()
                 )
             }
@@ -160,17 +174,20 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
         updateProfileViewModel.deactivateMutableLiveData.observe(this) { resources ->
             when (resources) {
                 is Resources.Success -> {
+                    setEnabled()
                     prefs.logoutUser()
                     startActivity(Intent(this, WelcomeActivity::class.java))
                     finish()
                 }
 
                 is Resources.Error -> {
+                    setEnabled()
                     hideLoading()
                     snackbarError(binding.root, resources.message.toString())
                 }
 
                 is Resources.Loading -> {
+                    removeEnabled()
                     showLoading()
                 }
             }
@@ -192,16 +209,15 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
         State: String,
         City: String,
         Country: String,
+        AmbulanceType: String,
+        PriceFair: String,
     ) {
 
-        /*    if (selectedImage == null) {
-                Toast.makeText(this, "Select An Image First", Toast.LENGTH_SHORT).show()
-                return
-            }
-            if (uri.isNullOrEmpty()) {
-                Toast.makeText(this, "Select An document First", Toast.LENGTH_SHORT).show()
-                return
-            }*/
+        val type = if (AmbulanceType == "Free") {
+            "1"
+        } else {
+            "2"
+        }
 
         if (selectedImage == null && uri.isNullOrEmpty()) {
             try {
@@ -239,6 +255,11 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                         .toRequestBody("multipart/form-data".toMediaTypeOrNull())
                 val isAttached = setIsAttached().toString()
                     .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val ambulanceType: RequestBody =
+                    type.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val priceFair: RequestBody =
+                    PriceFair.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                Log.d(TAG, "driverSignUpApiCall: $type")
 
                 updateProfileViewModel.updateProfile(
                     token,
@@ -252,6 +273,8 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                     state,
                     city,
                     country,
+                    ambulanceType,
+                    priceFair,
                     driverExperience,
                     driverLicenseNumber,
                     ambulanceVehicleNumber,
@@ -300,6 +323,10 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                             .toRequestBody("multipart/form-data".toMediaTypeOrNull())
                     val ambulanceVehicleNumber: RequestBody =
                         AmbulanceVehicleNumber.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val ambulanceType: RequestBody =
+                        type.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val priceFair: RequestBody =
+                        PriceFair.toRequestBody("multipart/form-data".toMediaTypeOrNull())
                     val latitude: RequestBody =
                         prefs.getLat().toString()
                             .toRequestBody("multipart/form-data".toMediaTypeOrNull())
@@ -309,6 +336,7 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                     val isAttached = setIsAttached().toString()
                         .toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
+                    Log.d(TAG, "driverSignUpApiCall: $type")
                     updateProfileViewModel.updateProfile(
                         token,
                         userName,
@@ -321,6 +349,8 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                         state,
                         city,
                         country,
+                        ambulanceType,
+                        priceFair,
                         driverExperience,
                         driverLicenseNumber,
                         ambulanceVehicleNumber,
@@ -362,6 +392,10 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                     City.toRequestBody("multipart/form-data".toMediaTypeOrNull())
                 val country: RequestBody =
                     Country.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val ambulanceType: RequestBody =
+                    type.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                val priceFair: RequestBody =
+                    PriceFair.toRequestBody("multipart/form-data".toMediaTypeOrNull())
                 val driverExperience: RequestBody =
                     DriverExperience.toString()
                         .toRequestBody("multipart/form-data".toMediaTypeOrNull())
@@ -378,6 +412,8 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                         .toRequestBody("multipart/form-data".toMediaTypeOrNull())
                 val isAttached = setIsAttached().toString()
                     .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+
+                Log.d(TAG, "driverSignUpApiCall: $type")
                 updateProfileViewModel.updateProfile(
                     token,
                     userName,
@@ -390,6 +426,8 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                     state,
                     city,
                     country,
+                    ambulanceType,
+                    priceFair,
                     driverExperience,
                     driverLicenseNumber,
                     ambulanceVehicleNumber,
@@ -443,6 +481,10 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                         City.toRequestBody("multipart/form-data".toMediaTypeOrNull())
                     val country: RequestBody =
                         Country.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val ambulanceType: RequestBody =
+                        type.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val priceFair: RequestBody =
+                        PriceFair.toRequestBody("multipart/form-data".toMediaTypeOrNull())
                     val driverExperience: RequestBody =
                         DriverExperience.toString()
                             .toRequestBody("multipart/form-data".toMediaTypeOrNull())
@@ -460,6 +502,7 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                     val isAttached = setIsAttached().toString()
                         .toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
+                    Log.d(TAG, "driverSignUpApiCall: $type")
                     updateProfileViewModel.updateProfile(
                         token,
                         userName,
@@ -472,6 +515,8 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                         state,
                         city,
                         country,
+                        ambulanceType,
+                        priceFair,
                         driverExperience,
                         driverLicenseNumber,
                         ambulanceVehicleNumber,
@@ -492,15 +537,19 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
         updateProfileViewModel.driverMutableLiveData.observe(this) { resources ->
             when (resources) {
                 is Resources.Success -> {
+                    setEnabled()
                     hideLoading()
                     setData(resources.data!!.data)
+                    prefs.setData(resources.data)
                 }
 
                 is Resources.Error -> {
+                    setEnabled()
                     snackbarError(binding.root, resources.message.toString())
                 }
 
                 is Resources.Loading -> {
+                    removeEnabled()
                     showLoading()
                 }
             }
@@ -538,6 +587,14 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
                 newUri.add(myUri)
             }
             adapter?.updateData(newUri)
+            if (data?.priceFair == 0) {
+                binding.tvAmbulanceType.text = "Free"
+                binding.edtPriceFair.visibility = View.GONE
+            } else {
+                binding.tvAmbulanceType.text = "Paid"
+                binding.edtPriceFair.setText(data?.priceFair.toString())
+                binding.edtPriceFair.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -579,8 +636,6 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun getImageFromCamera() {
         dispatchTakePictureIntent()
-        /*val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(takePicture, 0)*/ //zero can be replaced with any action code (called requestCode)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -663,8 +718,6 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
     // all type validations
     private fun validate(): Boolean {
         val userName = binding.edtUserName.text.toString().trim()
-/*        val password = binding.edtPassword.text.toString().trim()
-        val fullName = binding.edtHospitalName.text.toString().trim()*/
         val mobileNumber = binding.edtMobileNumber.text.toString().trim()
         val email = binding.edtEmail.text.toString().trim()
         val driverName = binding.edtDriverName.text.toString().trim()
@@ -674,6 +727,7 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
         val state = binding.edtState.text.toString().trim()
         val city = binding.edtCity.text.toString().trim()
         val country = binding.edtCountry.text.toString().trim()
+        val ambulancePrice = binding.edtPriceFair.text.toString().trim()
         val hospitalAddress = binding.edtHospitalAddress.text.toString().trim()
 
         // UserName
@@ -747,6 +801,14 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
             snackbarError(binding.root, "Enter Hospital Address")
             return false
         }
+
+        // Price Fair
+        if (TextUtils.isEmpty(ambulancePrice)) {
+            binding.edtPriceFair.error = "Enter Price Fair"
+            snackbarError(binding.root, "Enter Price Fair")
+            return false
+        }
+
         return true
     }
 
@@ -792,4 +854,70 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback {
     private fun setIsAttached(): Boolean {
         return binding.radioYes.isChecked
     }
+
+    private fun setEnabled() {
+        binding.apply {
+            ivProfile.isEnabled = true
+            tvSave.isEnabled = true
+            ivCam.isEnabled = true
+            ivAddDocument.isEnabled = true
+            edtUserName.isEnabled = true
+            edtMobileNumber.isEnabled = true
+            edtEmail.isEnabled = true
+            edtDriverName.isEnabled = true
+            edtDriverExperience.isEnabled = true
+            edtLicenceNumber.isEnabled = true
+            edtAmbulanceVehicleNumber.isEnabled = true
+            radioGrpd.isEnabled = true
+            edtHospitalAddress.isEnabled = true
+            edtState.isEnabled = true
+            edtCity.isEnabled = true
+            edtCountry.isEnabled = true
+            btnSubmit.isEnabled = true
+            tvDeactivate.isEnabled = true
+        }
+    }
+
+    private fun removeEnabled() {
+        binding.apply {
+            ivProfile.isEnabled = false
+            tvSave.isEnabled = false
+            ivCam.isEnabled = false
+            ivAddDocument.isEnabled = false
+            edtUserName.isEnabled = false
+            edtMobileNumber.isEnabled = false
+            edtEmail.isEnabled = false
+            edtDriverName.isEnabled = false
+            edtDriverExperience.isEnabled = false
+            edtLicenceNumber.isEnabled = false
+            edtAmbulanceVehicleNumber.isEnabled = false
+            radioGrpd.isEnabled = false
+            edtHospitalAddress.isEnabled = false
+            edtState.isEnabled = false
+            edtCity.isEnabled = false
+            edtCountry.isEnabled = false
+            btnSubmit.isEnabled = false
+            tvDeactivate.isEnabled = false
+        }
+    }
+
+    override fun typeData(type: String) {
+        if (type == "Free") {
+            binding.tvAmbulanceType.text = type
+            TransitionManager.beginDelayedTransition(
+                binding.root,
+                AutoTransition()
+            )
+            binding.edtPriceFair.visibility = View.GONE
+            binding.edtPriceFair.setText("0")
+        } else {
+            binding.tvAmbulanceType.text = type
+            TransitionManager.beginDelayedTransition(
+                binding.root,
+                AutoTransition()
+            )
+            binding.edtPriceFair.visibility = View.VISIBLE
+        }
+    }
+
 }

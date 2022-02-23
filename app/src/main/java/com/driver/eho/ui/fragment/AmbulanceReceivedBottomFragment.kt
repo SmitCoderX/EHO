@@ -63,13 +63,14 @@ class AmbulanceReceivedBottomFragment : BottomSheetDialogFragment() {
                 .into(ivProfileReceived)
 
             tvPatientName.text = requestDetails?.userName.toString()
-            tvReceivedDistance.text = requestDetails?.distance.toString()
-            tvAmount.text = getString(R.string.Rs) + requestDetails?.price
+            tvReceivedDistance.text = requestDetails?.distance.toString() + "Km"
+            tvPaymentMode.text = requestDetails?.paymentMode
+            tvAmount.text = getString(R.string.Rs) + requestDetails?.ambulanceCharge
         }
 
         binding.btnReceived.setOnClickListener {
             startActivity(Intent(requireContext(), BookingHistoryActivity::class.java))
-            dismiss()
+            dismissAllowingStateLoss()
         }
     }
 

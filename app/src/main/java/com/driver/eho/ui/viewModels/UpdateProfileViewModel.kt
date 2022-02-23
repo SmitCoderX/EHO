@@ -8,12 +8,14 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.driver.eho.model.DriverSignUpResponse
 import com.driver.eho.model.Login.DriverSignInResponse
+import com.driver.eho.model.MessageResponseModal
 import com.driver.eho.repository.EHORepository
 import com.driver.eho.utils.Constants
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -27,7 +29,7 @@ class UpdateProfileViewModel(
 
     val updateProfileLiveData = MutableLiveData<Resources<DriverSignInResponse>>()
     val driverMutableLiveData = MutableLiveData<Resources<DriverSignInResponse>>()
-    val deactivateMutableLiveData = MutableLiveData<Resources<DriverSignUpResponse>>()
+    val deactivateMutableLiveData = MutableLiveData<Resources<MessageResponseModal>>()
 
     fun getDriverDetails(token: String) = viewModelScope.launch {
         safeHandleDriverDetails(token)
@@ -39,7 +41,7 @@ class UpdateProfileViewModel(
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.errorBody()?.string().toString())
+        return Resources.Error(response.body()?.message.toString())
     }
 
     private suspend fun safeHandleDriverDetails(token: String) {
@@ -67,13 +69,20 @@ class UpdateProfileViewModel(
         safeHandleDeactivateDriver(token)
     }
 
-    private fun handleDeactivateDriver(response: Response<DriverSignUpResponse>): Resources<DriverSignUpResponse> {
+    private fun handleDeactivateDriver(response: Response<MessageResponseModal>): Resources<MessageResponseModal> {
         if (response.isSuccessful) {
             response.body().let { resultResponse ->
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.errorBody()?.string().toString())
+        if(response.code() == 500) {
+            return Resources.Error("Something Went Wrong!!")
+        }
+        val gson = Gson()
+        val type = object : TypeToken<MessageResponseModal>() {}.type
+        val errorResponse: MessageResponseModal? =
+            gson.fromJson(response.errorBody()!!.charStream(), type)
+        return Resources.Error(errorResponse?.message.toString())
     }
 
     private suspend fun safeHandleDeactivateDriver(token: String) {
@@ -109,6 +118,8 @@ class UpdateProfileViewModel(
         state: RequestBody,
         city: RequestBody,
         country: RequestBody,
+        ambulanceType: RequestBody,
+        ambulancePrice: RequestBody,
         driverExperience: RequestBody,
         driverLicenseNumber: RequestBody,
         ambulanceVehicleNumber: RequestBody,
@@ -128,6 +139,8 @@ class UpdateProfileViewModel(
             state,
             city,
             country,
+            ambulanceType,
+            ambulancePrice,
             driverExperience,
             driverLicenseNumber,
             ambulanceVehicleNumber,
@@ -158,6 +171,8 @@ class UpdateProfileViewModel(
         state: RequestBody,
         city: RequestBody,
         country: RequestBody,
+        ambulanceType: RequestBody,
+        ambulancePrice: RequestBody,
         driverExperience: RequestBody,
         driverLicenseNumber: RequestBody,
         ambulanceVehicleNumber: RequestBody,
@@ -180,6 +195,8 @@ class UpdateProfileViewModel(
                     state,
                     city,
                     country,
+                    ambulanceType,
+                    ambulancePrice,
                     driverExperience,
                     driverLicenseNumber,
                     ambulanceVehicleNumber,

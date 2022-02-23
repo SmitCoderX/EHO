@@ -20,9 +20,12 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
 import com.driver.eho.adapter.HorizontalRecyclerView
 import com.driver.eho.databinding.ActivityRegisterBinding
+import com.driver.eho.ui.fragment.AmbulanceTypeBottomSheet
 import com.driver.eho.ui.viewModel.viewModelFactory.DriverSignUpViewModelProviderFactory
 import com.driver.eho.ui.viewModels.DriverSignUpViewModel
 import com.driver.eho.utils.Constants.TAG
@@ -42,7 +45,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
 
-class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
+class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback,
+    AmbulanceTypeBottomSheet.AmbulanceType {
 
     private lateinit var binding: ActivityRegisterBinding
     private var uri: ArrayList<Uri> = ArrayList()
@@ -93,6 +97,11 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             addDocumentFromgelley()
         }
 
+        binding.tvAmbulanceType.setOnClickListener {
+            val typeFragment = AmbulanceTypeBottomSheet()
+            typeFragment.show(supportFragmentManager, typeFragment.tag)
+        }
+
         binding.btnSubmit.setOnClickListener {
             if (validate()) {
                 binding.apply {
@@ -109,6 +118,8 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                         edtState.text.toString().trim(),
                         edtCity.text.toString().trim(),
                         edtCountry.text.toString().trim(),
+                        tvAmbulanceType.text.toString().trim(),
+                        edtPriceFair.text.toString().trim(),
                         edtPassword.text.toString().trim()
                     )
                 }
@@ -132,8 +143,16 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         State: String,
         City: String,
         Country: String,
+        AmbulanceType: String,
+        PriceFair: String,
         Password: String
     ) {
+
+        val type = if (AmbulanceType == "Free") {
+            "1"
+        } else {
+            "2"
+        }
 
         if (selectedImage == null) {
             Toast.makeText(this, "Select An Image First", Toast.LENGTH_SHORT).show()
@@ -187,6 +206,10 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             City.toRequestBody("multipart/form-data".toMediaTypeOrNull())
         val country: RequestBody =
             Country.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        val ambulanceType: RequestBody =
+            type.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        val priceFair: RequestBody =
+            PriceFair.toRequestBody("multipart/form-data".toMediaTypeOrNull())
         val driverExperience: RequestBody =
             DriverExperience.toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
         val driverLicenseNumber: RequestBody =
@@ -197,6 +220,8 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             "latitude".toRequestBody("multipart/form-data".toMediaTypeOrNull())
         val longitude: RequestBody =
             "longitude".toRequestBody("multipart/form-data".toMediaTypeOrNull())
+
+        Log.d(TAG, "driverSignUpApiCall: $type")
 
         driverSignUpViewModel.getRegisterCredentails(
             userName,
@@ -211,6 +236,8 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             state,
             city,
             country,
+            ambulanceType,
+            priceFair,
             driverExperience,
             driverLicenseNumber,
             ambulanceVehicleNumber,
@@ -234,6 +261,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         val state = binding.edtState.text.toString().trim()
         val city = binding.edtCity.text.toString().trim()
         val country = binding.edtCountry.text.toString().trim()
+        val ambulancePrice = binding.edtPriceFair.text.toString().trim()
         val hospitalAddress = binding.edtHospitalAddress.text.toString().trim()
 
         // UserName
@@ -329,6 +357,13 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             snackbarError(binding.root, "Enter Hospital Address")
             return false
         }
+
+        // Price Fair
+        if (TextUtils.isEmpty(ambulancePrice)) {
+            binding.edtPriceFair.error = "Enter Price Fair"
+            snackbarError(binding.root, "Enter Price Fair")
+            return false
+        }
         return true
     }
 
@@ -345,6 +380,27 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                     }
                     1 -> {
                         getImageFromGallery()
+                    }
+                }
+            }
+            create()
+            show()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun getDocsAlertDialog() {
+        // setup the alert builder
+        MaterialAlertDialogBuilder(this).apply {
+            setTitle("Choose a image")
+            val images = arrayOf("Camera", "Gallery")
+            setItems(images) { _, which ->
+                when (which) {
+                    0 -> {
+                        getImageFromCamera()
+                    }
+                    1 -> {
+                        addDocumentFromgelley()
                     }
                 }
             }
@@ -419,13 +475,15 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
                                 adapter?.updateData(uri)
                             }
                             adapter!!.notifyDataSetChanged()
+                        } else if (requestCode == 0) {
+                            uri.add(Uri.parse(currentPhotoPath))
+                            adapter?.updateData(uri)
                         } else {
                             val imageUri = data.data
                             uri.add(imageUri!!)
                             adapter?.updateData(uri)
                         }
                     } else if (data!!.data != null) {
-
                         pictureDoc = data.data
                     }
                 }
@@ -490,8 +548,10 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
             when (resources) {
                 is Resources.Success -> {
                     if (resources.data?.code == 400) {
+                        removeEnabled()
                         snackbarError(binding.root, resources.message.toString())
                     } else {
+                        setEnabled()
                         hideLoadingView()
 //                        snackbarSuccess(binding.root, "Registred Successfully")
                         startActivity(Intent(this, WelcomeActivity::class.java))
@@ -501,10 +561,12 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
 
                 is Resources.Error -> {
                     hideLoadingView()
+                    setEnabled()
                     snackbarError(binding.root, resources.message.toString())
                     Log.d(TAG, "getRegisterData: ${resources.message}")
                 }
                 is Resources.Loading -> {
+                    removeEnabled()
                     showLoadingView()
                 }
             }
@@ -519,4 +581,66 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback {
         binding.viewLoader.visibility = View.GONE
     }
 
+    private fun setEnabled() {
+        binding.apply {
+            ivBack.isEnabled = true
+            ivCam.isEnabled = true
+            ivAddDocument.isEnabled = true
+            edtUserName.isEnabled = true
+            edtHospitalName.isEnabled = true
+            edtMobileNumber.isEnabled = true
+            edtEmail.isEnabled = true
+            edtDriverName.isEnabled = true
+            edtDriverExperience.isEnabled = true
+            edtLicenceNumber.isEnabled = true
+            edtAmbulanceVehicleNumber.isEnabled = true
+            edtHospitalAddress.isEnabled = true
+            edtState.isEnabled = true
+            edtCity.isEnabled = true
+            edtCountry.isEnabled = true
+            edtPassword.isEnabled = true
+            btnSubmit.isEnabled = true
+        }
+    }
+
+    private fun removeEnabled() {
+        binding.apply {
+            ivBack.isEnabled = false
+            ivCam.isEnabled = false
+            ivAddDocument.isEnabled = false
+            edtUserName.isEnabled = false
+            edtHospitalName.isEnabled = false
+            edtMobileNumber.isEnabled = false
+            edtEmail.isEnabled = false
+            edtDriverName.isEnabled = false
+            edtDriverExperience.isEnabled = false
+            edtLicenceNumber.isEnabled = false
+            edtAmbulanceVehicleNumber.isEnabled = false
+            edtHospitalAddress.isEnabled = false
+            edtState.isEnabled = false
+            edtCity.isEnabled = false
+            edtCountry.isEnabled = false
+            edtPassword.isEnabled = false
+            btnSubmit.isEnabled = false
+        }
+    }
+
+    override fun typeData(type: String) {
+        if (type == "Free") {
+            binding.tvAmbulanceType.text = type
+            TransitionManager.beginDelayedTransition(
+                binding.root,
+                AutoTransition()
+            )
+            binding.edtPriceFair.visibility = View.GONE
+            binding.edtPriceFair.setText("0")
+        } else {
+            binding.tvAmbulanceType.text = type
+            TransitionManager.beginDelayedTransition(
+                binding.root,
+                AutoTransition()
+            )
+            binding.edtPriceFair.visibility = View.VISIBLE
+        }
+    }
 }

@@ -17,6 +17,10 @@ data class Data(
     val city: String? = null,
     @SerializedName("country")
     val country: String? = null,
+    @SerializedName("ambulanceType")
+    val ambulanceType: String? = null,
+    @SerializedName("ambulancePrice")
+    val priceFair: Int? = null,
     @SerializedName("countryCode")
     val countryCode: String? = null,
     @SerializedName("createdAt")

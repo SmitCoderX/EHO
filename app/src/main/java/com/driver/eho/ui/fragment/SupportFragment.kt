@@ -25,6 +25,8 @@ import com.driver.eho.utils.Resources
 
 class SupportFragment : Fragment(R.layout.fragment_support) {
 
+
+
     private lateinit var binding: FragmentSupportBinding
     private val supportViewModel: SupportViewModel by viewModels {
         SupportViewModelProviderFactory(
@@ -62,19 +64,40 @@ class SupportFragment : Fragment(R.layout.fragment_support) {
             when (resources) {
                 is Resources.Success -> {
                     hideLoading()
+                    setEnabled()
                     Constants.snackbarSuccess(binding.root, resources.message.toString())
                     sendToMainActivity(prefs.getData())
                 }
 
                 is Resources.Error -> {
                     hideLoading()
+                    setEnabled()
                     Constants.snackbarError(binding.root, resources.message.toString())
                 }
 
                 is Resources.Loading -> {
                     showLoading()
+                    removeEnabled()
                 }
             }
+        }
+    }
+
+    private fun setEnabled() {
+        binding.apply {
+            edtFullName.isEnabled = true
+            edtEmail.isEnabled = true
+            edtMobileNumber.isEnabled = true
+            edtMessage.isEnabled = true
+        }
+    }
+
+    private fun removeEnabled() {
+        binding.apply {
+            edtFullName.isEnabled = false
+            edtEmail.isEnabled = false
+            edtMobileNumber.isEnabled = false
+            edtMessage.isEnabled = false
         }
     }
 

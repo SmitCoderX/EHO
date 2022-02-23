@@ -2,7 +2,7 @@ package com.driver.eho.network
 
 object ApiConstant {
 
-    const val BASEURL = "https://test-app-eho.herokuapp.com/api/"
+    const val BASEURL = "https://dev.ehohealthcare.net/api/"
     const val DRIVERSIGNUP = "auth/driverSignup"
     const val DRIVERSIGNIN = "auth/driverSignin"
     const val DRIVERPROFILEUPDATE = "user/driverUpdateProfile"

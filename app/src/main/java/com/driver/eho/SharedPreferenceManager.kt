@@ -3,7 +3,9 @@ package com.driver.eho
 import android.content.Context
 import android.content.SharedPreferences
 import com.driver.eho.model.Login.DriverSignInResponse
+import com.driver.eho.utils.Constants.BALANCE
 import com.driver.eho.utils.Constants.DATA
+import com.driver.eho.utils.Constants.FCM_TOKEN
 import com.driver.eho.utils.Constants.LAT
 import com.driver.eho.utils.Constants.LOGGEDIN
 import com.driver.eho.utils.Constants.LONG
@@ -69,5 +71,21 @@ class SharedPreferenceManager(val context: Context) {
 
     fun getToggleState(): Boolean {
         return sharedPreferences.getBoolean(TOGGLE_STATE, false)
+    }
+
+    fun setLatestBalance(balance: String) {
+        sharedPreferences.edit().putString(BALANCE, balance).apply()
+    }
+
+    fun getLatestBalance(): String? {
+        return sharedPreferences.getString(BALANCE, "")
+    }
+
+    fun setFCMToken(fcm_token: String) {
+        sharedPreferences.edit().putString(FCM_TOKEN, fcm_token).apply()
+    }
+
+    fun getFCMToken(): String? {
+        return sharedPreferences.getString(FCM_TOKEN, "")
     }
 }

@@ -8,13 +8,14 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.driver.eho.model.DriverSignUpResponse
 import com.driver.eho.model.Login.DriverSignInResponse
+import com.driver.eho.model.MessageResponseModal
 import com.driver.eho.repository.EHORepository
-import com.driver.eho.utils.Constants
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
@@ -24,7 +25,7 @@ class MainActivityViewModel(
     val repository: EHORepository
 ) : AndroidViewModel(app) {
 
-    val logoutMutableLiveData = MutableLiveData<Resources<DriverSignUpResponse>>()
+    val logoutMutableLiveData = MutableLiveData<Resources<MessageResponseModal>>()
     val driverMutableLiveData = MutableLiveData<Resources<DriverSignInResponse>>()
 
     fun getDriverDetails(token: String) = viewModelScope.launch {
@@ -37,7 +38,12 @@ class MainActivityViewModel(
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.errorBody()?.string().toString())
+        val gson = Gson()
+        val type = object : TypeToken<DriverSignInResponse>() {}.type
+        val errorResponse: DriverSignInResponse? =
+            gson.fromJson(response.errorBody()!!.charStream(), type)
+        return Resources.Error(errorResponse?.message.toString())
+
     }
 
     private suspend fun safeHandleDriverDetails(token: String) {
@@ -64,13 +70,17 @@ class MainActivityViewModel(
         safeHandleLogout(token)
     }
 
-    private fun handleLogout(response: Response<DriverSignUpResponse>): Resources<DriverSignUpResponse> {
+    private fun handleLogout(response: Response<MessageResponseModal>): Resources<MessageResponseModal> {
         if (response.isSuccessful) {
             response.body().let { resultResponse ->
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.errorBody()?.string().toString())
+        val gson = Gson()
+        val type = object : TypeToken<MessageResponseModal>() {}.type
+        val errorResponse: MessageResponseModal? =
+            gson.fromJson(response.errorBody()!!.charStream(), type)
+        return Resources.Error(errorResponse?.message.toString())
     }
 
     private suspend fun safeHandleLogout(token: String) {
@@ -87,7 +97,7 @@ class MainActivityViewModel(
                 is IOException -> logoutMutableLiveData.postValue(Resources.Error("Network Failure"))
                 else -> {
                     logoutMutableLiveData.postValue(Resources.Error(t.message.toString()))
-                    Log.d(Constants.TAG, "safeLoginCall: ${t.message}")
+                    Log.d(TAG, "safeLoginCall: ${t.message}")
                 }
             }
         }

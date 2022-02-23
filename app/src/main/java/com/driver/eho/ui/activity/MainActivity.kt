@@ -24,7 +24,6 @@ import com.driver.eho.ui.fragment.SupportFragment
 import com.driver.eho.ui.fragment.TermsConditionFragment
 import com.driver.eho.ui.viewModel.viewModelFactory.MainActivityViewModelProviderFactory
 import com.driver.eho.ui.viewModels.MainActivityViewModel
-import com.driver.eho.utils.Constants.DRIVERSDATA
 import com.driver.eho.utils.Constants.IMAGE_URL
 import com.driver.eho.utils.Constants.snackbarError
 import com.driver.eho.utils.EHOApplication
@@ -225,8 +224,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .into(profileImage)
 
         userName.text = details.data?.userName
-        mobileNo.text = details?.data?.mobile.toString()
-        amount.text = getString(R.string.Rs) + details.data?.amount.toString()
+        mobileNo.text = details.data?.mobile.toString()
+        amount.text = getString(R.string.Rs) + prefs.getLatestBalance()
         edtProfile.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
             finish()

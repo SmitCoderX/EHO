@@ -11,10 +11,11 @@ import androidx.lifecycle.viewModelScope
 import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.model.Withdraw.WithdrawModel
 import com.driver.eho.repository.EHORepository
-import com.driver.eho.utils.Constants
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
@@ -37,7 +38,11 @@ class WithdrawalHistoryViewModel(
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.errorBody()?.string().toString())
+        val gson = Gson()
+        val type = object : TypeToken<DriverSignInResponse>() {}.type
+        val errorResponse: DriverSignInResponse? =
+            gson.fromJson(response.errorBody()!!.charStream(), type)
+        return Resources.Error(errorResponse?.message.toString())
     }
 
     private suspend fun safeHandleDriverDetails(token: String) {
@@ -54,7 +59,7 @@ class WithdrawalHistoryViewModel(
                 is IOException -> driverMutableLiveData.postValue(Resources.Error("Network Failure"))
                 else -> {
                     driverMutableLiveData.postValue(Resources.Error(t.message.toString()))
-                    Log.d(Constants.TAG, "safeDriverDetails: ${t.message}")
+                    Log.d(TAG, "safeDriverDetails: ${t.message}")
                 }
             }
         }
@@ -70,7 +75,11 @@ class WithdrawalHistoryViewModel(
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.message().toString())
+        val gson = Gson()
+        val type = object : TypeToken<WithdrawModel>() {}.type
+        val errorResponse: WithdrawModel? =
+            gson.fromJson(response.errorBody()!!.charStream(), type)
+        return Resources.Error(errorResponse?.message.toString())
     }
 
     private suspend fun safeHandleHistoryList(

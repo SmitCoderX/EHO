@@ -3,7 +3,23 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable-v24/bg_rounded_btn.xml" value="0.228" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable-v24/edittext_background_transparent.xml" value="0.228" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable/edittext_background.xml" value="0.228" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable/thumb.xml" value="0.1765" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable/thumbfalse.xml" value="0.228" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable/thumbtrue.xml" value="0.228" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable/track.xml" value="0.228" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/activity_eho_money.xml" value="0.18568840579710144" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/activity_login.xml" value="0.30648148148148147" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/activity_profile.xml" value="0.30648148148148147" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/activity_register.xml" value="0.18568840579710144" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/bottom_fragment_forgot_password.xml" value="0.30648148148148147" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/bottom_fragment_received_ambulance.xml" value="0.30648148148148147" />
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/fragment_ambulanc_request_bottom.xml" value="0.18" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/fragment_ambulance_accept_request_bottom.xml" value="0.30648148148148147" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/fragment_bottom_sheet_ambulance_type.xml" value="0.30648148148148147" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/fragment_home.xml" value="0.16" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/add_money_background.xml" value="0.161" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/background_booking_status_cancelled.xml" value="0.216" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/background_booking_status_pending.xml" value="0.161" />

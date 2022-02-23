@@ -11,10 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.driver.eho.SharedPreferenceManager
 import com.driver.eho.adapter.WithdrawlHistoryListAdapter
 import com.driver.eho.databinding.ActivityEhoMoneyBinding
-import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.ui.viewModel.viewModelFactory.WithdrawlHistoryViewModelProviderFactory
 import com.driver.eho.ui.viewModels.WithdrawalHistoryViewModel
-import com.driver.eho.utils.Constants
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.Constants.snackbarError
 import com.driver.eho.utils.EHOApplication
@@ -113,7 +111,11 @@ class EhoMoneyActivity : AppCompatActivity() {
             when (resources) {
                 is Resources.Success -> {
                     hideLoadingView()
-                    binding.tvEhoAmount.text = resources.data?.data?.amount.toString()
+                    if (prefs.getLatestBalance().isNullOrEmpty()) {
+                        binding.tvEhoAmount.text = resources.data?.data?.amount.toString()
+                    } else {
+                        binding.tvEhoAmount.text = prefs.getLatestBalance()
+                    }
                 }
 
                 is Resources.Error -> {

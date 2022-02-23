@@ -98,9 +98,9 @@
                                 android:background="@drawable/background_booking_status_pending"
                                 android:fontFamily="@font/sf_pro_text_bold"
                                 android:padding="@dimen/_5sdp"
-                                android:text="Paytm"
                                 android:textColor="#003399"
-                                android:textSize="@dimen/_8sdp" />
+                                android:textSize="@dimen/_8sdp"
+                                tools:text="Paytm" />
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/tvKM"

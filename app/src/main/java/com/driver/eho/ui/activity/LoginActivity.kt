@@ -7,12 +7,13 @@ import android.view.View
 import androidx.activity.viewModels
 import com.driver.eho.SharedPreferenceManager
 import com.driver.eho.databinding.ActivityLoginBinding
+import com.driver.eho.ui.fragment.ForgotPasswordBottomFragment
 import com.driver.eho.ui.viewModel.viewModelFactory.DriverSignInViewModelProviderFactory
+import com.driver.eho.ui.viewModels.DriverSignInViewModel
 import com.driver.eho.utils.Constants.DRIVERSDATA
 import com.driver.eho.utils.Constants.snackbarError
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
-import com.driver.eho.ui.viewModels.DriverSignInViewModel
 
 class LoginActivity : BaseActivity() {
 
@@ -23,13 +24,14 @@ class LoginActivity : BaseActivity() {
             (application as EHOApplication).repository
         )
     }
+    private lateinit var prefs: SharedPreferenceManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        driverSignInViewModel = ViewModelProvider(this)[DriverSignInViewModel::class.java]
+        prefs = SharedPreferenceManager(this)
 
         binding.ivBack.setOnClickListener {
             startActivity(Intent(this, WelcomeActivity::class.java))
@@ -45,10 +47,16 @@ class LoginActivity : BaseActivity() {
         binding.btnLogin.setOnClickListener {
             if (validate()) {
                 driverSignInViewModel.getLoginCredentials(
-                    email = binding.edtEmailOrNumber.text.toString(),
-                    password = binding.edtPassword.text.toString()
+                    email = binding.edtEmailOrNumber.text.toString().trim(),
+                    password = binding.edtPassword.text.toString().trim(),
+                    prefs.getFCMToken().toString()
                 )
             }
+        }
+
+        binding.tvFpLogin.setOnClickListener {
+            val forgotPasswordSheet = ForgotPasswordBottomFragment()
+            forgotPasswordSheet.show(supportFragmentManager, forgotPasswordSheet.tag)
         }
 
         getLoginData()

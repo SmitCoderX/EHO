@@ -155,8 +155,8 @@
                     android:background="@drawable/edittext_background"
                     android:fontFamily="@font/sf_pro_text_bold"
                     android:hint="Mobile Number"
-                    android:maxLength="10"
                     android:inputType="phone"
+                    android:maxLength="10"
                     android:padding="@dimen/_10sdp"
                     android:textAllCaps="false"
                     android:textColor="@color/black"
@@ -237,6 +237,39 @@
                     android:textColor="@color/black"
                     android:textColorHint="@color/text_rv"
                     android:textSize="@dimen/_10sdp" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvAmbulanceType"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/edittext_background"
+                    android:drawableEnd="@drawable/ccp_ic_arrow_drop_down"
+                    android:drawableTint="@color/blue"
+                    android:fontFamily="@font/sf_pro_text_bold"
+                    android:padding="@dimen/_10sdp"
+                    android:text="Ambulance Type"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/text_rv"
+                    android:textSize="@dimen/_10sdp" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/edtPriceFair"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/edittext_background"
+                    android:fontFamily="@font/sf_pro_text_bold"
+                    android:hint="Enter Price Fair"
+                    android:inputType="number"
+                    android:padding="@dimen/_10sdp"
+                    android:text="0"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/text_rv"
+                    android:textSize="@dimen/_10sdp"
+                    android:visibility="gone" />
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/edtHospitalAddress"

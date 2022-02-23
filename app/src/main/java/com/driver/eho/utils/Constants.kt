@@ -3,6 +3,7 @@ package com.driver.eho.utils
 import android.graphics.Color
 import android.view.View
 import com.driver.eho.model.BottomSheetModal
+import com.driver.eho.model.WalletAmount
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -18,6 +19,8 @@ object Constants {
     const val BOOKING_ID = ""
     const val IMAGE_URL = "https://test-eho.s3.ap-south-1.amazonaws.com/"
     const val LAT = "Lat"
+    const val BALANCE = "Balance"
+    const val FCM_TOKEN = "FCM_Token"
     const val LONG = "Long"
     const val TOGGLE_STATE = "ToggleState"
     const val REQUEST = "Request"
@@ -37,5 +40,11 @@ object Constants {
         val gson = Gson()
         val listType = object : TypeToken<BottomSheetModal?>() {}.type
         return gson.fromJson(jsonOutput, listType)
+    }
+
+    fun stringToWalletAmount(jsonOutput: String?): WalletAmount? {
+        val gson = Gson()
+        val itemType = object : TypeToken<WalletAmount?>() {}.type
+        return gson.fromJson(jsonOutput, itemType)
     }
 }

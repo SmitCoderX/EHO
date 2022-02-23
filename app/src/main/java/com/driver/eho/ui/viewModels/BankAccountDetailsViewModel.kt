@@ -9,13 +9,15 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.driver.eho.model.BankAccountList
-import com.driver.eho.model.DriverSignUpResponse
+import com.driver.eho.model.MessageResponseModal
 import com.driver.eho.repository.EHORepository
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Response
@@ -27,7 +29,7 @@ class BankAccountDetailsViewModel(
 ) : AndroidViewModel(application) {
 
     val bankAccountDetailsLiveData = MutableLiveData<Resources<BankAccountList>>()
-    val deleteBankDetailsLiveData = MutableLiveData<Resources<DriverSignUpResponse>>()
+    val deleteBankDetailsLiveData = MutableLiveData<Resources<MessageResponseModal>>()
 
     fun deleteBankAccount(
         token: String,
@@ -36,13 +38,17 @@ class BankAccountDetailsViewModel(
         safeHandleDeleteAccount(token, accountID)
     }
 
-    private fun handleDeleteAccount(response: Response<DriverSignUpResponse>): Resources<DriverSignUpResponse> {
+    private fun handleDeleteAccount(response: Response<MessageResponseModal>): Resources<MessageResponseModal> {
         if (response.isSuccessful) {
             response.body().let { resultResponse ->
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.errorBody()?.string().toString())
+        val gson = Gson()
+        val type = object : TypeToken<MessageResponseModal>() {}.type
+        val errorResponse: MessageResponseModal? =
+            gson.fromJson(response.errorBody()!!.charStream(), type)
+        return Resources.Error(errorResponse?.message.toString())
     }
 
     fun detailsList(token: String) =
@@ -56,7 +62,11 @@ class BankAccountDetailsViewModel(
                 return Resources.Success(resultResponse)
             }
         }
-        return Resources.Error(response.message().toString())
+        val gson = Gson()
+        val type = object : TypeToken<BankAccountList>() {}.type
+        val errorResponse: BankAccountList? =
+            gson.fromJson(response.errorBody()!!.charStream(), type)
+        return Resources.Error(errorResponse?.message.toString())
     }
 
     private suspend fun safeHandleDeleteAccount(token: String, accountID: String) {

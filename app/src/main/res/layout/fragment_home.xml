@@ -22,21 +22,22 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
 
-        <com.github.angads25.toggle.widget.LabeledSwitch
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:scaleX=".3"
+            android:scaleY=".3"
             android:layout_marginBottom="@dimen/_15sdp"
-            android:padding="@dimen/_5sdp"
-            android:textSize="15sp"
-            app:colorBorder="@android:color/holo_orange_dark"
-            app:colorOn="@android:color/holo_blue_dark"
+            android:textOn="Online"
+            android:textOff="Offline"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:thumb="@drawable/thumb"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:on="false"
-            app:textOff="Offline"
-            app:textOn="Online" />
+            app:track="@drawable/track" />
 
         <LinearLayout
             android:id="@+id/viewLoader"
