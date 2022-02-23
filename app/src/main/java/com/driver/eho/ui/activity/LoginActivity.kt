@@ -3,6 +3,7 @@ package com.driver.eho.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import com.driver.eho.SharedPreferenceManager
@@ -11,6 +12,7 @@ import com.driver.eho.ui.fragment.ForgotPasswordBottomFragment
 import com.driver.eho.ui.viewModel.viewModelFactory.DriverSignInViewModelProviderFactory
 import com.driver.eho.ui.viewModels.DriverSignInViewModel
 import com.driver.eho.utils.Constants.DRIVERSDATA
+import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.Constants.snackbarError
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
@@ -44,12 +46,14 @@ class LoginActivity : BaseActivity() {
         }
 
 
+        Log.d(TAG, "onCreate TOKEN: ${prefs.getFCMToken()}")
+
         binding.btnLogin.setOnClickListener {
             if (validate()) {
                 driverSignInViewModel.getLoginCredentials(
                     email = binding.edtEmailOrNumber.text.toString().trim(),
                     password = binding.edtPassword.text.toString().trim(),
-                    prefs.getFCMToken().toString()
+                    token = prefs.getFCMToken().toString().trim()
                 )
             }
         }

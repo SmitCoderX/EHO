@@ -225,7 +225,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         userName.text = details.data?.userName
         mobileNo.text = details.data?.mobile.toString()
-        amount.text = getString(R.string.Rs) + prefs.getLatestBalance()
+        if (prefs.getLatestBalance().isNullOrEmpty()) {
+            amount.text = getString(R.string.Rs) + details.data?.amount.toString()
+        } else {
+            amount.text = getString(R.string.Rs) + prefs.getLatestBalance()
+        }
         edtProfile.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
             finish()

@@ -146,4 +146,8 @@ class EHORepository {
     suspend fun deactivateDriver(
         token: String
     ) = ApiClient.getInstance().deactiveDriver(token)
+
+    suspend fun forgotPassword(
+        email: String
+    ) = ApiClient.getInstance().forgotPassword(email)
 }

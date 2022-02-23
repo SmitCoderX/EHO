@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.driver.eho.model.Login.DriverSignInResponse
+import com.driver.eho.model.MessageResponseModal
 import com.driver.eho.repository.EHORepository
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.EHOApplication
@@ -28,6 +29,45 @@ class DriverSignInViewModel(
 ) : AndroidViewModel(application) {
 
     val loginLiveData = MutableLiveData<Resources<DriverSignInResponse>>()
+    val fpLiveData = MutableLiveData<Resources<MessageResponseModal>>()
+
+    fun forgotPassword(email: String) = viewModelScope.launch {
+        safeHandleFp(email)
+    }
+
+    private fun handleFp(response: Response<MessageResponseModal>): Resources<MessageResponseModal> {
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+                return Resources.Success(resultResponse)
+            }
+        }
+        val gson = Gson()
+        val type = object : TypeToken<MessageResponseModal>() {}.type
+        val errorResponse: MessageResponseModal? =
+            gson.fromJson(response.errorBody()!!.charStream(), type)
+        return Resources.Error(errorResponse?.message.toString())
+    }
+
+
+    private suspend fun safeHandleFp(email: String) {
+        fpLiveData.postValue(Resources.Loading())
+        try {
+            if (hasInternetConnection()) {
+                val response = repository.forgotPassword(email)
+                fpLiveData.postValue(handleFp(response))
+            } else {
+                fpLiveData.postValue(Resources.Error("No Internet Connection"))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> fpLiveData.postValue(Resources.Error("Network Failure"))
+                else -> {
+                    fpLiveData.postValue(Resources.Error(t.message.toString()))
+                    Log.d(TAG, "safeLoginCall: ${t.message}")
+                }
+            }
+        }
+    }
 
     fun getLoginCredentials(email: String, password: String, token: String) =
         viewModelScope.launch {
@@ -54,7 +94,7 @@ class DriverSignInViewModel(
                 val params = JSONObject()
                 params.put("email", email)
                 params.put("password", password)
-                params.put("deviceidToken", token)
+                params.put("deviceToken", token)
                 val jsonParser = JsonParser()
                 val parameter = jsonParser.parse(params.toString()) as JsonObject
                 val response = repository.loginDriver(parameter)
