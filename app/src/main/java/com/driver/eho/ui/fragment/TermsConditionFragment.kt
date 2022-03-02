@@ -23,7 +23,7 @@ class TermsConditionFragment : Fragment(R.layout.fragment_terms_condition) {
                 return true
             }
         }
-        binding.webview.loadUrl("https://www.google.co.in/")
+        binding.webview.loadUrl("https://www.ehohealthcare.com/terms-and-conditions/")
     }
 
 

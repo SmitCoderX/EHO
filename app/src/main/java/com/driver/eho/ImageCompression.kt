@@ -18,7 +18,8 @@ class ImageCompression(private val context: Context) :
     AsyncTask<String?, Void?, String?>() {
     override fun doInBackground(vararg strings: String?): String? {
         return if (strings.size == 0 || strings[0] == null) null else compressImage(
-            strings[0])
+            strings[0]
+        )
     }
 
     override fun onPostExecute(imagePath: String?) {
@@ -95,10 +96,12 @@ class ImageCompression(private val context: Context) :
             val canvas = Canvas(scaledBitmap!!)
             canvas.setMatrix(scaleMatrix)
 
-            canvas.drawBitmap(bmp!!,
+            canvas.drawBitmap(
+                bmp!!,
                 middleX - bmp.width / 2,
                 middleY - bmp.height / 2,
-                Paint(Paint.FILTER_BITMAP_FLAG))
+                Paint(Paint.FILTER_BITMAP_FLAG)
+            )
             if (bmp != null) {
                 bmp.recycle()
             }
@@ -114,13 +117,15 @@ class ImageCompression(private val context: Context) :
                 } else if (orientation == 8) {
                     matrix.postRotate(270f)
                 }
-                scaledBitmap = Bitmap.createBitmap(scaledBitmap,
+                scaledBitmap = Bitmap.createBitmap(
+                    scaledBitmap,
                     0,
                     0,
                     scaledBitmap.width,
                     scaledBitmap.height,
                     matrix,
-                    true)
+                    true
+                )
             } catch (e: IOException) {
                 e.printStackTrace()
             }

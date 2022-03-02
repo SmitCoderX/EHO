@@ -19,6 +19,7 @@ import com.driver.eho.ui.viewModels.HomeViewModel
 import com.driver.eho.utils.Constants
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
+import com.driver.eho.utils.SocketHandler
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class AmbulanceReceivedBottomFragment : BottomSheetDialogFragment() {
@@ -62,13 +63,24 @@ class AmbulanceReceivedBottomFragment : BottomSheetDialogFragment() {
                 .centerCrop()
                 .into(ivProfileReceived)
 
-            tvPatientName.text = requestDetails?.userName.toString()
+            if (requestDetails?.userName == "" || requestDetails?.userName == null) {
+                if (requestDetails?.name == "" || requestDetails?.name == null) {
+                    tvPatientName.text = "Guest"
+                } else {
+                    tvPatientName.text = requestDetails?.name
+                }
+            } else {
+                tvPatientName.text = requestDetails?.userName
+            }
             tvReceivedDistance.text = requestDetails?.distance.toString() + "Km"
             tvPaymentMode.text = requestDetails?.paymentMode
             tvAmount.text = getString(R.string.Rs) + requestDetails?.ambulanceCharge
         }
 
         binding.btnReceived.setOnClickListener {
+            SocketHandler.emitWalletBalance(
+                prefs.getData()?.data?.id.toString()
+            )
             startActivity(Intent(requireContext(), BookingHistoryActivity::class.java))
             dismissAllowingStateLoss()
         }

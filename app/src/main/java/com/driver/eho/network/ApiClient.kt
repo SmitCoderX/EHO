@@ -20,9 +20,9 @@ object ApiClient {
         val networkMange = HttpLoggingInterceptor()
         networkMange.setLevel(HttpLoggingInterceptor.Level.BODY)
         HttpClient = OkHttpClient().newBuilder()
-            .connectTimeout(10,TimeUnit.SECONDS)
-            .readTimeout(10,TimeUnit.SECONDS)
-            .writeTimeout(10,TimeUnit.SECONDS)
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
             .addNetworkInterceptor(Interceptor { chain ->
                 val response = chain.proceed(chain.request())
                 val body = response.body
@@ -42,7 +42,7 @@ object ApiClient {
         .create(ApiInterface::class.java)
 
 
-    fun getInstance(): ApiInterface{
+    fun getInstance(): ApiInterface {
         return retrofit
     }
 }

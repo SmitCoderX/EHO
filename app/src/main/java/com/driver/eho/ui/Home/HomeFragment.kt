@@ -28,7 +28,6 @@ import com.driver.eho.ui.viewModels.HomeViewModel
 import com.driver.eho.utils.Constants.REQUEST
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.Constants.snackbarError
-import com.driver.eho.utils.Constants.snackbarSuccess
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
 import com.driver.eho.utils.SocketHandler
@@ -41,7 +40,6 @@ import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
 
-
 class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
     GoogleMap.OnMarkerClickListener {
 
@@ -52,10 +50,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
     internal var mCurrLocationMarker: Marker? = null
     private lateinit var mLocationRequest: LocationRequest
     private lateinit var prefs: SharedPreferenceManager
-    private var ambulanceAcceptSheet = AmbulanceAcceptBottomFragment()
-    private var ambulancRequestBottomFragment = AmbulancRequestBottomFragment()
-    private var ambulanceReceivedSheet = AmbulanceReceivedBottomFragment()
-
     private var driverDetails: DriverSignInResponse? = DriverSignInResponse()
     private val homeViewModel: HomeViewModel by viewModels {
         HomeFragmentViewModelProviderFactory(
@@ -86,8 +80,39 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
         client = LocationServices.getFusedLocationProviderClient(requireContext())
 
         SocketHandler.setSocket()
-        binding.toggle.setOnCheckedChangeListener { _, b ->
-            if (b) {
+        if (prefs.getData()?.data?.id != null || driverDetails?.data?.id != null) {
+            /*binding.toggle.setOnCheckedChangeListener { _, b ->
+                if (b) {
+                    prefs.setToggleState(true)
+                    SocketHandler.establishConnection()
+
+                    handler.postDelayed({
+                        SocketHandler.emitSubscribe(prefs.getData()?.data?.id.toString())
+                    }, 500)
+
+                    handler.postDelayed({
+                        startListeners()
+                    }, 800)
+
+
+                    // Send Location using Timer every 1 Sec
+                    Timer().scheduleAtFixedRate(object : TimerTask() {
+                        override fun run() {
+                            sendLocation()
+                        }
+                    }, 0, 1000)
+                    snackbarSuccess(binding.root, "Your are Online")
+                } else {
+                    prefs.setToggleState(false)
+                    SocketHandler.closeConnection()
+                    snackbarSuccess(binding.root, "Your are Offline")
+                }
+            }*/
+
+            binding.toggle.setOnClickListener {
+                binding.toggle.visibility = View.GONE
+                binding.toggleOnline.visibility = View.VISIBLE
+
                 prefs.setToggleState(true)
                 SocketHandler.establishConnection()
 
@@ -106,40 +131,45 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
                         sendLocation()
                     }
                 }, 0, 1000)
-                snackbarSuccess(binding.root, "Your are Online")
-            } else {
+            }
+
+            binding.toggleOnline.setOnClickListener {
+                binding.toggleOnline.visibility = View.GONE
+                binding.toggle.visibility = View.VISIBLE
+
                 prefs.setToggleState(false)
                 SocketHandler.closeConnection()
-                snackbarSuccess(binding.root, "Your are Offline")
             }
+        } else {
+            snackbarError(binding.root, "Something Went Wrong!! $\n Please Login Again!!")
         }
 
-        /* if (prefs.getToggleState()) {
-             binding.toggle.isChecked = true
-             SocketHandler.establishConnection()
+        if (prefs.getToggleState()) {
+            binding.toggle.visibility = View.GONE
+            binding.toggleOnline.visibility = View.VISIBLE
+            SocketHandler.establishConnection()
 
-             handler.postDelayed({
-                 SocketHandler.emitSubscribe(prefs.getData()?.data?.id.toString())
-             }, 500)
+            handler.postDelayed({
+                SocketHandler.emitSubscribe(prefs.getData()?.data?.id.toString())
+            }, 500)
 
-             handler.postDelayed({
-                 startListeners()
-             }, 800)
+            handler.postDelayed({
+                startListeners()
+            }, 800)
 
 
-             // Send Location using Timer every 1 Sec
-             Timer().scheduleAtFixedRate(object : TimerTask() {
-                 override fun run() {
-                     Log.d(TAG, "run: EmitLoc => send")
-                     sendLocation()
-                 }
-             }, 0, 1000)
-             snackbarSuccess(binding.root, "Your are Online")
-         } else {
-             binding.toggle.isChecked = false
-             SocketHandler.closeConnection()
-             snackbarSuccess(binding.root, "Your are Offline")
-         }*/
+            // Send Location using Timer every 1 Sec
+            Timer().scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    Log.d(TAG, "run: EmitLoc => send")
+                    sendLocation()
+                }
+            }, 0, 1000)
+        } else {
+            binding.toggleOnline.visibility = View.GONE
+            binding.toggle.visibility = View.VISIBLE
+            SocketHandler.closeConnection()
+        }
 
     }
 
@@ -183,12 +213,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
             maxWaitTime = 100
         }
         setUpMap()
-
-        /* val latLng = LatLng(currentLocation.latitude, currentLocation.longitude)
-        val markerOptions = MarkerOptions().position(latLng).title("${latLng}").icon(BitmapFromVector(requireContext(),R.drawable.destination))
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(12f))
-        mMap.addMarker(markerOptions)*/
     }
 
     private fun setUpMap() {
@@ -281,9 +305,21 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
     }
 
     private fun sendLocation() {
+        var lat = ""
+        var long = ""
+        if (prefs.getLat().isNullOrEmpty()) {
+            if (prefs.getLong().isNullOrEmpty()) {
+                lat = "0"
+                long = "0"
+            }
+        } else {
+            lat = prefs.getLat().toString()
+            long = prefs.getLong().toString()
+        }
+        Log.d(TAG, "sendLocation: Lat $lat Long $long")
         SocketHandler.emitSentLocation(
-            latitude = prefs.getLat().toString(),
-            longitude = prefs.getLong().toString(),
+            latitude = lat,
+            longitude = long,
             driverId = prefs.getData()?.data?.id.toString()
         )
     }
@@ -291,26 +327,40 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
     private fun startListeners() {
         val fm: FragmentManager = childFragmentManager
         stopListeners()
+
+        val handler = Looper.myLooper()?.let { Handler(it) }
+
         SocketHandler.sendRequestDriverListener {
             val bundle = Bundle()
             bundle.putParcelable(REQUEST, it)
             Log.d(TAG, "sendRequestDriverListener: $it")
-            ambulancRequestBottomFragment = AmbulancRequestBottomFragment()
+            val ambulancRequestBottomFragment = AmbulancRequestBottomFragment()
             ambulancRequestBottomFragment.isCancelable = false
             ambulancRequestBottomFragment.arguments = bundle
             ambulancRequestBottomFragment.show(
                 fm,
                 ambulancRequestBottomFragment.tag
             )
+            handler?.postDelayed({
+                Log.d(TAG, "HANDLER ---------->: ")
+                ambulancRequestBottomFragment.dismiss()
+                handler.removeCallbacksAndMessages(null)
+                SocketHandler.emitRejectRequest(
+                    it.userId.toString(),
+                    prefs.getData()?.data?.id.toString(),
+                    it.bookingId.toString()
+                )
+            }, 15000)
         }
 
         // this listener will show when driver accepts the request
         SocketHandler.acceptRequestDriverListener {
             Log.d(TAG, "acceptRequestDriverListener: $it")
+            handler?.removeCallbacksAndMessages(null)
             val bundle = Bundle()
             bundle.putParcelable(REQUEST, it)
             Log.d(TAG, "sendRequestDriverListener: $it")
-            ambulanceAcceptSheet = AmbulanceAcceptBottomFragment()
+            val ambulanceAcceptSheet = AmbulanceAcceptBottomFragment()
             ambulanceAcceptSheet.isCancelable = false
             ambulanceAcceptSheet.arguments = bundle
             ambulanceAcceptSheet.show(
@@ -328,37 +378,30 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
         )
 
         SocketHandler.dropOffRequestDriverListener {
+            handler?.removeCallbacksAndMessages(null)
             val bundle = Bundle()
             bundle.putParcelable(REQUEST, it)
             Log.d(TAG, "sendRequestDriverListener: $it")
-            ambulanceReceivedSheet = AmbulanceReceivedBottomFragment()
-            ambulanceReceivedSheet.isCancelable = false
-            ambulanceReceivedSheet.arguments = bundle
-            ambulanceReceivedSheet.show(
-                fm, ambulanceReceivedSheet.tag
-            )
+            if (it.paymentMode != "Free") {
+                val ambulanceReceivedSheet = AmbulanceReceivedBottomFragment()
+                ambulanceReceivedSheet.isCancelable = false
+                ambulanceReceivedSheet.arguments = bundle
+                ambulanceReceivedSheet.show(
+                    fm, ambulanceReceivedSheet.tag
+                )
+            }
         }
 
         SocketHandler.rejectRequestDriverListener {
-//            All Pop SHould be hidden
+            handler?.removeCallbacksAndMessages(null)
             Log.d(TAG, "rejectListeners Reject: $it")
             dismissAllDialogs(fm)
-//            dismissAllDialogs(parentFragmentManager)
-//            parentFragmentManager.fragments.clear()
-            /*lifecycleScope.launchWhenResumed {
-            }*/
         }
 
         SocketHandler.cancelRequestDriverListener {
-//            All Pop SHould be hidden
+            handler?.removeCallbacksAndMessages(null)
             Log.d(TAG, "startListeners Cancel: $it")
             dismissAllDialogs(fm)
-//            parentFragmentManager.fragments.clear()
-            /* lifecycleScope.launchWhenCreated {
-                 AmbulancRequestBottomFragment().dismissAllowingStateLoss()
-                 AmbulanceReceivedBottomFragment().dismissAllowingStateLoss()
-                 AmbulanceAcceptBottomFragment().dismissAllowingStateLoss()
-             }*/
         }
 
         SocketHandler.getWalletBalanceDriverListener {
@@ -399,38 +442,10 @@ class HomeFragment : Fragment(R.layout.fragment_home), OnMapReadyCallback,
                 val dialogFragment: BottomSheetDialogFragment =
                     fragment
                 dialogFragment.dismissAllowingStateLoss()
+                dialogFragment.dismiss()
             }
             val childFragmentManager: FragmentManager = fragment.childFragmentManager
             dismissAllDialogs(childFragmentManager)
         }
     }
 }
-
-
-/*private fun fetchLocation() {
-    if (ActivityCompat.checkSelfPermission(
-            requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-            requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED
-    ) {
-        ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_CODE)
-        return
-    }
-    val task: Task<Location> = client.lastLocation
-    task.addOnSuccessListener(OnSuccessListener<Location> { location ->
-        if (location != null) {
-            currentLocation = location
-            Toast.makeText(getApplicationContext(), currentLocation.latitude.toString() + "" + currentLocation.longitude, Toast.LENGTH_SHORT).show()
-        }
-    })
-}*/
-/*
-override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
-    when (requestCode) {
-        REQUEST_CODE -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            fetchLocation()
-        }
-    }
-}
-}*/

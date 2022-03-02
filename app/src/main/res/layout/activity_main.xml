@@ -62,11 +62,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/white"
-        tools:openDrawer="left"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        tools:openDrawer="left">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -75,7 +75,7 @@
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/fragment_container_view_tag"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -112,20 +112,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="@dimen/_15sdp">
+                    android:padding="@dimen/_10sdp"
+                    android:weightSum="2">
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/iv_profile"
                         android:layout_width="@dimen/_48sdp"
                         android:layout_height="@dimen/_48sdp"
+                        android:layout_gravity="center"
                         android:background="@drawable/profile"
                         android:scaleType="centerCrop"
                         app:shapeAppearanceOverlay="@style/circleImageView" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/_10sdp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_marginStart="@dimen/_6sdp"
+                        android:layout_weight="1.7"
                         android:orientation="vertical">
 
                         <TextView
@@ -135,7 +138,7 @@
                             android:fontFamily="@font/sf_pro_ext_medium"
                             android:text="@string/share_with_friends"
                             android:textColor="@color/black_2"
-                            android:textSize="@dimen/_14sdp" />
+                            android:textSize="@dimen/_13ssp" />
 
                         <TextView
                             android:id="@+id/tvMobileNumber"
@@ -149,20 +152,15 @@
                             android:textSize="@dimen/_10sdp" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="end">
-
-                        <ImageView
-                            android:id="@+id/ivEditButton"
-                            android:layout_width="@dimen/_24sdp"
-                            android:layout_height="@dimen/_24sdp"
-                            android:layout_centerVertical="true"
-                            android:layout_marginTop="@dimen/_10sdp"
-                            android:contentDescription="@string/edit"
-                            android:src="@drawable/ic_back_arrow_dark" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
+                    <ImageView
+                        android:id="@+id/ivEditButton"
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_24sdp"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center|end"
+                        android:layout_weight=".5"
+                        android:contentDescription="@string/edit"
+                        android:src="@drawable/ic_back_arrow_dark" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </com.google.android.material.card.MaterialCardView>
         </com.google.android.material.navigation.NavigationView>

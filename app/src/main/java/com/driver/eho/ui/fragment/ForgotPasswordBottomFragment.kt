@@ -1,6 +1,7 @@
 package com.driver.eho.ui.fragment
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,18 +39,28 @@ class ForgotPasswordBottomFragment : BottomSheetDialogFragment() {
         binding = BottomFragmentForgotPasswordBinding.bind(view)
 
         binding.btnSubmit.setOnClickListener {
-            loginViewModel.forgotPassword(binding.edtEmail.text.toString().trim())
+            if (validate()) {
+                loginViewModel.forgotPassword(binding.edtEmail.text.toString().trim())
+            }
         }
 
         loginViewModel.fpLiveData.observe(viewLifecycleOwner) { resources ->
             when (resources) {
                 is Resources.Success -> {
-                    Toast.makeText(requireContext(), resources.message.toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        resources.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     dismissAllowingStateLoss()
                 }
 
                 is Resources.Error -> {
-                    Toast.makeText(requireContext(), resources.message.toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        resources.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 is Resources.Loading -> {
@@ -58,8 +69,17 @@ class ForgotPasswordBottomFragment : BottomSheetDialogFragment() {
             }
 
         }
+    }
 
+    private fun validate(): Boolean {
+        val email = binding.edtEmail.text.toString().trim()
 
+        if (TextUtils.isEmpty(email)) {
+            binding.edtEmail.error = "Enter your Email"
+            Constants.snackbarError(binding.root, "Enter Your Email")
+            return false
+        }
+        return true
     }
 
 }

@@ -12,7 +12,6 @@ import com.driver.eho.SharedPreferenceManager
 import com.driver.eho.adapter.BookingHistoryListAdapter
 import com.driver.eho.databinding.ActivityBookingHistoryBinding
 import com.driver.eho.model.Booking.BookingData
-import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.ui.viewModel.viewModelFactory.BookingHistoryViewModelProviderFactory
 import com.driver.eho.ui.viewModels.BookingHistoryViewModel
 import com.driver.eho.utils.Constants
@@ -82,9 +81,16 @@ class BookingHistoryActivity : AppCompatActivity(), BookingHistoryListAdapter.On
             when (resources) {
                 is Resources.Success -> {
                     hideLoadingView()
-                    if (resources.data?.data?.size!! < itemCount) allDone = true
-                    bookingAdapter.updateData(resources.data.data)
-                    Log.d(TAG, "getBookingHistoryList: ${resources.data.data}")
+                    if (resources.data?.data.isNullOrEmpty()) {
+                        binding.ivNoData.visibility = View.VISIBLE
+                        binding.rvBookingHy.visibility = View.GONE
+                    } else {
+                        binding.ivNoData.visibility = View.GONE
+                        binding.rvBookingHy.visibility = View.VISIBLE
+                        if (resources.data?.data?.size!! < itemCount) allDone = true
+                        bookingAdapter.updateData(resources.data.data)
+                        Log.d(TAG, "getBookingHistoryList: ${resources.data.data}")
+                    }
                 }
 
                 is Resources.Loading -> {
@@ -114,9 +120,11 @@ class BookingHistoryActivity : AppCompatActivity(), BookingHistoryListAdapter.On
     }
 
     override fun onClick(bookingData: BookingData) {
-        val intent = Intent(this, ReceiptActivity::class.java)
-        intent.putExtra(BOOKING_ID, bookingData.id)
-        startActivity(intent)
+        if (bookingData.paymentStatusString.equals("Success")) {
+            val intent = Intent(this, ReceiptActivity::class.java)
+            intent.putExtra(BOOKING_ID, bookingData.id)
+            startActivity(intent)
+        }
     }
 
     private fun sendToMainActivity() {

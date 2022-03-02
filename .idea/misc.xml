@@ -6,12 +6,18 @@
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable-v24/bg_rounded_btn.xml" value="0.228" />
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable-v24/edittext_background_transparent.xml" value="0.228" />
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable/edittext_background.xml" value="0.228" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable/ic_logout_black_24dp.xml" value="0.228" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable/online_btn_bg.xml" value="0.228" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable/online_btn_ng.xml" value="0.228" />
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable/thumb.xml" value="0.1765" />
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable/thumbfalse.xml" value="0.228" />
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable/thumbtrue.xml" value="0.228" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable/toolbar_bg.xml" value="0.228" />
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/drawable/track.xml" value="0.228" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/activity_booking_history.xml" value="0.18568840579710144" />
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/activity_eho_money.xml" value="0.18568840579710144" />
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/activity_login.xml" value="0.30648148148148147" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/activity_main.xml" value="0.30648148148148147" />
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/activity_profile.xml" value="0.30648148148148147" />
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/activity_register.xml" value="0.18568840579710144" />
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/bottom_fragment_forgot_password.xml" value="0.30648148148148147" />
@@ -19,7 +25,12 @@
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/fragment_ambulanc_request_bottom.xml" value="0.18" />
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/fragment_ambulance_accept_request_bottom.xml" value="0.30648148148148147" />
         <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/fragment_bottom_sheet_ambulance_type.xml" value="0.30648148148148147" />
-        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/fragment_home.xml" value="0.16" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/fragment_history.xml" value="0.14907407407407408" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/fragment_home.xml" value="0.25" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/fragment_support.xml" value="0.30648148148148147" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/item_all_booking_history.xml" value="0.30648148148148147" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/layout/nav_sidebar_header.xml" value="0.30648148148148147" />
+        <entry key="..\:/Freelance Android Projects/EHO/EHO/app/src/main/res/menu/nav_sidebar.xml" value="0.30648148148148147" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/add_money_background.xml" value="0.161" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/background_booking_status_cancelled.xml" value="0.216" />
         <entry key="..\:/Users/Administrator/Downloads/EHO/EHO/app/src/main/res/drawable/background_booking_status_pending.xml" value="0.161" />

@@ -29,4 +29,6 @@
     <string name="payment_details">Payment Details</string>
     <string name="received">Received</string>
     <string name="msg_token_fmt">FCM TOKEN</string>
+    <string name="offline">Offline</string>
+    <string name="online">Online</string>
 </resources>

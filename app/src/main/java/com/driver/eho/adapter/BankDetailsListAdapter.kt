@@ -2,12 +2,9 @@ package com.driver.eho.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.driver.eho.databinding.LayoutAccountListBinding
 import com.driver.eho.model.AccountList
-import com.driver.eho.model.BankAccountList
 
 class BankDetailsListAdapter(
     private var dataList: ArrayList<AccountList>?,

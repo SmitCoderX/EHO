@@ -40,9 +40,8 @@
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:text="Profile"
-                    android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_16sdp"
+                    android:textSize="@dimen/_16ssp"
                     android:textStyle="bold" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -53,9 +52,8 @@
                     android:layout_gravity="right"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:text="Save"
-                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_16sdp"
+                    android:textSize="@dimen/_16ssp"
                     android:textStyle="bold" />
             </Toolbar>
 
@@ -72,7 +70,7 @@
                 <ImageView
                     android:id="@+id/ivProfile"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_250sdp"
+                    android:layout_height="@dimen/_230sdp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_launcher_background" />
             </LinearLayout>
@@ -81,15 +79,15 @@
                 android:id="@+id/llcam"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_120sdp"
+                android:layout_marginTop="@dimen/_105sdp"
                 android:layout_marginRight="@dimen/_20sdp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/toolbar">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="@dimen/_60sdp"
-                    android:layout_height="@dimen/_60sdp"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
                     android:layout_marginLeft="@dimen/_90sdp"
                     android:layout_marginTop="@dimen/_55sdp"
                     android:background="@drawable/ring_img_back"
@@ -98,8 +96,8 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_cam"
-                        android:layout_width="@dimen/_40sdp"
-                        android:layout_height="@dimen/_40sdp"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
                         android:layout_gravity="center"
                         android:background="@drawable/camera_2x"
                         android:padding="@dimen/_5sdp" />
@@ -111,7 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_12sdp"
-                android:layout_marginTop="@dimen/_50sdp"
+                android:layout_marginTop="@dimen/_40sdp"
                 android:layout_marginRight="@dimen/_12sdp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -462,14 +460,14 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginBottom="@dimen/_20sdp"
-                        android:fontFamily="@font/sf_pro_text_bold"
-                        android:gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:clickable="true"
                         android:focusable="true"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:textColor="@color/gray_2"
-                        android:text="Deactivate Account"
-                        android:textSize="@dimen/_18ssp" />
+                        android:fontFamily="@font/sf_pro_text_regular"
+                        android:gravity="center"
+                        android:text="Delete Account"
+                        android:textColor="@color/gray"
+                        android:textSize="@dimen/_12ssp" />
                 </LinearLayout>
             </LinearLayout>
 

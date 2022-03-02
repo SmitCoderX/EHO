@@ -70,11 +70,19 @@ class AmbulanceAcceptBottomFragment : BottomSheetDialogFragment() {
                 .centerCrop()
                 .into(ivProfileAccept)
 
-            tvPatientName.text = requestDetails?.userName.toString()
+            if (requestDetails?.userName == "" || requestDetails?.userName == null) {
+                if (requestDetails?.name == "" || requestDetails?.name == null) {
+                    tvPatientName.text = "Guest"
+                } else {
+                    tvPatientName.text = requestDetails?.name
+                }
+            } else {
+                tvPatientName.text = requestDetails?.userName
+            }
             tvAcceptDistance.text = requestDetails?.distance.toString() + "Km"
             tvPickup.text = requestDetails?.pickupLocation.toString()
             tvPaymentMode.text = requestDetails?.paymentMode.toString()
-            if (prefs.getData()?.data?.ambulanceType == "1") {
+            if (requestDetails?.paymentMode == "Free") {
                 tvAmount.visibility = View.GONE
             } else {
                 tvAmount.visibility = View.VISIBLE
@@ -84,18 +92,14 @@ class AmbulanceAcceptBottomFragment : BottomSheetDialogFragment() {
         }
 
         binding.btnDropOff.setOnClickListener {
-            if (prefs.getData()?.data?.ambulanceType == "1") {
-                dismissAllowingStateLoss()
-            } else {
-                SocketHandler.emitDropOffRequest(
-                    requestDetails?.userId.toString(),
-                    prefs.getData()?.data?.id.toString(),
-                    requestDetails?.bookingId.toString(),
-                    requestDetails?.dropLatitude.toString(),
-                    requestDetails?.dropLongitude.toString()
-                )
-                dismissAllowingStateLoss()
-            }
+            SocketHandler.emitDropOffRequest(
+                requestDetails?.userId.toString(),
+                prefs.getData()?.data?.id.toString(),
+                requestDetails?.bookingId.toString(),
+                requestDetails?.dropLatitude.toString(),
+                requestDetails?.dropLongitude.toString()
+            )
+            dismissAllowingStateLoss()
         }
 
         binding.btnCancel.setOnClickListener {
@@ -104,6 +108,7 @@ class AmbulanceAcceptBottomFragment : BottomSheetDialogFragment() {
                 prefs.getData()?.data?.id.toString(),
                 requestDetails?.bookingId.toString()
             )
+
             dismissAllowingStateLoss()
         }
         binding.btnCall.setOnClickListener {

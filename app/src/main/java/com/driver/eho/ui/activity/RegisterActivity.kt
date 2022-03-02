@@ -4,6 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Build
@@ -15,9 +17,12 @@ import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
@@ -25,6 +30,7 @@ import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
 import com.driver.eho.adapter.HorizontalRecyclerView
 import com.driver.eho.databinding.ActivityRegisterBinding
+import com.driver.eho.model.InternalStoragePhoto
 import com.driver.eho.ui.fragment.AmbulanceTypeBottomSheet
 import com.driver.eho.ui.viewModel.viewModelFactory.DriverSignUpViewModelProviderFactory
 import com.driver.eho.ui.viewModels.DriverSignUpViewModel
@@ -35,6 +41,9 @@ import com.driver.eho.utils.Resources
 import com.driver.eho.utils.UploadRequestBody
 import com.driver.eho.utils.getFileName
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -54,7 +63,9 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback,
     private var adapter: HorizontalRecyclerView? = null
     private var pictureDoc: Uri? = null
     private var currentPhotoPath: String = ""
+    private var currentPhotoPathForDoc: String = ""
     private var selectedImage: Uri? = null
+    private var selectedImageForDoc: Uri? = null
     private val driverSignUpViewModel: DriverSignUpViewModel by viewModels {
         DriverSignUpViewModelProviderFactory(
             application,
@@ -94,7 +105,8 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback,
 
         // add upload document
         binding.ivAddDocument.setOnClickListener {
-            addDocumentFromgelley()
+//            addDocumentFromgelley()
+            getDocsAlertDialog()
         }
 
         binding.tvAmbulanceType.setOnClickListener {
@@ -261,6 +273,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback,
         val state = binding.edtState.text.toString().trim()
         val city = binding.edtCity.text.toString().trim()
         val country = binding.edtCountry.text.toString().trim()
+        val ambulanceType = binding.tvAmbulanceType.text.toString().trim()
         val ambulancePrice = binding.edtPriceFair.text.toString().trim()
         val hospitalAddress = binding.edtHospitalAddress.text.toString().trim()
 
@@ -358,11 +371,25 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback,
             return false
         }
 
+        if (ambulanceType == "Ambulance Type") {
+            binding.tvAmbulanceType.error = "Please Choose Type"
+            snackbarError(binding.root, "Please Choose Type")
+            return false
+        }
+
         // Price Fair
         if (TextUtils.isEmpty(ambulancePrice)) {
             binding.edtPriceFair.error = "Enter Price Fair"
             snackbarError(binding.root, "Enter Price Fair")
             return false
+        }
+
+        if (ambulanceType == "Paid") {
+            if (ambulancePrice == "0") {
+                binding.edtPriceFair.error = "Price Cannot be Zero"
+                snackbarError(binding.root, "Price Cannot be Zero")
+                return false
+            }
         }
         return true
     }
@@ -397,10 +424,11 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback,
             setItems(images) { _, which ->
                 when (which) {
                     0 -> {
-                        getImageFromCamera()
+                        takePhoto.launch()
                     }
                     1 -> {
                         addDocumentFromgelley()
+//                        getPhoto.launch()
                     }
                 }
             }
@@ -437,6 +465,13 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback,
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
+    private fun getImageFromCameraDocs() {
+        dispatchTakePhotoIntent()
+        /*val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(takePicture, 0)*/ //zero can be replaced with any action code (called requestCode)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun checkPermissionForProfileImage() {
         if ((checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
             && (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
@@ -459,6 +494,7 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback,
         try {
             when (requestCode) {
                 0 -> if (resultCode == RESULT_OK) {
+                    // Image Getting From Camera
                     Glide.with(this).load(currentPhotoPath).into(binding.ivProfile)
                 }
                 1 -> if (resultCode == RESULT_OK) {
@@ -466,27 +502,38 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback,
                     binding.ivProfile.setImageURI(selectedImage)
                 }
                 2 -> {
-                    if (resultCode == RESULT_OK) {
-                        if (data!!.clipData != null) {
+                    if (resultCode == RESULT_OK && requestCode == 2 && data != null) {
+                        if (data.clipData != null) {
                             val count: Int = data.clipData!!.itemCount
                             Log.d(TAG, "onActivityResult URI: ${data.clipData}")
                             for (i in 0 until count) {
                                 uri.add(data.clipData!!.getItemAt(i).uri)
                                 adapter?.updateData(uri)
                             }
-                            adapter!!.notifyDataSetChanged()
-                        } else if (requestCode == 0) {
-                            uri.add(Uri.parse(currentPhotoPath))
-                            adapter?.updateData(uri)
-                        } else {
-                            val imageUri = data.data
-                            uri.add(imageUri!!)
-                            adapter?.updateData(uri)
+                            adapter?.notifyDataSetChanged()
                         }
-                    } else if (data!!.data != null) {
-                        pictureDoc = data.data
                     }
                 }
+                /* 3 -> {
+                     if (resultCode == RESULT_OK && requestCode == 3 && data != null) {
+                         val isSaved = savePhotoToInternalStorage(UUID.randomUUID().toString())
+                         if (isSaved) {
+                             loadPhotosFromInternalStorageIntoRecyclerView()
+                         } else {
+                             Log.d(TAG, "Failed: ")
+                         }
+                         *//* if (data.clipData != null) {
+                             val count: Int = data.clipData!!.itemCount
+                             Log.d(TAG, "onActivityResult CAMERA URI: ${data.clipData}")
+                             for (i in 0 until count) {
+                                 uri.add(data.clipData!!.getItemAt(i).uri)
+                                 adapter?.updateData(uri)
+                             }
+                             adapter?.notifyDataSetChanged()
+                         }*//*
+
+                    }
+                }*/
             }
         } catch (e: Exception) {
             Log.d(TAG, "onActivityResult: $e")
@@ -512,6 +559,30 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback,
                     )
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImage)
                     startActivityForResult(takePictureIntent, 0)
+                }
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun dispatchTakePhotoIntent() {
+        val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(this.packageManager)?.also {
+                val photoFile: File? = try {
+                    createImageFile()
+                } catch (e: IOException) {
+                    Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
+                    null
+                }
+                photoFile?.also {
+                    selectedImageForDoc = FileProvider.getUriForFile(
+                        this,
+                        "com.example.android.fileprovider",
+                        it
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImageForDoc)
+                    startActivityForResult(takePictureIntent, 3)
                 }
             }
         }
@@ -641,6 +712,52 @@ class RegisterActivity : BaseActivity(), UploadRequestBody.UploadCallback,
                 AutoTransition()
             )
             binding.edtPriceFair.visibility = View.VISIBLE
+        }
+    }
+
+    val takePhoto = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) {
+        val isSavedSuccessfully = savePhotoToInternalStorage(UUID.randomUUID().toString(), it!!)
+        if (isSavedSuccessfully) {
+            loadPhotosFromInternalStorageIntoRecyclerView()
+            Toast.makeText(this, "Photo saved successfully", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Failed to save photo", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private suspend fun loadPhotosFromInternalStorage(): List<InternalStoragePhoto> {
+        return withContext(Dispatchers.IO) {
+            val files = filesDir.listFiles()
+            files?.filter { it.canRead() && it.isFile && it.name.endsWith(".jpg") }?.map {
+                val bytes = it.readBytes()
+                val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                InternalStoragePhoto(it.name, bmp)
+            } ?: listOf()
+        }
+    }
+
+    private fun savePhotoToInternalStorage(filename: String, bmp: Bitmap): Boolean {
+        return try {
+            openFileOutput("$filename.jpg", MODE_PRIVATE).use { stream ->
+                if (!bmp.compress(Bitmap.CompressFormat.JPEG, 95, stream)) {
+                    throw IOException("Couldn't save bitmap.")
+                }
+            }
+            true
+        } catch (e: IOException) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun loadPhotosFromInternalStorageIntoRecyclerView() {
+        lifecycleScope.launch {
+            val photos = loadPhotosFromInternalStorage()
+            photos.forEach { data ->
+                uri.add(Uri.parse(data.name))
+            }
+            adapter?.updateData(uri)
+            adapter?.notifyDataSetChanged()
         }
     }
 }

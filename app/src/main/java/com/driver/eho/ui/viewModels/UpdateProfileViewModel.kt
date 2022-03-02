@@ -75,7 +75,7 @@ class UpdateProfileViewModel(
                 return Resources.Success(resultResponse)
             }
         }
-        if(response.code() == 500) {
+        if (response.code() == 500) {
             return Resources.Error("Something Went Wrong!!")
         }
         val gson = Gson()

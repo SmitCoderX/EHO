@@ -299,13 +299,13 @@
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/edtState"
+                        android:id="@+id/edtCity"
                         android:layout_width="@dimen/_140sdp"
                         android:layout_height="@dimen/_40sdp"
                         android:layout_marginTop="@dimen/_15sdp"
                         android:background="@drawable/edittext_background"
                         android:fontFamily="@font/sf_pro_text_bold"
-                        android:hint="State"
+                        android:hint="City"
                         android:inputType="text"
                         android:padding="@dimen/_10sdp"
                         android:textAllCaps="false"
@@ -314,14 +314,14 @@
                         android:textSize="@dimen/_10sdp" />
 
                     <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/edtCity"
+                        android:id="@+id/edtState"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_40sdp"
                         android:layout_marginLeft="@dimen/_15sdp"
                         android:layout_marginTop="@dimen/_15sdp"
                         android:background="@drawable/edittext_background"
                         android:fontFamily="@font/sf_pro_text_bold"
-                        android:hint="City"
+                        android:hint="State"
                         android:inputType="text"
                         android:padding="@dimen/_10sdp"
                         android:textAllCaps="false"

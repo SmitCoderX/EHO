@@ -12,7 +12,6 @@ import com.driver.eho.databinding.ActivityAccountDetailsListBinding
 import com.driver.eho.model.AccountList
 import com.driver.eho.ui.viewModel.viewModelFactory.BankAccountDetailsViewModelProviderFactory
 import com.driver.eho.ui.viewModels.BankAccountDetailsViewModel
-import com.driver.eho.utils.Constants
 import com.driver.eho.utils.Constants.snackbarError
 import com.driver.eho.utils.Constants.snackbarSuccess
 import com.driver.eho.utils.EHOApplication

@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import com.driver.eho.R
 import com.driver.eho.SharedPreferenceManager
 import com.driver.eho.databinding.FragmentSupportBinding
-import com.driver.eho.model.Login.Data
 import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.ui.activity.MainActivity
 import com.driver.eho.ui.viewModel.viewModelFactory.SupportViewModelProviderFactory
@@ -19,12 +18,12 @@ import com.driver.eho.ui.viewModels.SupportViewModel
 import com.driver.eho.utils.Constants
 import com.driver.eho.utils.Constants.DRIVERSDATA
 import com.driver.eho.utils.Constants.snackbarError
+import com.driver.eho.utils.Constants.snackbarSuccess
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
 
 
 class SupportFragment : Fragment(R.layout.fragment_support) {
-
 
 
     private lateinit var binding: FragmentSupportBinding
@@ -65,14 +64,14 @@ class SupportFragment : Fragment(R.layout.fragment_support) {
                 is Resources.Success -> {
                     hideLoading()
                     setEnabled()
-                    Constants.snackbarSuccess(binding.root, resources.message.toString())
+                    snackbarSuccess(binding.root, resources.message.toString())
                     sendToMainActivity(prefs.getData())
                 }
 
                 is Resources.Error -> {
                     hideLoading()
                     setEnabled()
-                    Constants.snackbarError(binding.root, resources.message.toString())
+                    snackbarError(binding.root, resources.message.toString())
                 }
 
                 is Resources.Loading -> {
@@ -91,6 +90,7 @@ class SupportFragment : Fragment(R.layout.fragment_support) {
             edtMessage.isEnabled = true
         }
     }
+
 
     private fun removeEnabled() {
         binding.apply {
@@ -132,7 +132,6 @@ class SupportFragment : Fragment(R.layout.fragment_support) {
     }
 
     private fun validate(): Boolean {
-        var valid = true
         val fullName = binding.edtFullName.text.toString()
         val email = binding.edtEmail.text.toString()
         val mobileNo = binding.edtMobileNumber.text.toString()
@@ -141,38 +140,31 @@ class SupportFragment : Fragment(R.layout.fragment_support) {
         // Name
         if (TextUtils.isEmpty(fullName)) {
             binding.edtFullName.error = "Enter your Full Name"
-            Constants.snackbarError(binding.root, "Enter Your Full Name")
-            valid = false
-        } else {
-            binding.edtFullName.error = null
+            snackbarError(binding.root, "Enter Your Full Name")
+            return false
         }
         // Email
         if (TextUtils.isEmpty(email)) {
             binding.edtEmail.error = "Enter your Email"
-            Constants.snackbarError(binding.root, "Enter Your Email")
-            valid = false
-        } else {
-            binding.edtEmail.error = null
+            snackbarError(binding.root, "Enter Your Email")
+            return false
         }
 
         // MobileNumber
         if (TextUtils.isEmpty(mobileNo) && !Patterns.PHONE.matcher(mobileNo).matches()) {
             binding.edtMobileNumber.error = "Enter your correct mobile Number"
-            Constants.snackbarError(binding.root, "Enter your correct mobile Number")
-            valid = false
-        } else {
-            binding.edtMobileNumber.error = null
+            snackbarError(binding.root, "Enter your correct mobile Number")
+            return false
         }
 
         // Message
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(message)) {
             binding.edtMessage.error = "Enter your message"
-            Constants.snackbarError(binding.root, "Enter Your Message")
-            valid = false
-        } else {
-            binding.edtMessage.error = null
+            snackbarError(binding.root, "Enter Your Message")
+            return false
         }
-        return valid
+
+        return true
     }
 
     private fun sendToMainActivity(data: DriverSignInResponse?) {

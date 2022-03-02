@@ -17,6 +17,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -116,7 +117,7 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback,
         getUpdatedResult()
 
         binding.tvDeactivate.setOnClickListener {
-            handleDeactivateDriver()
+            getDeactivateAlertDialog()
         }
     }
 
@@ -727,6 +728,7 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback,
         val state = binding.edtState.text.toString().trim()
         val city = binding.edtCity.text.toString().trim()
         val country = binding.edtCountry.text.toString().trim()
+        val ambulanceType = binding.tvAmbulanceType.text.toString().trim()
         val ambulancePrice = binding.edtPriceFair.text.toString().trim()
         val hospitalAddress = binding.edtHospitalAddress.text.toString().trim()
 
@@ -802,11 +804,25 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback,
             return false
         }
 
+        if (ambulanceType == "AmbulanceType") {
+            binding.tvAmbulanceType.error = "Please Choose Type"
+            snackbarError(binding.root, "Please Choose Type")
+            return false
+        }
+
         // Price Fair
         if (TextUtils.isEmpty(ambulancePrice)) {
             binding.edtPriceFair.error = "Enter Price Fair"
             snackbarError(binding.root, "Enter Price Fair")
             return false
+        }
+
+        if (ambulanceType == "Paid") {
+            if (ambulancePrice == "0") {
+                binding.edtPriceFair.error = "Price Cannot be Zero"
+                snackbarError(binding.root, "Price Cannot be Zero")
+                return false
+            }
         }
 
         return true
@@ -826,6 +842,26 @@ class ProfileActivity : AppCompatActivity(), UploadRequestBody.UploadCallback,
         ).apply {
             currentPhotoPath = absolutePath
         }
+    }
+
+    private fun getDeactivateAlertDialog() {
+        val builder1 = AlertDialog.Builder(this)
+        builder1.setMessage("Are you sure you want to Delete this Account ?")
+        builder1.setCancelable(true)
+        builder1.setPositiveButton(
+            "Yes"
+        ) { dialog, _ ->
+            handleDeactivateDriver()
+            dialog.cancel()
+        }
+        builder1.setNegativeButton(
+            "No"
+        ) { dialog, _ ->
+            Toast.makeText(this, "Cancel", Toast.LENGTH_SHORT).show()
+            dialog.cancel()
+        }
+        val alert11 = builder1.create()
+        alert11.show()
     }
 
     override fun onBackPressed() {

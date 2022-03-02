@@ -1,14 +1,11 @@
 package com.driver.eho.utils
 
 import android.util.Log
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.driver.eho.model.BottomSheetModal
 import com.driver.eho.model.WalletAmount
 import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.Constants.stringToAcceptReject
 import com.driver.eho.utils.Constants.stringToWalletAmount
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.engineio.client.transports.Polling
@@ -142,6 +139,7 @@ object SocketHandler {
         mSocket.off("getWalletBalanceDriverListener") {
             val data = it[0] as String
             Log.d(TAG, "Socket offWallet: $data")
+            callback.invoke(data)
         }
     }
 
@@ -160,7 +158,7 @@ object SocketHandler {
         mSocket.off("sendRequestDriverListener") {
             val data = it[0] as String
             Log.d(TAG, "Socket closeSendRequestDriverListner: $data")
-
+            callback.invoke(data)
         }
     }
 
@@ -180,6 +178,7 @@ object SocketHandler {
         mSocket.off("acceptRequestDriverListener") {
             val data = it[0] as String
             Log.d(TAG, "Socket closeAcceptRequestDriverListener: $data")
+            callback.invoke(data)
         }
     }
 
@@ -198,6 +197,7 @@ object SocketHandler {
         mSocket.off("dropOffRequestDriverListener") {
             val data = it[0] as String
             Log.d(TAG, "Socket closeDropOffRequestDriverListener: $data")
+            callback.invoke(data)
         }
     }
 
@@ -216,13 +216,16 @@ object SocketHandler {
         mSocket.off("rejectRequestDriverListener") {
             val data = it[0] as String
             Log.d(TAG, "Socket closeRejectRequestDriverListener: $data")
+            callback.invoke(data)
         }
     }
 
     fun cancelRequestDriverListener(callback: (callbackValue: String) -> Unit) {
         mSocket.on("cancelRequestDriverListener") {
             val data = it[0] as String
+            Log.d(TAG, "cancelRequestDriverListener: CLOSE =============>")
             Log.d(TAG, "Socket cancelRequestDriverListener: $data")
+            callback.invoke(data)
         }
     }
 
@@ -230,6 +233,7 @@ object SocketHandler {
         mSocket.off("cancelRequestDriverListener") {
             val data = it[0] as String
             Log.d(TAG, "Socket closeCancelRequestDriverListener: $data")
+            callback.invoke(data)
         }
     }
 

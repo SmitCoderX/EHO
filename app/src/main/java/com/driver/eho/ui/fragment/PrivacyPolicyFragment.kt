@@ -25,7 +25,7 @@ class PrivacyPolicyFragment : Fragment(R.layout.fragment_privacy_policy) {
                 return true
             }
         }
-        binding.webview.loadUrl("https://www.google.co.in/")
+        binding.webview.loadUrl("https://www.ehohealthcare.com/privacy-policy/")
 
 
     }

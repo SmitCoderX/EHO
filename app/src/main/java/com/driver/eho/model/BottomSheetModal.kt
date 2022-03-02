@@ -36,7 +36,9 @@ data class BottomSheetModal(
     @SerializedName("ambulanceCharge")
     var ambulanceCharge: String? = "",
     @SerializedName("bookingFee")
-    var bookingFee: String? = ""
+    var bookingFee: String? = "",
+    @SerializedName("name")
+    var name: String? = ""
 
     /*paymentMode,
         ambulanceCharge,

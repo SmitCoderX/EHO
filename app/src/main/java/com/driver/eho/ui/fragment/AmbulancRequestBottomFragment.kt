@@ -5,6 +5,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ import com.driver.eho.ui.viewModels.HomeViewModel
 import com.driver.eho.utils.Constants
 import com.driver.eho.utils.Constants.IMAGE_URL
 import com.driver.eho.utils.Constants.REQUEST
+import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
 import com.driver.eho.utils.SocketHandler
@@ -68,17 +70,24 @@ class AmbulancRequestBottomFragment : BottomSheetDialogFragment() {
                 .centerCrop()
                 .into(ivProfile)
 
-            tvPatientName.text = requestDetails.userName.toString()
+            if (requestDetails.userName == "" || requestDetails.userName == null) {
+                if (requestDetails.name == "" || requestDetails.name == null) {
+                    tvPatientName.text = "Guest"
+                } else {
+                    tvPatientName.text = requestDetails.name
+                }
+            } else {
+                tvPatientName.text = requestDetails.userName
+            }
             tvKM.text = requestDetails.distance.toString() + "Km"
             tvPickupAddress.text = requestDetails.pickupLocation.toString()
             tvPaymentMode.text = requestDetails.paymentMode.toString()
-            if (prefs.getData()?.data?.ambulanceType == "1") {
+            if (requestDetails.paymentMode == "Free") {
                 tvAmmount.visibility = View.GONE
             } else {
                 tvAmmount.visibility = View.VISIBLE
                 tvAmmount.text = getString(R.string.Rs) + requestDetails.ambulanceCharge
             }
-
 //            tvDropAddress.text = requestDetails?.dropLocation.toString()
         }
 
@@ -128,16 +137,6 @@ class AmbulancRequestBottomFragment : BottomSheetDialogFragment() {
         binding.btnDecline.visibility = View.GONE
     }
 
-
-    override fun onResume() {
-        super.onResume()
-        val handler = Looper.myLooper()?.let { Handler(it) }
-        handler?.postDelayed({
-            rejectEmitter()
-            mediaPlayer.stop()
-        }, 15000)
-    }
-
     override fun onPause() {
         super.onPause()
         mediaPlayer.stop()
@@ -149,6 +148,7 @@ class AmbulancRequestBottomFragment : BottomSheetDialogFragment() {
     }
 
     private fun rejectEmitter() {
+        Log.d(TAG, "rejectEmitter ========>: ")
         SocketHandler.emitRejectRequest(
             requestDetails.userId.toString(),
             prefs.getData()?.data?.id.toString(),

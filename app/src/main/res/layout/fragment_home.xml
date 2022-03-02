@@ -22,22 +22,87 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
 
-        <androidx.appcompat.widget.SwitchCompat
+        <LinearLayout
             android:id="@+id/toggle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleX=".3"
-            android:scaleY=".3"
+            android:layout_height="@dimen/_35sdp"
             android:layout_marginBottom="@dimen/_15sdp"
-            android:textOn="Online"
-            android:textOff="Offline"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:thumb="@drawable/thumb"
+            android:background="@drawable/online_btn_bg"
+            android:backgroundTint="@android:color/holo_orange_light"
+            android:orientation="horizontal"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:track="@drawable/track" />
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_offline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/offline"
+                android:src="@drawable/thumbfalse" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_offline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/sf_pro_text_regular"
+                android:gravity="center"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/offline"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/toggle_online"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:background="@drawable/online_btn_bg"
+            android:backgroundTint="@color/blue_lite"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_online"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/sf_pro_text_regular"
+                android:gravity="center"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/online"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:id="@+id/iv_online"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/online"
+                android:src="@drawable/thumbtrue"
+                android:visibility="visible" />
+        </LinearLayout>
+
+
+        <!-- <androidx.appcompat.widget.SwitchCompat
+             android:id="@+id/toggle"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginBottom="@dimen/_15sdp"
+             android:scaleX=".3"
+             android:scaleY=".3"
+             android:textAllCaps="true"
+             android:textColor="@color/white"
+             android:textOff="Offline"
+             android:textOn="Online"
+             android:thumb="@drawable/thumb"
+             android:visibility="gone"
+             app:track="@drawable/track" />-->
 
         <LinearLayout
             android:id="@+id/viewLoader"

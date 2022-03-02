@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:backgroundTint="@color/white">
 
     <LinearLayout
@@ -38,9 +39,9 @@
                         android:id="@+id/tvTitleHere"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/sf_pro_text_bold"
-                        android:text="Title Hare"
-                        android:textColor="@color/text_rv_main"
+                        android:fontFamily="@font/sf_pro_ext_medium"
+                        android:text="Title Here"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/_10sdp" />
 
                     <LinearLayout
@@ -54,7 +55,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/sf_pro_text_bold"
                             android:text="10/02/2019"
-                            android:textColor="@color/text_rv_main"
+                            android:textColor="@color/gray_2"
                             android:textSize="@dimen/_8sdp" />
 
                         <TextView
@@ -62,7 +63,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/_4sdp"
                             android:fontFamily="@font/sf_pro_text_bold"
-                            android:text="."
+                            android:text=" "
                             android:textColor="@color/text_rv_main" />
 
                         <TextView
@@ -72,7 +73,7 @@
                             android:layout_marginLeft="@dimen/_4sdp"
                             android:fontFamily="@font/sf_pro_text_bold"
                             android:text="03:30pm"
-                            android:textColor="@color/text_rv_main"
+                            android:textColor="@color/gray_2"
                             android:textSize="@dimen/_8sdp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -88,17 +89,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/sf_pro_text_bold"
+                        android:fontFamily="@font/sf_pro_ext_medium"
                         android:text="₹"
-                        android:textColor="@color/text_rv_main" />
+                        android:textColor="@color/black" />
 
                     <TextView
                         android:id="@+id/tvAmount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/sf_pro_text_bold"
-                        android:text="100.32"
-                        android:textColor="@color/text_rv_main" />
+                        android:fontFamily="@font/sf_pro_ext_medium"
+                        tools:text="100.32"
+                        android:textColor="@color/black" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -112,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_5sdp"
-                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -159,9 +160,9 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:fontFamily="@font/sf_pro_text_bold"
+                                        android:fontFamily="@font/sf_pro_text_regular"
                                         android:text="Pick-up Location"
-                                        android:textColor="@color/text_rv"
+                                        android:textColor="@color/gray_2"
                                         android:textSize="@dimen/_10sdp"
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintStart_toStartOf="parent"
@@ -172,7 +173,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:background="@drawable/background_booking_status_cancelled"
-                                        android:fontFamily="@font/sf_pro_text_bold"
+                                        android:fontFamily="@font/sf_pro_text_regular"
                                         android:padding="@dimen/_3sdp"
                                         android:text="Cancelled"
                                         android:textColor="@color/white"
@@ -189,10 +190,10 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/_2sdp"
-                                    android:fontFamily="@font/sf_pro_text_bold"
+                                    android:fontFamily="@font/sf_pro_text_semibold"
                                     android:gravity="top|start"
                                     android:text="Ganesh sernam jagatpur road, ahmedabad, gujrat 382470, india"
-                                    android:textColor="@color/text_rv_main"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/_9sdp" />
                             </LinearLayout>
                         </LinearLayout>
@@ -223,9 +224,9 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:fontFamily="@font/sf_pro_text_bold"
+                                    android:fontFamily="@font/sf_pro_text_regular"
                                     android:text="Destination Location"
-                                    android:textColor="@color/text_rv"
+                                    android:textColor="@color/gray_2"
                                     android:textSize="@dimen/_10sdp" />
 
                                 <TextView
@@ -233,10 +234,10 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/_2sdp"
-                                    android:fontFamily="@font/sf_pro_text_bold"
+                                    android:fontFamily="@font/sf_pro_text_semibold"
                                     android:gravity="top|start"
                                     android:text="D Block Asarwa, Haripura, Office ofthe Medical Superintendent Civil Hospital,Asarwa, Ahmedabad, Gujarat 380016"
-                                    android:textColor="@color/text_rv_main"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/_9sdp" />
                             </LinearLayout>
                         </LinearLayout>

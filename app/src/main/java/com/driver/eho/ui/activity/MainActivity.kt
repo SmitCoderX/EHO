@@ -3,6 +3,7 @@ package com.driver.eho.ui.activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
@@ -14,6 +15,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.driver.eho.BuildConfig
 import com.driver.eho.R
 import com.driver.eho.SharedPreferenceManager
 import com.driver.eho.databinding.ActivityMainBinding
@@ -25,6 +27,7 @@ import com.driver.eho.ui.fragment.TermsConditionFragment
 import com.driver.eho.ui.viewModel.viewModelFactory.MainActivityViewModelProviderFactory
 import com.driver.eho.ui.viewModels.MainActivityViewModel
 import com.driver.eho.utils.Constants.IMAGE_URL
+import com.driver.eho.utils.Constants.TAG
 import com.driver.eho.utils.Constants.snackbarError
 import com.driver.eho.utils.EHOApplication
 import com.driver.eho.utils.Resources
@@ -140,6 +143,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.ivNotification.setOnClickListener {
             startActivity(Intent(this, NotificationActivity::class.java))
             finish()
+        }
+
+        binding.cv1.setOnClickListener {
+            try {
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name))
+                var shareMessage = "\nLet me recommend you this application\n\n"
+                shareMessage =
+                    """${shareMessage}https://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}""".trimIndent()
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
+                startActivity(Intent.createChooser(shareIntent, "choose one"))
+            } catch (e: Exception) {
+                Log.d(TAG, "Share App Error: $e")
+            }
         }
     }
 

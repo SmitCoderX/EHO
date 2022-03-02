@@ -65,20 +65,20 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/sf_pro_text_bold"
+                            android:fontFamily="@font/sf_pro_ext_medium"
                             android:text="Call:"
                             android:textColor="@color/blue"
-                            android:textSize="@dimen/_13sdp" />
+                            android:textSize="@dimen/_10ssp" />
 
                         <TextView
                             android:id="@+id/tvMobileNumber"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/_5sdp"
-                            android:fontFamily="@font/sf_pro_text_bold"
+                            android:fontFamily="@font/sf_pro_ext_medium"
                             android:text="8758723738779 | 98745987495"
                             android:textColor="@color/black_2"
-                            android:textSize="@dimen/_13sdp" />
+                            android:textSize="@dimen/_10ssp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -91,10 +91,10 @@
                             android:id="@+id/tvOfficeAddress"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/sf_pro_text_bold"
+                            android:fontFamily="@font/sf_pro_ext_medium"
                             android:text="@string/corporate_office"
                             android:textColor="@color/black_2"
-                            android:textSize="@dimen/_13sdp" />
+                            android:textSize="@dimen/_10ssp" />
                     </LinearLayout>
                 </LinearLayout>
             </FrameLayout>

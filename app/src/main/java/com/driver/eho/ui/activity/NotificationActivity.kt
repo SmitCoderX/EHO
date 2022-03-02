@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.driver.eho.SharedPreferenceManager
 import com.driver.eho.adapter.NotificationAdapter
 import com.driver.eho.databinding.ActivityNotificationBinding
-import com.driver.eho.model.Login.DriverSignInResponse
 import com.driver.eho.ui.viewModel.viewModelFactory.NotificationViewModelProviderFactory
 import com.driver.eho.ui.viewModels.NotificationViewModel
 import com.driver.eho.utils.Constants
